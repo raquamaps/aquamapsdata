@@ -1,0 +1,54 @@
+---
+title: "Introduction to aquamaps.org Data Package"
+author: "Markus Skyttner"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to aquamaps.org Data Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This document describes how to use the `aquamapsdata` R data package to access data from http://aquamaps.org
+
+Immediately after installing the package, a run-once action is needed, in order to download and create the SQLite database containing all the AquaMaps data.
+
+Approximately 4G disk space is needed locally for the database file. The download is around 400 MB compressed and therefore a speedy Internet connection is recommended for this initial step.
+
+```{r, eval=FALSE}
+
+# perform the initial download and creating of the database
+
+remote_update()
+
+```
+
+Once the database is available locally, it can be queries using a couple of different functions.
+
+## Examples
+
+The following code shows a few ways to query the database through some functions provided in the package
+
+```{r, fig.show='hold', eval=FALSE}
+library(aquamapsdata)
+
+nativemaps()
+hcaf()
+hspen()
+occ()
+taxa()
+
+```
+
+## TODO
+
+Ideas:
+
+- Change the download to not use the zip but the processed am.db.gz file, ie download in compressed format from a stable download location at the Internet Archive
+
+- Move the code now in remote_update() to data-raw and have a simpler update that just downloads and uncompresses the am.db.gz file.
+
+- If the above works, then remove most Suggest package dependencies?
+
+- Figure out what are the key identifiers for the different tables and write better functions for accessing the data, aligning function style with functions from other ROpenSci packages such as rgbif, rfishbase etc
+

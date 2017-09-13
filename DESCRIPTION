@@ -1,0 +1,34 @@
+Package: aquamapsdata
+Type: Package
+Title: Curated Data From AquaMaps.Org
+Version: 0.1.0
+Authors@R: c(
+  person("Markus", "Skyttner", email = "markus.skyttner@nrm.se", role = c("aut", "cre")),
+  person("Scott", "Chamberlain", role = c("ctb")),
+  person("Christina", "Garilao", role = c("ctb")))
+Maintainer: Markus Skyttner <markus.skyttner@nrm.se>
+Description: This package provides access to curated data from aquamaps.org published in 2017.
+    It does not embed the data statically into the package, instead it attempts to download an SQLite database from a remote location.
+    It has a function called remote_update() which retrieves raw data published by aquamaps.org, repackaging this into a SQLite file.
+    It also has functions for accessing the data. The data is expected to be updated on the remote location approximately once per year.
+License: file LICENSE
+Date: 2017-09-11
+URL: https://github.com/raquamaps/aquamapsdata
+BugReports: https://github.com/raquamaps/aquamapsdata/issues
+Encoding: UTF-8
+LazyData: false
+RoxygenNote: 6.0.1
+Imports:
+    dplyr,
+    RSQLite
+Suggests: knitr,
+    httr,
+    readr,
+    readxl,
+    dbplyr,
+    rmarkdown,
+    R.utils,
+    xml2
+Depends:
+    R (>= 3.0)
+VignetteBuilder: knitr
