@@ -3,29 +3,32 @@
 PKG_DIR=$(shell Rscript -e "cat(.libPaths()[1])")/aquamapsdata/extdata
 
 all:
+	@echo "aquamaps R package extdata dir is:"
 	@echo $(PKG_DIR)
+	@echo "contents:"
+	@ls -1 $(PKG_DIR)
 
 backup:
-	cp $(PKG_DIR)/am.db /tmp/am.db
+	cp $(PKG_DIR)/am.db .
 
 restore:
 	mkdir -p $(PKG_DIR)
-	cp /tmp/am.db $(PKG_DIR)/am.db
+	cp am.db $(PKG_DIR)
 
-download:
+download-db:
 	Rscript exec/cli_update.R
 
-/tmp/am.db.gz:
-	gzip /tmp/am.db
+am.db.gz:
+	gzip am.db
 
-upload-ia: /tmp/am.db.gz
-	ia upload aquamapsdata /tmp/am.db.gz \
+upload-ia: am.db.gz
+	ia upload aquamapsdata am.db.gz \
 		--metadata="title:AquaMaps.org Datasets"
 
 download-ia:
 	ia download aquamapsdata am.db.gz \
-		--destdir=/tmp --no-directories
-	gunzip /tmp/am.db.gz
+		--destdir=. --no-directories
+	gunzip am.db.gz
 
 clean:
-	rm -f inst/extdata/*
+	rm -f am.db am.db.gz $(PKG_DIR)/am.db

@@ -44,11 +44,11 @@ taxa()
 
 Ideas:
 
-- Change the download to not use the zip but the processed am.db file and put it on Internet Archive
+- Change the download to not use the zip but the processed am.db.gz file, ie download in compressed format from a stable download location at the Internet Archive
 
 - Move the code now in remote_update() to data-raw and have a simpler update that just downloads and uncompresses the am.db.gz file.
 
-- Remove most Suggest package dependencies?
+- If the above works, then remove most Suggest package dependencies?
 
 - Figure out what are the key identifiers for the different tables and write better functions for accessing the data, aligning function style with functions from other ROpenSci packages such as rgbif, rfishbase etc
 

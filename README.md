@@ -19,7 +19,7 @@ These datasets are available to web browsers through <https://aquamaps.org>, but
 Installing from github
 ----------------------
 
-If you want to install the latest version of the aquamapsdata package from github, you can do it like so:
+If you want to install the latest version of the `aquamapsdata` package from github, you can do it like so:
 
 ``` r
 # First make sure you have the devtools package
@@ -41,7 +41,7 @@ Load the package in your R environment:
 
 library(aquamapsdata)
 
-remote_update()
+download_db()
 
 occ()
 nativemaps()

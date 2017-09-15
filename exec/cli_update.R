@@ -4,9 +4,10 @@
 
 library(aquamapsdata)
 
-if (!http_ping())
-  stop("Error, no online connection to aquamaps.org!")
+if (!http_ping("http://archive.org"))
+  stop("Error, no online connection to Internet!")
 
-aquamapsdata_path <- aquamapsdata:::am_db_path()
+#aquamapsdata_path <- aquamapsdata:::am_db_path()
+#remote_update(AM_DB = aquamapsdata_path, truncate = FALSE)
 
-remote_update(AM_DB = aquamapsdata_path, truncate = FALSE)
+download_db()

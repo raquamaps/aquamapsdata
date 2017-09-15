@@ -1,2 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^am\.db$
+^am\.db\.gz$
+^dev\.R$
