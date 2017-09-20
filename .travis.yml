@@ -11,7 +11,7 @@ r_binary_packages:
   - dplyr
   - dbplyr
   - RSQLite
-  - R.utils,
+  - R.utils
   - magrittr
 
 env:
