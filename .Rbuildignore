@@ -3,3 +3,9 @@
 ^am\.db$
 ^am\.db\.gz$
 ^dev\.R$
+^data-raw/am\.db$
+^\.travis\.yml$
+^CONDUCT\.md$
+^Makefile$
+^README\.Rmd$
+^data-raw$

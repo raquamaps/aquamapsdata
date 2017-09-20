@@ -1,6 +1,7 @@
 #! make
 
 PKG_DIR=$(shell Rscript -e "cat(.libPaths()[1])")/aquamapsdata/extdata
+DB_CACHE=~/am.db
 
 all:
 	@echo "aquamaps R package extdata dir is:"
@@ -13,7 +14,10 @@ backup:
 
 restore:
 	mkdir -p $(PKG_DIR)
-	cp am.db $(PKG_DIR)
+	ln -s $(DB_CACHE) $(PKG_DIR)
+	# to support Vignette build during package development
+	mkdir -p inst/extdata
+	ln -s $(DB_CACHE) inst/extdata/am.db
 
 download-db:
 	Rscript exec/cli_update.R
@@ -31,4 +35,5 @@ download-ia:
 	gunzip am.db.gz
 
 clean:
-	rm -f am.db am.db.gz $(PKG_DIR)/am.db
+	rm -f am.db am.db.gz $(PKG_DIR)/am.db inst/extdata/am.db
+	rmdir inst/extdata

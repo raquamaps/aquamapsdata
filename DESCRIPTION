@@ -1,7 +1,7 @@
 Package: aquamapsdata
 Type: Package
 Title: Curated Data From AquaMaps.Org
-Version: 0.1.1
+Version: 0.1.2
 Authors@R: c(
   person("Markus", "Skyttner", email = "markus.skyttner@nrm.se", role = c("aut", "cre")),
   person("Scott", "Chamberlain", role = c("ctb")),
@@ -29,7 +29,10 @@ Suggests: knitr,
     readr,
     readxl,
     rmarkdown,
-    xml2
+    xml2,
+    DT,
+    purrr,
+    tidyr
 Depends:
     R (>= 3.0)
 VignetteBuilder: knitr

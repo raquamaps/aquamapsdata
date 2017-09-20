@@ -1,8 +1,9 @@
 #' Perform downloading of compressed SQLite db, storing it locally
+#' @param force boolean to indicate whether to overwrite an existing db
 #' @importFrom R.utils gunzip isGzipped
 #' @importFrom utils download.file
 #' @export
-download_db <- function() {
+download_db <- function(force = FALSE) {
 
   SRC <- "http://archive.org/download/aquamapsdata/am.db.gz"
   TMP <- paste0(dirname(tempdir()), "/am.db.gz")
@@ -15,6 +16,10 @@ download_db <- function() {
   #
   # TGT <- paste0(system.file(package = "aquamapsdata"),
   #               "/extdata/aquamapsdata_files.xml")
+
+  if (file.exists(TGT) && !force)
+    stop("An existing db exists at ", TGT,
+         ", to overwrite, pls rerun with force = TRUE")
 
   message("Download of aquamapsdata (",
             SRC, " -> ", TMP, " -> ", TGT, ")")

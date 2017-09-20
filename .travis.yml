@@ -1,0 +1,41 @@
+language: R
+cache: packages
+r: release
+repos:
+  CRAN: https://cloud.r-project.org
+  ropensci: http://packages.ropensci.org
+warnings_are_errors: false
+r_binary_packages:
+  - testthat
+  - knitr
+  - dplyr
+  - dbplyr
+  - RSQLite
+  - R.utils,
+  - magrittr
+
+env:
+  global:
+  - R_PKG="$(basename $TRAVIS_REPO_SLUG)"
+addons:
+  apt:
+    packages:
+    - r-base-dev
+    - r-recommended
+    - libxml2-dev
+
+before_install:
+- tlmgr install index
+before_deploy:
+- echo "Tags are deployed to GitHub Releases for $R_PKG"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: e8ftZJWz8RvoRuCUZUfk9+xmmA0N2hHaRXOwnxkPSbm2PKOw00b/Q114JUjQNe52L7PXYucy85Q9u2RB+asLymvGrghmWXmCdIdIO56tSgPoMNz9wKK4kF8lmac18BAMIaJAn98seQHLldV697h6mqfx49PIJjypMUZnoyK28UWkHLiIAosgy7M+ikeiZYIqRAUkuoMCZRimPi9lxluAPLDNpXc+WRn0gJTXfm581rJDWopS7gP8qjHJCAxv9N0luyD5X/QqOfw3mZUlmDFRq3ysHfcFvwj6STWJ8ABpm8y6TvptzGCrITtKAbUs42E5Ys5ceTPcj1qF8545M3KnQkmBUeuBjr9tZHs/1Bz6NEXqs2FhH8vS2UzAg447UQWr1JYkrTlYp//Mb1kydOaP8+J6gIk/NLcoCZbyUvDz/php5tuZAYWg1Bq8SWWJ4E/2x2MzDlVuiZtwsOOQfu5SsqAEnAQ06TIdkwiu9C5aRJPfopxoPyyKzGXNPeWpl6kH2nf+fqscn9JNTknB5TaNsef72TGXXFQ+DtvIHAbGKeHQ+TgJYHKi81WSWYQWudbTUGfzGDevfPNwe2RvRxCZxrQb+xMGDvaJInjSX/mz98/aqKaD9XI1tav49fCfEkKpyf1z0xZXPhSqS6a8rFvk6Q1zOJWIhaJW0yCP6ekGHgQ=
+  file_glob: true
+  file: ! "${R_PKG}_*.tar.gz"
+  skip_cleanup: true
+  on:
+    repo: raquamaps/aquamapsdata
+    tags: true

@@ -7,16 +7,16 @@ aquamapsdata_sqlite <- function() {
 
   if (!file.exists(AM_DB))
     stop("No database available at ", AM_DB,
-         " please use remote_update()")
+         " please use download_db()")
 
   if (file.size(AM_DB) == 0) {
     message("Removing emtpy db at ", AM_DB)
     unlink(AM_DB)
-    stop("Database empty, aborting, please use remote_update()")
+    stop("Database empty, aborting, please use download_db()")
   }
 
-  #my_db <- RSQLite::dbConnect(RSQLite::SQLite(), AM_DB)
-  my_db <- dplyr::src_sqlite(AM_DB)
+  my_db <- RSQLite::dbConnect(RSQLite::SQLite(), AM_DB)
+  #my_db <- dplyr::src_sqlite(AM_DB)
   return (my_db)
 }
 
@@ -27,8 +27,8 @@ am_db_path <- function() {
 
 #' @export
 taxa <- function() {
-    aquamapsdata_sqlite() %>%
-    tbl("taxa")
+  aquamapsdata_sqlite() %>%
+  tbl("taxa")
 }
 
 #' @export
@@ -40,17 +40,17 @@ nativemaps <- function() {
 #' @export
 hcaf <- function() {
   aquamapsdata_sqlite() %>%
-    tbl("hcaf")
+  tbl("hcaf")
 }
 
 #' @export
 hspen <- function() {
   aquamapsdata_sqlite() %>%
-    tbl("hspen")
+  tbl("hspen")
 }
 
 #' @export
 occ <- function() {
   aquamapsdata_sqlite() %>%
-    tbl("occ")
+  tbl("occ")
 }

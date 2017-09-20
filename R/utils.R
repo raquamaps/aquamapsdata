@@ -1,5 +1,6 @@
 #' Ping a web site
 #'@param url a web site to "web ping" to see that it is available
+#'@param timeout default time to wait in seconds before returning FALSE
 #'@return TRUE if web site is up, FALSE otherwise
 #'@importFrom R.utils withTimeout
 #'@export

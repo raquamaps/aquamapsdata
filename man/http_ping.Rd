@@ -8,6 +8,8 @@ http_ping(url = "http://aquamaps.org", timeout = 10)
 }
 \arguments{
 \item{url}{a web site to "web ping" to see that it is available}
+
+\item{timeout}{default time to wait in seconds before returning FALSE}
 }
 \value{
 TRUE if web site is up, FALSE otherwise
