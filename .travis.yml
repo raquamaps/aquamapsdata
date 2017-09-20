@@ -5,8 +5,8 @@ repos:
   CRAN: https://cloud.r-project.org
   ropensci: http://packages.ropensci.org
 warnings_are_errors: false
-r_check_args: "--no-vignettes"
-r_build_args: "--no-vignettes"
+r_check_args: "--no-build-vignettes"
+r_build_args: "--no-build-vignettes"
 
 env:
   global:
