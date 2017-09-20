@@ -5,14 +5,8 @@ repos:
   CRAN: https://cloud.r-project.org
   ropensci: http://packages.ropensci.org
 warnings_are_errors: false
-r_binary_packages:
-  - testthat
-  - knitr
-  - dplyr
-  - dbplyr
-  - RSQLite
-  - R.utils
-  - magrittr
+r_check_args: "--no-vignettes"
+r_build_args: "--no-vignettes"
 
 env:
   global:
@@ -36,6 +30,7 @@ deploy:
   file_glob: true
   file: ! "${R_PKG}_*.tar.gz"
   skip_cleanup: true
+  overwrite: true
   on:
     repo: raquamaps/aquamapsdata
     tags: true
