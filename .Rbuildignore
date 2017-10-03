@@ -5,6 +5,7 @@
 ^dev\.R$
 ^data-raw/am\.db$
 ^\.travis\.yml$
+^\.travis\.yml.backup$
 ^CONDUCT\.md$
 ^Makefile$
 ^README\.Rmd$

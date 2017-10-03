@@ -6,8 +6,8 @@
 download_db <- function(force = FALSE) {
 
   SRC <- "http://archive.org/download/aquamapsdata/am.db.gz"
-  TMP <- paste0(dirname(tempdir()), "/am.db.gz")
-  TGT <- paste0(system.file(package = "aquamapsdata"), "/extdata/am.db")
+  TMP <- file.path(dirname(tempdir()), "am.db.gz")
+  TGT <- file.path(system.file(package = "aquamapsdata"), "extdata", "am.db")
 
   # SRC <- paste0("http://archive.org/download/aquamapsdata/",
   #               "aquamapsdata_files.xml")

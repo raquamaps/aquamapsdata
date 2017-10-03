@@ -18,5 +18,8 @@ TRUE if web site is up, FALSE otherwise
 Ping a web site
 }
 \examples{
-http_ping("http://aquamaps.org")
+\dontrun{
+ http_ping("http://aquamaps.org")
+}
+
 }

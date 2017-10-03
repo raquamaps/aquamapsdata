@@ -7,6 +7,14 @@ For more fine-grained list of changes or to report a bug, consult
 * [The commit log](https://github.com/raquamaps/aquamapsdata/commits/master)
 
 
+# v0.1.3
+
+* Added functions for fuzzy and exact name searches based on FTS capabilities of SQLite3, some tests for those and usage example in the Vignette
+
+* Removed functions hspen(), occ(), taxa(), hcaf() - those need refactoring and will be added when the column names and descriptions have been revised
+
+* Added in a smaller "am.db" in inst/extdata which gets built into and installed within the package. This simplifies the building and checking of the package, as well as running tests. The intention is to have download_db() replace that database.
+
 # v0.1.2
 
 * Added more content to the Vignette to illustrate the database schema and show how to make some queries against the database
