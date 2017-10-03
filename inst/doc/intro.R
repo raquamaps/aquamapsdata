@@ -14,21 +14,26 @@
 #  
 
 ## ---- fig.show='hold', eval=FALSE----------------------------------------
+#  
 #  library(aquamapsdata)
 #  
-#  nativemaps()
-#  hcaf()
-#  hspen()
-#  occ()
-#  taxa()
+#  my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
+#  
+#  my_db %>% tbl("nativemaps")
+#  my_db %>% tbl("hcaf")
+#  my_db %>% tbl("hspen")
+#  my_db %>% tbl("occ")
+#  my_db %>% tbl("taxa")
 #  
 
 ## ---- fig.show='hold', message=FALSE-------------------------------------
 library(aquamapsdata)
 library(dplyr)
 
+my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
+
 record_count <- 
-  occ() %>% 
+  my_db %>% tbl("occ") %>% 
   summarize(count = n()) %>% 
   collect %>% 
   .$count
@@ -36,13 +41,13 @@ record_count <-
 record_count
 
 
-## ---- fig.show='hold', message=FALSE-------------------------------------
+## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
 
 library(tidyr)
 
 # filter one table for a specific record
 taxon_wide <- 
-  taxa() %>% 
+  my_db %>% tbl("taxa") %>% 
   filter(SPECIESID == "Fis-26653") %>%
   collect
 
@@ -55,7 +60,7 @@ taxon_tall <-
 knitr::kable(taxon_tall)
 
 
-## ---- fig.show='hold', message=FALSE-------------------------------------
+## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
 library(dplyr)
 library(purrr)
 
@@ -69,17 +74,33 @@ ls_count <- function(table) {
 
 # get record counts for all tables
 am_counts <- bind_rows(
-  nativemaps() %>% ls_count,
-  hcaf() %>% ls_count,
-  hspen() %>% ls_count,
-  occ() %>% ls_count,
-  taxa() %>% ls_count
+  my_db %>% tbl("nativemaps") %>% ls_count,
+  my_db %>% tbl("hcaf") %>% ls_count,
+  my_db %>% tbl("hspen") %>% ls_count,
+  my_db %>% tbl("occ") %>% ls_count,
+  my_db %>% tbl("taxa") %>% ls_count
 )
 
 # display
 knitr::kable(am_counts)
 
-## ---- fig.show='hold', message=FALSE-------------------------------------
+## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
+
+# fuzzy search for "trout OR cod"
+
+keys <- am_name_search_fuzzy("trout OR cod")$key
+
+# exact results for all those keys
+
+hits <- map_df(keys, function(x) am_name_search_exact(key = x))
+
+# we inspect the species list we got 
+
+display <- hits %>% select(key, binomial, rank_family, vernacular)
+knitr::kable(display)
+
+
+## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
 library(DT)
 
 # for a db table, return a tibble with the columns and their data types
@@ -92,17 +113,17 @@ ls_types <- function(table) {
 
 # run the above function on all tables
 am_schema <- bind_rows(
-  nativemaps() %>% ls_types,
-  hcaf() %>% ls_types,
-  hspen() %>% ls_types,
-  occ() %>% ls_types,
-  taxa() %>% ls_types
+  my_db %>% tbl("nativemaps") %>% ls_types,
+  my_db %>% tbl("hcaf") %>% ls_types,
+  my_db %>% tbl("hspen") %>% ls_types,
+  my_db %>% tbl("occ") %>% ls_types,
+  my_db %>% tbl("taxa") %>% ls_types
 )
 
 datatable(am_schema)
 
 
-## ---- fig.show='hold', message=FALSE-------------------------------------
+## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
 
 duplicated_colnames <- 
   unique(am_schema$col_name[duplicated(am_schema$col_name)])
@@ -117,7 +138,7 @@ am_keys <-
 knitr::kable(am_keys)
 
 
-## ---- fig.show='hold', eval=FALSE, message=FALSE-------------------------
+## ---- fig.show='hold', eval=FALSE, message=FALSE--------------------------------------------------
 #  
 #  readr::write_csv(am_schema, path = "~/am-schema.csv")
 #  readr::write_csv(am_keys, path = "~/am-keys.csv")

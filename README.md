@@ -3,10 +3,9 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 ``` console
 Welcome to ...
-                           ▌   ▐
-▝▀▖▞▀▌▌ ▌▝▀▖▛▚▀▖▝▀▖▛▀▖▞▀▘▞▀▌▝▀▖▜▀ ▝▀▖
-▞▀▌▚▄▌▌ ▌▞▀▌▌▐ ▌▞▀▌▙▄▘▝▀▖▌ ▌▞▀▌▐ ▖▞▀▌
-▝▀▘  ▌▝▀▘▝▀▘▘▝ ▘▝▀▘▌  ▀▀ ▝▀▘▝▀▘ ▀ ▝▀▘
+  _.  _.      _. ._ _   _. ._   _  _|  _. _|_  _.
+ (_| (_| |_| (_| | | | (_| |_) _> (_| (_|  |_ (_|
+       |                   |
 ```
 
 Introduction
@@ -14,7 +13,7 @@ Introduction
 
 `aquamapsdata` is an R package that can download and create a local SQLite database with datasets from AquaMaps.org (2017)
 
-These datasets are available to web browsers through <https://aquamaps.org>, but the `aquamapsdata` package offers an a couple of convenient functions for accessing this data in an IDE like `RStudio`.
+These datasets are available to web browsers through <https://aquamaps.org>, but the `aquamapsdata` package offers an a couple of convenient functions for accessing this data programmatically in an IDE like `RStudio`.
 
 Installing from github
 ----------------------
@@ -43,16 +42,20 @@ library(aquamapsdata)
 
 download_db()
 
-occ()
-nativemaps()
-taxa()
-hcaf()
-hspen()
+my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
+
+my_db %>% tbl("nativemaps")
+my_db %>% tbl("hcaf")
+my_db %>% tbl("hspen")
+my_db %>% tbl("occ")
+my_db %>% tbl("taxa")
 ```
 
 To see some quick usage examples to get you started, open the Vignette.
 
-The package uses SQLite3, which means you need to install it.
+The package uses SQLite3 - a portable and fast database which is included in the RSQLite package.
+
+You can also install SQLite3 using your platform's package manager, for example using these commands:
 
 ``` console
 # on linux
