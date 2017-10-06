@@ -107,7 +107,6 @@ am_name_search_fuzzy <- function(search_term) {
 #' @examples
 #'  am_name_search_exact(vernacular = "Atlantic cod")
 #'  am_name_search_exact(key = "Fis-23638")
-#' @importFrom stringr word
 #' @export
 am_name_search_exact <- function(
   key = NULL, binomial = NULL, vernacular = NULL,
@@ -170,8 +169,8 @@ am_name_search_exact <- function(
     filter(SPECIESID == key)
 
   if (!is.null(binomial)) res <- res %>%
-    filter(Genus == stringr::word(binomial, 1),
-           Species == stringr::word(binomial, 2))
+    filter(Genus == strsplit(binomial, " ")[[1]][1],
+           Species == strsplit(binomial, " ")[[1]][2])
 
   if (!is.null(vernacular)) res <- res %>%
     filter(FBname == vernacular)

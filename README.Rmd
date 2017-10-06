@@ -43,9 +43,8 @@ If you want to install the latest version of the `aquamapsdata` package from git
 # Note: Windows users have to first install Rtools to use devtools
 
 install.packages("devtools") 
-
-library("devtools")
-install_git("https://github.com/raquamaps/aquamapsdata.git", build_vignettes=FALSE)
+library(devtools)
+install_github("raquamaps/aquamapsdata")
 
 ```
 
@@ -56,8 +55,9 @@ Load the package in your R environment:
 ```{r message=FALSE, warning=FALSE, results="hide", eval=FALSE}
 
 library(aquamapsdata)
+library(purrr)
 
-download_db()
+download_db(force = TRUE)
 
 my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
 

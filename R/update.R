@@ -32,7 +32,7 @@ download_db <- function(force = FALSE) {
   }
 
   if (isGzipped(TMP)) {
-    gunzip(TMP, destname = TGT, remove = FALSE)
+    gunzip(TMP, destname = TGT, overwrite = force, remove = FALSE)
   } else if (!file.exists(TGT)) {
     if (!dir.exists(dirname(TGT)))
       dir.create(dirname(TGT))

@@ -1,10 +1,10 @@
 ---
-title: "Introduction to aquamaps.org Data Package"
+title: "Introduction to aquamapsdata"
 author: "Markus Skyttner"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Introduction to aquamaps.org Data Package}
+  %\VignetteIndexEntry{Introduction to aquamapsdata}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,16 +18,15 @@ Approximately 5G disk space is needed locally for the database file. The downloa
 ```{r, eval=FALSE}
 
 # install aquamapsdata from GitHub using devtools
+
 install.packages("devtools") 
 library("devtools")
+install_gitub("raquamaps/aquamapsdata")
 
-install_git("https://github.com/raquamaps/aquamapsdata.git",
-            build_vignettes=FALSE)
+# initial run-once step required to install remote db locally
 
 library(aquamapsdata)
-
-# run-once action to install remote db locally
-download_db()
+download_db(force = TRUE)
 
 ```
 
@@ -40,6 +39,7 @@ The following code shows a few ways to query the database through some functions
 ```{r, fig.show='hold', eval=FALSE}
 
 library(aquamapsdata)
+library(dplyr)
 
 my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
 

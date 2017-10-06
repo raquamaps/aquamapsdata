@@ -14,10 +14,11 @@ backup:
 
 restore:
 	mkdir -p $(PKG_DIR)
+	test -f $(PKG_DIR)/am.db || rm -f $(PKG_DIR)/am.db
 	ln -s $(DB_CACHE) $(PKG_DIR)
 	# to support Vignette build during package development
-	mkdir -p inst/extdata
-	ln -s $(DB_CACHE) inst/extdata/am.db
+	#mkdir -p inst/extdata
+	#ln -s $(DB_CACHE) inst/extdata/am.db
 
 download-db:
 	Rscript exec/cli_update.R

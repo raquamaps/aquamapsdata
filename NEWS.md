@@ -6,6 +6,13 @@ For more fine-grained list of changes or to report a bug, consult
 * [The issues log](https://github.com/raquamaps/aquamapsdata/issues)
 * [The commit log](https://github.com/raquamaps/aquamapsdata/commits/master)
 
+# v0.1.4
+
+* Fixed a bug in install_db(), which didn't overwrite an existing db
+
+* Added csquarecode <-> decimal degrees encoding and decoding functions
+
+# Removed use of stringr and use stringi instead
 
 # v0.1.3
 
