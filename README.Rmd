@@ -5,6 +5,9 @@ output:
 ---
 
 [![Build Status](https://travis-ci.org/raquamaps/aquamapsdata.svg?branch=master)](https://travis-ci.org/raquamaps/aquamapsdata)  
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+
+<!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) -->
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -82,6 +85,22 @@ sudo apt install sqlite3
 # on mac
 brew install sqlite3
 ```
+
+## Similar packages
+
+A similar package which also provides the aquamaps algorithm is available at https://github.com/raquamaps/raquamaps.
+
+## References
+
+`aquamapsdata` provides data output based on tools and work described for example in the following publications:
+
+- Kaschner, K., R. Watson, A.W. Trites and D. Pauly. 2006. Mapping worldwide distributions of marine mammals using a Relative Environmental Suitability (RES) model. Mar. Ecol. Prog. Ser. 316:285-310.
+
+- Ready, J., K. Kaschner, A.B. South, P.D. Eastwood, T. Rees, J. Rius, E. Agbayani, S. Kullander, and R. Froese. 2010. Predicting the distributions of marine organisms at the global scale. Ecol. Model. 221: 467-478, doi:10.1016/j.ecolmodel.2009.10.025
+
+- Kesner-Reyes, K., K. Kaschner, S. Kullander, C. Garilao, J. Barile, and R. Froese. 2012. AquaMaps: algorithm and data sources for aquatic organisms. In: Froese, R. and D. Pauly. Editors. 2012. FishBase. World Wide Web electronic publication. www.fishbase.org, version (04/2012).
+
+- Östergren J, Kullander S O, Prud'homme O, Reyes K K, Kaschner K and Froese R (in preparation) Predicting freshwater-dependent species distributions in Europe
 
 ## Credits
 

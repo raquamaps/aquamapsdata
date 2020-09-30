@@ -10,3 +10,6 @@
 ^Makefile$
 ^README\.Rmd$
 ^data-raw$
+^codemeta\.json$
+^\.github
+^doc$
