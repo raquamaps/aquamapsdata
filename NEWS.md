@@ -6,6 +6,10 @@ For more fine-grained list of changes or to report a bug, consult
 * [The issues log](https://github.com/raquamaps/aquamapsdata/issues)
 * [The commit log](https://github.com/raquamaps/aquamapsdata/commits/master)
 
+# v0.1.5
+
+* Fixed a bug in "row value misused" probably due to lazy eval of query in db, for query generated looking like this: "SELECT * FROM `taxa` WHERE (`Genus` = CASE WHEN (1.0) THEN (('Salmo', 'trutta')) END AND `Species` = CASE WHEN (2.0) THEN (('Salmo', 'trutta')) END)"
+
 # v0.1.4
 
 * Fixed a bug in install_db(), which didn't overwrite an existing db
