@@ -1,6 +1,7 @@
 Package: aquamapsdata
 Type: Package
 Title: Curated Data From AquaMaps.Org
+Date: 2017-09-11
 Version: 0.1.5
 Authors@R: c(
   person("Markus", "Skyttner", email = "markus.skyttner@nrm.se", role = c("aut", "cre")),
