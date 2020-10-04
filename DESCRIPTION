@@ -26,7 +26,8 @@ Imports:
     magrittr,
     stringi,
     purrr
-Suggests: knitr,
+Suggests: 
+    knitr,
     httr,
     readr,
     readxl,
@@ -34,7 +35,8 @@ Suggests: knitr,
     xml2,
     DT,
     tidyr,
-    testthat
+    testthat,
+    covr
 Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
