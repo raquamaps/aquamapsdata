@@ -1,8 +1,14 @@
+<!-- badges: start -->
 [![Build
 Status](https://travis-ci.org/raquamaps/aquamapsdata.svg?branch=master)](https://travis-ci.org/raquamaps/aquamapsdata)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Codecov test
+coverage](https://codecov.io/gh/raquamaps/aquamapsdata/branch/master/graph/badge.svg)](https://codecov.io/gh/raquamaps/aquamapsdata?branch=master)
+<!-- badges: end -->
+
+-   Rscript -e ‘covr::codecov()’
 
 <!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->

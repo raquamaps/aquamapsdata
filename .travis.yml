@@ -15,9 +15,14 @@ addons:
     - r-base-dev
     - r-recommended
     - libxml2-dev
+    - libcurl4-openssl-dev
 
 before_install:
 - tlmgr install index
+
+after_success:
+- Rscript -e 'covr::codecov()'
+
 before_deploy:
 - echo "Tags are deployed to GitHub Releases for $R_PKG"
 
@@ -32,3 +37,4 @@ deploy:
   on:
     repo: raquamaps/aquamapsdata
     tags: true
+
