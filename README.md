@@ -1,5 +1,5 @@
 [![Build
-Status](https://travis-ci.org/raquamaps/aquamapsdata.svg?branch=master)](https://travis-ci.org/raquamaps/aquamapsdata)  
+Status](https://travis-ci.org/raquamaps/aquamapsdata.svg?branch=master)](https://travis-ci.org/raquamaps/aquamapsdata)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -13,11 +13,13 @@ Welcome to ...
        |                   |
 ```
 
+<img src="man/figures/sticker.png" align="right" />
+
 Introduction
 ------------
 
 `aquamapsdata` is an R package that can download and create a local
-SQLite database with datasets from AquaMaps.org (2017)
+SQLite database with datasets from AquaMaps.org.
 
 These datasets are available to web browsers through
 <a href="https://aquamaps.org" class="uri">https://aquamaps.org</a>, but
@@ -31,13 +33,7 @@ If you want to install the latest version of the `aquamapsdata` package
 from github, you can do it like so:
 
 ``` r
-# First make sure you have the devtools package
-# which simplifies installations from github
-# Note: Windows users have to first install Rtools to use devtools
-
-install.packages("devtools") 
-library(devtools)
-install_github("raquamaps/aquamapsdata")
+remotes::install_github("raquamaps/aquamapsdata", dependencies = TRUE)
 ```
 
 Quick start
@@ -66,17 +62,6 @@ To see some quick usage examples to get you started, open the Vignette.
 The package uses SQLite3 - a portable and fast database which is
 included in the RSQLite package.
 
-You can also install SQLite3 using your platform’s package manager, for
-example using these commands:
-
-``` console
-# on linux
-sudo apt install sqlite3
-
-# on mac
-brew install sqlite3
-```
-
 Similar packages
 ----------------
 
@@ -84,41 +69,56 @@ A similar package which also provides the aquamaps algorithm is
 available at
 <a href="https://github.com/raquamaps/raquamaps" class="uri">https://github.com/raquamaps/raquamaps</a>.
 
-References
-----------
+Data source, Citation and References
+------------------------------------
 
-`aquamapsdata` provides data output based on tools and work described
-for example in the following publications:
+`aquamapsdata` provides data output from
+<a href="https://aquamaps.org" class="uri">https://aquamaps.org</a>;
+when using data provided by the package in a publication, please cite
+this source:
 
--   Kaschner, K., R. Watson, A.W. Trites and D. Pauly. 2006. Mapping
-    worldwide distributions of marine mammals using a Relative
-    Environmental Suitability (RES) model. Mar. Ecol. Prog. Ser.
-    316:285-310.
+-   Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J.
+    Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range
+    maps for aquatic species. World wide web electronic publication,
+    www.aquamaps.org, Version 10/2019.
 
--   Ready, J., K. Kaschner, A.B. South, P.D. Eastwood, T. Rees, J.
-    Rius, E. Agbayani, S. Kullander, and R. Froese. 2010. Predicting the
-    distributions of marine organisms at the global scale. Ecol. Model.
-    221: 467-478,
-    <a href="doi:10.1016/j.ecolmodel.2009.10.025" class="uri">doi:10.1016/j.ecolmodel.2009.10.025</a>
+### Content - Copyright and Disclaimer
 
--   Kesner-Reyes, K., K. Kaschner, S. Kullander, C. Garilao, J. Barile,
-    and R. Froese. 2012. AquaMaps: algorithm and data sources for
-    aquatic organisms. In: Froese, R. and D. Pauly. Editors. 2012.
-    FishBase. World Wide Web electronic publication. www.fishbase.org,
-    version (04/2012).
+Content from AquaMaps as provided by functions in this R package is
+licensed under a [Creative Commons Attribution-NonCommercial 3.0
+Unported License](http://creativecommons.org/licenses/by-nc/3.0/):
+<img src="https://i.creativecommons.org/l/by-nc/3.0/80x15.png" style="border-width:0" />
 
--   Östergren J, Kullander S O, Prud’homme O, Reyes K K, Kaschner K and
-    Froese R (in preparation) Predicting freshwater-dependent species
-    distributions in Europe
+You are welcome to include text, numbers and maps from AquaMaps in your
+own work for non-commercial use, given that such inserts are clearly
+identified as coming from AquaMaps.org, with a backward link to the
+respective source.
 
-Credits
--------
+### Considerations before publication
 
-`aquamapsdata` would have not been possible without many amazing R
-libraries, such as
+A researcher planning publication based on these datasets is invited to
+contact the AquaMaps team with queries related to specific content. The
+AquaMaps team can help with double checking for correctness prior to
+drawing conclusions and/or subsequent publication, and provide further
+clarification of update frequency, limitations and/or interpretation of
+unlikely results.
 
--   “tidyverse” ie dplyr, tidyr, stringr etc from Hadley Wickham
--   rgbif etc from ROpenSci
+Please open an issue on the [GitHub issue
+tracker](https://github.com/raquamaps/aquamapsdata/issues) or contact
+the team directly by email at Rainer Froese (rfroese (at) geomar.de) or
+Kristin Kaschner (Kristin.Kaschner (at) biologie.uni-freiburg.de).
+
+### Disclaimer
+
+AquaMaps generates standardized computer-generated and fairly reliable
+large scale predictions of marine and freshwater species. Although the
+AquaMaps team and their collaborators have obtained data from sources
+believed to be reliable and have made every reasonable effort to ensure
+its accuracy, many maps have not yet been verified by experts and we
+strongly suggest you verify species occurrences before usage. The
+AquaMaps team will not be held responsible for any consequence from the
+use or misuse of these data and/or maps by any organization or
+individual.
 
 Meta
 ----
@@ -126,3 +126,11 @@ Meta
 -   Please [report any issues or
     bugs](https://github.com/raquamaps/aquamapsdata/issues).
 -   License: AGPL
+-   Get citation information for `aquamapsdata` in R by doing
+    citation(package = ‘aquamapsdata’)
+-   Please note that this package is released with a [Contributor Code
+    of Conduct](https://ropensci.org/code-of-conduct/). By contributing
+    to this project, you agree to abide by its terms.
+-   Credits: `aquamapsdata` would have not been possible without many
+    amazing R libraries, such as the “tidyverse” packages and various
+    packages from ROpenSci.
