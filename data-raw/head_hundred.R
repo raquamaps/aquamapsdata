@@ -36,7 +36,7 @@ library(DBI)
 
 if (!"fts" %in% dbListTables(con)) {
   dbSendQuery(con, statement =
-                "create virtual table fts using fts4(
+                "create virtual table fts using fts5(
       key, terms
     );")
 
