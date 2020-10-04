@@ -19,5 +19,17 @@ Sys.setenv(NOT_CRAN = "true")
 
 browseURL("https://devguide.ropensci.org")
 
-install.packages("goodpractice")
+#install.packages("goodpractice")
 goodpractice::gp()
+
+# add covr
+#install.packages("covr")
+library(covr)
+report()
+
+# add pkgdown
+#install.packages("pkgdown")
+
+
+# add code of conduct to README.Rmd
+
