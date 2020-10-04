@@ -35,11 +35,13 @@ am_db_path <- function() {
 #' @export
 am_sql_query <- function(sql_query, ...){
 
-  res <- src_sqlite_aquamapsdata() %>%
+  con <- src_sqlite_aquamapsdata()
+
+  res <-  con %>%
     tbl(sql(sql_query, ...)) %>%
     collect()
 
-  dbDisconnect(src_sqlite_aquamapsdata())
+  on.exit(dbDisconnect(con))
 
   return (res)
 }
@@ -51,7 +53,7 @@ add_fts_table <- function() {
 
   if (!"fts" %in% dbListTables(con)) {
     dbSendQuery(con, statement =
-    "create virtual table fts using fts4(
+    "create virtual table fts using fts5(
       key, terms
     );")
 
@@ -64,7 +66,7 @@ add_fts_table <- function() {
     ) as terms FROM taxa;"))
   }
 
-  dbDisconnect(con)
+  on.exit(dbDisconnect(con))
 
   # res <- am_name_search() %>% collect %>%
   #   tidyr::unite(terms, -key, sep = " ") %>%
@@ -114,7 +116,10 @@ am_name_search_exact <- function(
   rank_family = NULL, rank_kingdom = NULL, rank_phylum = NULL,
   rank_class = NULL, rank_order = NULL) {
 
-  taxa <- src_sqlite_aquamapsdata() %>% tbl("taxa")
+  con <- src_sqlite_aquamapsdata()
+  on.exit(dbDisconnect(con))
+
+  taxa <- con %>% tbl("taxa") %>% collect %>% mutate(binomen = paste(Genus, Species))
 
   unique_values <- function(param, col_name) {
     message("returning unique values for argument/parameter ", param)
@@ -130,11 +135,11 @@ am_name_search_exact <- function(
 
   if (!missing(binomial) && is.null(binomial)) {
     message("returning distinct binomial (Genus, Species) values")
-    res <- taxa %>%
-      select(Genus, Species) %>%
-      distinct %>% collect %>%
-      mutate(binomial = paste(Genus, Species)) %>%
-      select(binomial)
+    res <- taxa %>% select(binomen) %>% distinct() %>% collect %>% select(binomen)
+#      select(Genus, Species) %>%
+#      distinct %>% collect %>%
+#      mutate(binomial = paste(Genus, Species)) %>%
+#      select(binomial)
     return (res)
   }
 
@@ -168,9 +173,10 @@ am_name_search_exact <- function(
   if (!is.null(key)) res <- res %>%
     filter(SPECIESID == key)
 
-  if (!is.null(binomial)) res <- res %>%
-    filter(Genus == strsplit(binomial, " ")[[1]][1],
-           Species == strsplit(binomial, " ")[[1]][2])
+  if (!is.null(binomial)) {
+    res <- res %>%
+      filter(binomen == binomial)
+  }
 
   if (!is.null(vernacular)) res <- res %>%
     filter(FBname == vernacular)
@@ -196,14 +202,18 @@ am_name_search_exact <- function(
   if (!is.null(rank_kingdom)) res <- res %>%
     filter(Kingdom == rank_kingdom)
 
-  res <- res %>% collect %>%
-    mutate(binomial = paste(Genus, Species)) %>%
-    select(key = SPECIESID, binomial, vernacular = FBname,
+#see https://stackoverflow.com/questions/42123011/sqlite-row-value-misused-error-in-sqlite
+#   SELECT *
+# FROM `taxa`
+# WHERE (`Genus` = CASE WHEN (1.0) THEN (('Salmo', 'trutta')) END AND `Species` = CASE WHEN (2.0) THEN (('Salmo', 'trutta')) END)
+
+  res <- res %>% collect() %>%
+    select(key = SPECIESID, binomial = binomen,
+           vernacular = FBname,
            rank_genus = Genus, rank_species = Species,
            rank_kingdom = Kingdom, rank_phylum = Phylum,
            rank_class = Class,
            rank_order = `Order`, rank_family = `Family`)
-
   return (res)
 }
 
@@ -211,7 +221,7 @@ am_name_search_exact <- function(
 if (getRversion() >= "2.15.1")
   globalVariables(names = unlist(strsplit(split = " ",
  paste0("Class FBname Family Genus Kingdom Order ",
-  "Phylum SPECIESID Species"))))
+  "Phylum SPECIESID Species binomen"))))
 
 
 # taxa() %>%

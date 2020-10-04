@@ -10,3 +10,11 @@
 ^Makefile$
 ^README\.Rmd$
 ^data-raw$
+^codemeta\.json$
+^\.github
+^doc$
+^\.covrignore$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^codecov\.yml$

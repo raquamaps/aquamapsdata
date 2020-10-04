@@ -1,21 +1,21 @@
-## ---- eval=FALSE---------------------------------------------------------
+## ---- eval=FALSE--------------------------------------------------------------
 #  
 #  # install aquamapsdata from GitHub using devtools
+#  
 #  install.packages("devtools")
 #  library("devtools")
+#  install_gitub("raquamaps/aquamapsdata")
 #  
-#  install_git("https://github.com/raquamaps/aquamapsdata.git",
-#              build_vignettes=FALSE)
+#  # initial run-once step required to install remote db locally
 #  
 #  library(aquamapsdata)
-#  
-#  # run-once action to install remote db locally
-#  download_db()
+#  download_db(force = TRUE)
 #  
 
-## ---- fig.show='hold', eval=FALSE----------------------------------------
+## ---- fig.show='hold', eval=FALSE---------------------------------------------
 #  
 #  library(aquamapsdata)
+#  library(dplyr)
 #  
 #  my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
 #  
@@ -26,7 +26,7 @@
 #  my_db %>% tbl("taxa")
 #  
 
-## ---- fig.show='hold', message=FALSE-------------------------------------
+## ---- fig.show='hold', message=FALSE------------------------------------------
 library(aquamapsdata)
 library(dplyr)
 
@@ -41,7 +41,7 @@ record_count <-
 record_count
 
 
-## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
+## ---- fig.show='hold', message=FALSE------------------------------------------
 
 library(tidyr)
 
@@ -60,7 +60,7 @@ taxon_tall <-
 knitr::kable(taxon_tall)
 
 
-## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
+## ---- fig.show='hold', message=FALSE------------------------------------------
 library(dplyr)
 library(purrr)
 
@@ -84,7 +84,7 @@ am_counts <- bind_rows(
 # display
 knitr::kable(am_counts)
 
-## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
+## ---- fig.show='hold', message=FALSE------------------------------------------
 
 # fuzzy search for "trout OR cod"
 
@@ -100,7 +100,7 @@ display <- hits %>% select(key, binomial, rank_family, vernacular)
 knitr::kable(display)
 
 
-## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
+## ---- fig.show='hold', message=FALSE------------------------------------------
 library(DT)
 
 # for a db table, return a tibble with the columns and their data types
@@ -123,7 +123,7 @@ am_schema <- bind_rows(
 datatable(am_schema)
 
 
-## ---- fig.show='hold', message=FALSE--------------------------------------------------------------
+## ---- fig.show='hold', message=FALSE------------------------------------------
 
 duplicated_colnames <- 
   unique(am_schema$col_name[duplicated(am_schema$col_name)])
@@ -138,7 +138,7 @@ am_keys <-
 knitr::kable(am_keys)
 
 
-## ---- fig.show='hold', eval=FALSE, message=FALSE--------------------------------------------------
+## ---- fig.show='hold', eval=FALSE, message=FALSE------------------------------
 #  
 #  readr::write_csv(am_schema, path = "~/am-schema.csv")
 #  readr::write_csv(am_keys, path = "~/am-keys.csv")
