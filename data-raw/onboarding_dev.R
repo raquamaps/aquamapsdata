@@ -33,3 +33,5 @@ report()
 
 # add code of conduct to README.Rmd
 
+# TODO: add pkgdown build from github actions
+# publish /docs
