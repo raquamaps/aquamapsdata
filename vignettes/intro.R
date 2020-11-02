@@ -69,7 +69,6 @@ ls_count <- function(table) {
   res <- table %>% summarize(count = n()) %>% collect %>% .$count
   title <- as.character(table$ops$x)
   tibble(table = title, record_count = res)
-  
 }
 
 # get record counts for all tables

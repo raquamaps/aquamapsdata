@@ -16,7 +16,7 @@ http_ping <- function(url = "http://aquamaps.org", timeout = 10) {
   }, timeout = timeout, onTimeout = "warning")
 
   if (is.null(req)) return (FALSE)
-  return(req$status_code == 200)
+  invisible(return(req$status_code == 200))
 }
 
 #' @noRd

@@ -12,6 +12,10 @@ codemetar::write_codemeta()
 
 use_lifecycle_badge("experimental")
 
+library(rodev)
+repostatus_badges
+rodev::use_repostatus_badge("wip")
+
 # TODO: repo topics on GitHub?
 
 Sys.setenv(NOT_CRAN = "true")
@@ -35,3 +39,4 @@ report()
 
 # TODO: add pkgdown build from github actions
 # publish /docs
+

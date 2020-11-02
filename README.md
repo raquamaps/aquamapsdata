@@ -2,28 +2,24 @@
 [![Build
 Status](https://travis-ci.org/raquamaps/aquamapsdata.svg?branch=master)](https://travis-ci.org/raquamaps/aquamapsdata)
 ![R-CMD-check](https://github.com/raquamaps/aquamapsdata/workflows/R-CMD-check/badge.svg)
-[![Project Status: Active – The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
+[![Project Status: WIP – Initial development is in progress, but there
+has not yet been a stable, usable release suitable for the
+public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 [![Codecov test
 coverage](https://codecov.io/gh/raquamaps/aquamapsdata/branch/master/graph/badge.svg)](https://codecov.io/gh/raquamaps/aquamapsdata?branch=master)
 <!-- badges: end -->
 
--   Rscript -e ‘covr::codecov()’
-
 <!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+aquamapsdata <img src='man/figures/logo.png' align="right" height="138.5" />
+============================================================================
+
 ``` console
 Welcome to ...
   _.  _.      _. ._ _   _. ._   _  _|  _. _|_  _.
  (_| (_| |_| (_| | | | (_| |_) _> (_| (_|  |_ (_|
        |                   |
 ```
-
-<img src="man/figures/sticker.png" align="right" />
-
-Introduction
-------------
 
 `aquamapsdata` is an R package that can download and create a local
 SQLite database with datasets from AquaMaps.org.

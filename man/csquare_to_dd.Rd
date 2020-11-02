@@ -13,9 +13,22 @@ csquare_to_dd(code)
 a list with decimal degrees lat and lon and resolution
 }
 \description{
+Given a csquare code encoded coordinate this function converts it
+into decimal degrees
+}
+\details{
 The csquare code is explained here:
 http://www.cmar.csiro.au/csquares/csq-faq.htm
 }
 \examples{
-csquare_to_dd("7307:487:380:383")
+\dontrun{
+if(interactive()){
+ csquare_to_dd("7307:487:380:383")
+ }
 }
+}
+\seealso{
+Other csquare: 
+\code{\link{csquare_from_dd}()}
+}
+\concept{csquare}

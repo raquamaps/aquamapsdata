@@ -11,15 +11,33 @@ csquare_from_dd(lat, lon, resolution = 1e-04)
 
 \item{lon}{longitude in decimal degrees}
 
-\item{resolution}{the resolution in decimal degress (one of 0.1, 0.01, 0.001, 0.0001 etc)}
+\item{resolution}{the resolution in decimal degress (one of 0.1, 0.01, 0.001, 0.0001 etc), Default: 1e-04}
 }
 \value{
 a character string with the code
 }
 \description{
+C-squares stands for "Concise Spatial Query and Representation System"
+and is a method of indexing the geographic location of objects or
+observational data on the surface of the earth, in a simple
+alphanumeric format suitable for subsequent querying by any text-based
+system or search engine.
+}
+\details{
 The csquare code is explained here:
 http://www.cmar.csiro.au/csquares/csq-faq.htm
 }
 \examples{
+\dontrun{
+if(interactive()){
 csquare_from_dd(50.93578, -114.01435, resolution = 0.00001)
+ }
 }
+}
+\seealso{
+\code{\link[purrr]{map2}}
+
+Other csquare: 
+\code{\link{csquare_to_dd}()}
+}
+\concept{csquare}

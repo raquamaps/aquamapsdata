@@ -1,16 +1,30 @@
 #' csquare code conversion from decimal degrees
 #'
-#' The csquare code is explained here:
-#' http://www.cmar.csiro.au/csquares/csq-faq.htm
+#' C-squares stands for "Concise Spatial Query and Representation System"
+#' and is a method of indexing the geographic location of objects or
+#' observational data on the surface of the earth, in a simple
+#' alphanumeric format suitable for subsequent querying by any text-based
+#' system or search engine.
 #'
+#' @family csquare
 #' @param lat latitude in decimal degrees
 #' @param lon longitude in decimal degrees
-#' @param resolution the resolution in decimal degress (one of 0.1, 0.01, 0.001, 0.0001 etc)
+#' @param resolution the resolution in decimal degress (one of 0.1, 0.01, 0.001, 0.0001 etc), Default: 1e-04
 #' @return a character string with the code
+#' @details The csquare code is explained here:
+#' http://www.cmar.csiro.au/csquares/csq-faq.htm
 #' @importFrom purrr map2_dbl
 #' @examples
+#' \dontrun{
+#' if(interactive()){
 #' csquare_from_dd(50.93578, -114.01435, resolution = 0.00001)
+#'  }
+#' }
+#' @seealso
+#'  \code{\link[purrr]{map2}}
+#' @rdname csquare_from_dd
 #' @export
+#' @importFrom purrr map2_dbl
 csquare_from_dd <- function(lat, lon, resolution = 0.0001) {
 
   scale <- 1 / resolution
@@ -69,14 +83,23 @@ csquare_from_dd <- function(lat, lon, resolution = 0.0001) {
 
 #' csquare code conversion to decimal degrees
 #'
-#' The csquare code is explained here:
-#' http://www.cmar.csiro.au/csquares/csq-faq.htm
+#' Given a csquare code encoded coordinate this function converts it
+#' into decimal degrees
 #'
+#' @family csquare
+#' @details The csquare code is explained here:
+#' http://www.cmar.csiro.au/csquares/csq-faq.htm
 #' @param code csquare code
 #' @return a list with decimal degrees lat and lon and resolution
-#' @examples
-#' csquare_to_dd("7307:487:380:383")
 #' @importFrom stringi stri_match_all_regex
+#' @export
+#' @examples
+#' \dontrun{
+#' if(interactive()){
+#'  csquare_to_dd("7307:487:380:383")
+#'  }
+#' }
+#' @rdname csquare_to_dd
 #' @export
 
 csquare_to_dd <- function(code) {

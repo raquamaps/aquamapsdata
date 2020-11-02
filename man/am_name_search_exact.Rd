@@ -4,10 +4,18 @@
 \alias{am_name_search_exact}
 \title{Exact search for taxonomic names}
 \usage{
-am_name_search_exact(key = NULL, binomial = NULL, vernacular = NULL,
-  rank_genus = NULL, rank_species = NULL, rank_family = NULL,
-  rank_kingdom = NULL, rank_phylum = NULL, rank_class = NULL,
-  rank_order = NULL)
+am_name_search_exact(
+  key = NULL,
+  binomial = NULL,
+  vernacular = NULL,
+  rank_genus = NULL,
+  rank_species = NULL,
+  rank_family = NULL,
+  rank_kingdom = NULL,
+  rank_phylum = NULL,
+  rank_class = NULL,
+  rank_order = NULL
+)
 }
 \arguments{
 \item{key}{a database identifier string}

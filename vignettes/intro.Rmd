@@ -30,7 +30,7 @@ download_db(force = TRUE)
 
 ```
 
-Once the database is available locally, it can be queries using a couple of different functions.
+Once the database is available locally, it can be queried using a couple of different functions.
 
 # Examples
 
@@ -106,7 +106,6 @@ ls_count <- function(table) {
   res <- table %>% summarize(count = n()) %>% collect %>% .$count
   title <- as.character(table$ops$x)
   tibble(table = title, record_count = res)
-  
 }
 
 # get record counts for all tables
@@ -122,7 +121,7 @@ am_counts <- bind_rows(
 knitr::kable(am_counts)
 ```
 
-Here is an example of fuzzy and exact name searchers, returning keys with the internal identifiers used in the database. Those keys can be used to retrieve other information, such as environmental envelopes etc.
+Here is an example of fuzzy and exact name searches, returning keys with the internal identifiers used in the database. Those keys can be used to retrieve other information, such as environmental envelopes etc.
 
 ```{r, fig.show='hold', message=FALSE}
 
