@@ -4,6 +4,6 @@
 \alias{\%>\%}
 \title{pipe - convert nested functions into sequential statements}
 \description{
-This package uses the pipe function, \code{\%>\%} to turn
+This package uses the pipe function, \verb{\\\%>\\\%} to turn
 function composition into a series of imperative statements.
 }
