@@ -28,8 +28,12 @@
       "which will then be available locally at ", am_db_sqlite(), "...",
       "Pls use download_db() to download the data.")
 
-  if (!file.exists(am_db_sqlite()))
+  if (!file.exists(am_db_sqlite())) {
+    packageStartupMessage("Temporarily using bundled minified db...")
+    mini_db <- file.path(system.file(package = "aquamapsdata"), "extdata", "am.db")
+    file.copy(mini_db, am_db_sqlite())
     packageStartupMessage(reminder)
+  }
 
 }
 

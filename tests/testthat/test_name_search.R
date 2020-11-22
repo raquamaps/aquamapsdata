@@ -3,28 +3,29 @@ library(aquamapsdata)
 context("Name Search")
 
 test_that("fuzzy name search works with OR", {
-  with_OR <- am_search_fuzzy(search_term = "Cod OR shark")
-  without_OR <- am_search_fuzzy(search_term = "Cod")
-  expect_gt(nrow(with_OR), nrow(without_OR))
+  with_OR <- am_search_fuzzy(search_term = "Bluespotted OR trevally")
+  without_OR <- am_search_fuzzy(search_term = "Bluespotted")
+  is_valid <- nrow(with_OR) >= nrow(without_OR)
+  expect_true(is_valid)
 })
 
 
-#test_that("custom query works", {
-#  res <- am_sql_query("select key from fts where terms match 'cod'")
-#  expect_gt(nrow(res), 0)
-#})
+# test_that("custom query works", {
+#   res <- am_sql_query("select key from fts where terms match 'trevally'")
+#   expect_gt(nrow(res), 0)
+# })
 
 test_that("exact name search works", {
 
   expect_gt(nrow(am_search_exact()), 0)
 
   expect_gt(
-    nrow(am_search_exact(Phylum = "Annelida")),
+    nrow(am_search_exact(Kingdom = "Animalia")),
     0
   )
 
   expect_gt(
-    nrow(am_search_exact(Class = "Mammalia")),
+    nrow(am_search_exact(Class = "Actinopterygii")),
     0
   )
 
@@ -44,13 +45,13 @@ test_that("exact name search works", {
   )
 
   expect_equal(
-    nrow(am_search_exact(FBname = "Atlantic cod")),
+    nrow(am_search_exact(FBname = "Bluespotted trevally")),
     1
   )
 
-  expect_gt(
-    nrow(am_search_exact(Genus = "Alosa")),
-    nrow(am_search_exact(Genus = "Alosa", Species = "fallax"))
+  expect_true(
+    nrow(am_search_exact(Genus = "Caranx")) >=
+    nrow(am_search_exact(Genus = "Caranx", Species = "bucculentus"))
   )
 
 

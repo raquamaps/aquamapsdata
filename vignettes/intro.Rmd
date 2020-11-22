@@ -42,7 +42,7 @@ library(dplyr)
 
 # fuzzy search allows full text search operators AND, OR, NOT and +
 # see https://www.sqlitetutorial.net/sqlite-full-text-search/
-am_search_fuzzy("atlantic cod OR elephantfish")$key
+am_search_fuzzy("trevally")$key
 
 # exact search without parameters returns all results
 nrow(am_search_exact())
@@ -55,7 +55,7 @@ am_search_exact(
   deepwater = NULL, highseas = NULL, m_invertebrates = NULL)
 
 # exact search without NULL params, specifying values
-hits <- am_search_exact(angling = 1, diving = 1, dangerous = 1, Family = "Callorhinchidae")
+hits <- am_search_exact(angling = 1, diving = 1, dangerous = 0)
 
 # display results
 display <- 
@@ -68,7 +68,7 @@ knitr::kable(display)
 
 ## Species maps
 
-Here we display a map with likely native habitats for the Atlantic Cod:
+Here we display a map with likely native habitats for the Bluespotted trevally:
 
 ```{r "map", echo=TRUE, fig.width=7, message=FALSE}
 
@@ -76,8 +76,8 @@ library(leaflet)
 library(raster)
 library(aquamapsdata)
 
-# get the identifier for atlantic cod
-key <- am_search_fuzzy("atlantic cod")$key
+# get the identifier for the species
+key <- am_search_fuzzy("bluespotted")$key
 ras <- am_raster(key)
 
 # show the native habitat map
@@ -85,7 +85,7 @@ am_map_leaflet(ras)
 ```
 We can also display a map for several identifiers, with genus "Clupea" at once:
 
-```{r, echo=TRUE, fig.width=7, message=FALSE}
+```{r, echo=TRUE, fig.width=7, message=FALSE, eval=FALSE}
 
 keys <- am_search_exact(Genus = "Clupea")$SpeciesID
 ras <- am_raster(keys, fun = "count")
@@ -102,7 +102,7 @@ Here is an example showing what tables and fields are included in the data.
 
 First a query for the total record counts:
 
-```{r, message=FALSE}
+```{r, message=FALSE, eval = FALSE}
 
 con <- aquamapsdata:::con_am("sqlite")
 aquamapsdata:::db_counts(con)
