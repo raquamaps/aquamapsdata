@@ -5,9 +5,11 @@
 #' @export
 download_db <- function(force = FALSE) {
 
-  SRC <- "http://archive.org/download/aquamapsdata/am.db.gz"
+  #SRC <- "http://archive.org/download/aquamapsdata/am.db.gz"
+  SRC <- "http://archive.org/download/aquamapsdata/am2.db.gz"
   TMP <- file.path(dirname(tempdir()), "am.db.gz")
-  TGT <- file.path(system.file(package = "aquamapsdata"), "extdata", "am.db")
+  #TGT <- file.path(system.file(package = "aquamapsdata"), "extdata", "am.db")
+  TGT <- am_db_sqlite()
 
   # SRC <- paste0("http://archive.org/download/aquamapsdata/",
   #               "aquamapsdata_files.xml")
