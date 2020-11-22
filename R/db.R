@@ -653,6 +653,13 @@ am_map_leaflet <- function(ras, title = "",
 
 }
 
+#' Location of minified bundled sqlite db
+#'
+#' A minified sqlite db is bundled in the package for technical reasons.
+#' @export
+db_minify_path <- function()
+  system.file("extdata", "am.db", package = "aquamapsdata")
+
 #' Minify a larger aquamaps dataset by slicing
 #'
 #' Creates a minimized version of a larger AquaMaps database,

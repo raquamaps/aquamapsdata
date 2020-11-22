@@ -1,4 +1,4 @@
-.onAttach <- function(lib, pkg) {
+.onAttach <- function(libname, pkgname) {
 
   # echo "aquamapsdata" | toilet -f smblock
 
@@ -29,14 +29,20 @@
       "Pls use download_db() to download the data.")
 
     if (!file.exists(aquamapsdata::am_db_sqlite())) {
-      mini_db <- file.path(system.file(package = "aquamapsdata"), "extdata", "am.db")
+      mini_db <- aquamapsdata::db_minify_path()
       packageStartupMessage("Temporarily using bundled minified db at ", mini_db)
       if (!file.exists(mini_db)) {
-        mini_db <- file.path(system.file(package = "aquamapsdata"), "inst", "extdata", "am.db")
+        mini_db <- system.file(package = "aquamapsdata", lib.loc=libname,
+          "inst", "extdata", "am.db")
         packageStartupMessage("Couldn't find mini db, attempting with ", mini_db)
       }
       if (!file.exists(mini_db)) {
-        mini_db <- file.path(system.file(package = "aquamapsdata"), "am.db")
+        mini_db <- system.file(package = "aquamapsdata", lib.loc=libname,
+          "inst", "am.db")
+        packageStartupMessage("Couldn't find mini db, attempting with ", mini_db)
+      }
+      if (!file.exists(mini_db)) {
+        mini_db <- system.file(package = "aquamapsdata", lib.loc=libname, "am.db")
         packageStartupMessage("Couldn't find mini db, attempting with ", mini_db)
       }
       if (!dir.exists(basename(aquamapsdata::am_db_sqlite())))
