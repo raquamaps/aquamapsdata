@@ -1,11 +1,10 @@
 Package: aquamapsdata
 Type: Package
 Title: Curated Data From AquaMaps.Org
-Date: 2017-09-11
-Version: 0.1.5
+Date: 2020-11-21
+Version: 0.1.6
 Authors@R: c(
   person("Markus", "Skyttner", email = "markus.skyttner@nrm.se", role = c("aut", "cre")),
-  person("Scott", "Chamberlain", role = c("ctb")),
   person("Christina", "Garilao", role = c("ctb")))
 Maintainer: Markus Skyttner <markus.skyttner@nrm.se>
 Description: This package provides access to curated data from aquamaps.org published in 2017.
@@ -16,8 +15,8 @@ License: file LICENSE
 URL: https://github.com/raquamaps/aquamapsdata
 BugReports: https://github.com/raquamaps/aquamapsdata/issues
 Encoding: UTF-8
-LazyData: false
-RoxygenNote: 6.1.1
+LazyData: true
+RoxygenNote: 7.1.1
 Imports:
     dplyr,
     dbplyr,
@@ -25,7 +24,15 @@ Imports:
     R.utils,
     magrittr,
     stringi,
-    purrr
+    purrr,
+    DBI,
+    RMySQL,
+    duckdb,
+    leaflet,
+    rappdirs,
+    raster,
+    stringr,
+    rlang
 Suggests: 
     knitr,
     httr,
@@ -40,3 +47,4 @@ Suggests:
 Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)

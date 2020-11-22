@@ -12,135 +12,59 @@
 #  download_db(force = TRUE)
 #  
 
-## ---- fig.show='hold', eval=FALSE---------------------------------------------
-#  
-#  library(aquamapsdata)
-#  library(dplyr)
-#  
-#  my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
-#  
-#  my_db %>% tbl("nativemaps")
-#  my_db %>% tbl("hcaf")
-#  my_db %>% tbl("hspen")
-#  my_db %>% tbl("occ")
-#  my_db %>% tbl("taxa")
-#  
-
-## ---- fig.show='hold', message=FALSE------------------------------------------
+## ---- message=FALSE-----------------------------------------------------------
 library(aquamapsdata)
 library(dplyr)
 
-my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
+# fuzzy search allows full text search operators AND, OR, NOT and +
+# see https://www.sqlitetutorial.net/sqlite-full-text-search/
+am_search_fuzzy("atlantic cod OR elephantfish")$key
 
-record_count <- 
-  my_db %>% tbl("occ") %>% 
-  summarize(count = n()) %>% 
-  collect %>% 
-  .$count
+# exact search without parameters returns all results
+nrow(am_search_exact())
 
-record_count
+# exact search giving NULL params shows examples of existing values
+# here we see what combinations are present in the dataset for 
+# angling, diving, dangerous, highseas, deepwater organisms
+am_search_exact(
+  angling = NULL, diving = NULL, dangerous = NULL, 
+  deepwater = NULL, highseas = NULL, m_invertebrates = NULL)
 
+# exact search without NULL params, specifying values
+hits <- am_search_exact(angling = 1, diving = 1, dangerous = 1, Family = "Callorhinchidae")
 
-## ---- fig.show='hold', message=FALSE------------------------------------------
+# display results
+display <- 
+  hits %>% mutate(binomen = paste(Genus, Species)) %>%
+  select(SpeciesID, binomen, SpecCode, FBname)
 
-library(tidyr)
-
-# filter one table for a specific record
-taxon_wide <- 
-  my_db %>% tbl("taxa") %>% 
-  filter(SPECIESID == "Fis-26653") %>%
-  collect
-
-# pivot the result for easier display  
-taxon_tall <- 
-  taxon_wide %>% 
-  gather(col_name, col_val)
-
-# display
-knitr::kable(taxon_tall)
-
-
-## ---- fig.show='hold', message=FALSE------------------------------------------
-library(dplyr)
-library(purrr)
-
-# function which gives the record cound for a given table
-ls_count <- function(table) {
-  res <- table %>% summarize(count = n()) %>% collect %>% .$count
-  title <- as.character(table$ops$x)
-  tibble(table = title, record_count = res)
-  
-}
-
-# get record counts for all tables
-am_counts <- bind_rows(
-  my_db %>% tbl("nativemaps") %>% ls_count,
-  my_db %>% tbl("hcaf") %>% ls_count,
-  my_db %>% tbl("hspen") %>% ls_count,
-  my_db %>% tbl("occ") %>% ls_count,
-  my_db %>% tbl("taxa") %>% ls_count
-)
-
-# display
-knitr::kable(am_counts)
-
-## ---- fig.show='hold', message=FALSE------------------------------------------
-
-# fuzzy search for "trout OR cod"
-
-keys <- am_name_search_fuzzy("trout OR cod")$key
-
-# exact results for all those keys
-
-hits <- map_df(keys, function(x) am_name_search_exact(key = x))
-
-# we inspect the species list we got 
-
-display <- hits %>% select(key, binomial, rank_family, vernacular)
 knitr::kable(display)
 
 
-## ---- fig.show='hold', message=FALSE------------------------------------------
-library(DT)
+## ----"map", echo=TRUE, fig.width=7, message=FALSE-----------------------------
 
-# for a db table, return a tibble with the columns and their data types
-ls_types <- function(table) {
-  res <- table %>% head %>% collect %>% lapply(type_sum) %>% unlist
-  colname <- names(res)
-  title <- as.character(table$ops$x)
-  tibble(table = title, col_name = colname, col_type = res, desc = NA)
-}
+library(aquamapsdata)
+library(leaflet)
+library(raster)
 
-# run the above function on all tables
-am_schema <- bind_rows(
-  my_db %>% tbl("nativemaps") %>% ls_types,
-  my_db %>% tbl("hcaf") %>% ls_types,
-  my_db %>% tbl("hspen") %>% ls_types,
-  my_db %>% tbl("occ") %>% ls_types,
-  my_db %>% tbl("taxa") %>% ls_types
-)
+# get the identifier for atlantic cod
+key <- am_search_fuzzy("atlantic cod")$key
 
-datatable(am_schema)
+# show the native habitat map
+am_map_leaflet(key)
+
+## ---- echo=TRUE, fig.width=7, message=FALSE-----------------------------------
+
+keys <- am_search_exact(Genus = "Clupea")$SpeciesID
+am_map_leaflet(keys)
 
 
-## ---- fig.show='hold', message=FALSE------------------------------------------
+## ---- message=FALSE-----------------------------------------------------------
 
-duplicated_colnames <- 
-  unique(am_schema$col_name[duplicated(am_schema$col_name)])
+con <- aquamapsdata:::con_am("sqlite")
+aquamapsdata:::db_counts(con)
+DBI::dbDisconnect(con)
 
-am_keys <- 
-  am_schema %>% 
-  filter(col_name %in% duplicated_colnames) %>% 
-  arrange(col_name)
-
-# sometimes the datatypes are different where the column name are equal
-
-knitr::kable(am_keys)
-
-
-## ---- fig.show='hold', eval=FALSE, message=FALSE------------------------------
-#  
-#  readr::write_csv(am_schema, path = "~/am-schema.csv")
-#  readr::write_csv(am_keys, path = "~/am-keys.csv")
-#  
+## -----------------------------------------------------------------------------
+knitr::kable(am_meta)
 
