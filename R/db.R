@@ -658,7 +658,7 @@ am_map_leaflet <- function(ras, title = "",
 #' A minified sqlite db is bundled in the package for technical reasons.
 #' @export
 db_minify_path <- function()
-  system.file("extdata", "am.db", package = "aquamapsdata")
+  system.file("extdata", "am.db", package = "aquamapsdata", mustWork = TRUE)
 
 #' Minify a larger aquamaps dataset by slicing
 #'
