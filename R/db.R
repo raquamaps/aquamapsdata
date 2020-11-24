@@ -740,7 +740,7 @@ am_use_offline_db <- function() {
   #message("dir for basedir: ", dir(dirname(offline_db), all.files = TRUE, full.names = TRUE, recursive = TRUE))
   #message("file.info: ", print(file.info(offline_db)))
   if (!dir.exists(basename(am_db_sqlite()))) {
-    message("Creating local dir for sqlite3 db at ", dirname(db_path))
+    message("Creating local dir for sqlite3 db at ", dirname(offline_db))
     dir.create(basename(am_db_sqlite()), recursive = TRUE, showWarnings = TRUE)
   }
   readr::write_file(readr::read_file_raw(offline_db), am_db_sqlite())
