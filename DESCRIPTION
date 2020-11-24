@@ -32,11 +32,11 @@ Imports:
     rappdirs,
     raster,
     stringr,
-    rlang
+    rlang,
+    readr
 Suggests: 
     knitr,
     httr,
-    readr,
     readxl,
     rmarkdown,
     xml2,

@@ -78,8 +78,9 @@ am_db_duckdb <- function() {
 #' @importFrom RSQLite SQLITE_RWC SQLITE_RW SQLite
 #' @importFrom DBI dbConnect
 #' @importFrom rappdirs app_dir
+#' @importFrom readr write_file
 #' @noRd
-con_am_sqlite <- function(create = FALSE, overwrite = FALSE)
+con_am_sqlite <- function(create = FALSE, overwrite = FALSE, copy_from_raw)
 {
   db_path <- am_db_sqlite()
 
@@ -97,6 +98,14 @@ con_am_sqlite <- function(create = FALSE, overwrite = FALSE)
   if (!file.exists(dirname(db_path)) & create) {
     message("Creating local dir for sqlite3 db at ", dirname(db_path))
     dir.create(dirname(db_path), recursive = TRUE, showWarnings = FALSE)
+    if (!missing(copy_from_raw)) {
+      message("Creating db based on raw copy... ")
+      readr::write_file(copy_from_raw, db_path)
+      #res <- file.copy(copy_from, db_path, overwrite = FALSE,
+      #         copy.mode = FALSE)
+      #if (!res == TRUE)
+      #  warning("Failed to create copy...")
+    }
   }
 
   sqliteflag <- if (create) RSQLite::SQLITE_RWC else RSQLite::SQLITE_RW
@@ -710,4 +719,29 @@ db_minify <- function(key, slice_file) {
 
 }
 
+#' Staged install workaround to install temporary extdata
+#'
+#' This function is used to support CI with staged installation and
+#' building of vignettes before package gets finally installed; it uses
+#' data from a minified aquamapsdb bundled in the package at "inst/extdata".
+#'
+#' @export
+#' @importFrom readr read_file_raw write_file
+am_use_offline_db <- function() {
 
+  if (file.exists(am_db_sqlite())) {
+    message("Skipping, db already found at ", am_db_sqlite())
+    return(invisible(FALSE))
+  }
+
+  offline_db <- system.file("extdata", "am.db", package = "aquamapsdata", mustWork = TRUE)
+  #message("Using offline db from ", offline_db)
+  #message("Working directory is: ", getwd())
+  #message("dir for basedir: ", dir(dirname(offline_db), all.files = TRUE, full.names = TRUE, recursive = TRUE))
+  #message("file.info: ", print(file.info(offline_db)))
+  readr::write_file(readr::read_file_raw(offline_db), am_db_sqlite())
+  con <- con_am()
+  is_valid <- RSQLite::dbIsValid(con)
+  on.exit(RSQLite::dbDisconnect(con))
+  return(invisible(is_valid))
+}

@@ -40,6 +40,12 @@ Here is an example of fuzzy and exact name searchers, returning keys with the in
 library(aquamapsdata)
 library(dplyr)
 
+# This uses a minified offline db bundled into the package,
+# so vignettes can be built in the cloud without requiring a 
+# full install and download of the database (time saver)
+am_use_offline_db()
+# NB: normally download_db() would be used 
+
 # fuzzy search allows full text search operators AND, OR, NOT and +
 # see https://www.sqlitetutorial.net/sqlite-full-text-search/
 am_search_fuzzy("trevally")$key
