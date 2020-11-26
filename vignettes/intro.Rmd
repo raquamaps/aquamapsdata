@@ -34,7 +34,7 @@ Once the database is available locally, it can be queried using a couple of diff
 
 # Examples
 
-Here is an example of fuzzy and exact name searchers, returning keys with the internal identifiers used in the database. Those keys could be said to represent species lists that can be used to retrieve other information, such as environmental envelopes etc.
+Here is an example of fuzzy and exact name searches, returning keys with the internal identifiers used in the database. Those keys could be said to represent species lists that can be used to retrieve other information, such as environmental envelopes etc.
 
 ```{r, message=FALSE}
 library(aquamapsdata)
@@ -43,12 +43,14 @@ library(dplyr)
 # This uses a minified offline db bundled into the package,
 # so vignettes can be built in the cloud without requiring a 
 # full install and download of the database (time saver)
-am_use_offline_db()
+
 # NB: normally download_db() would be used 
+
+default_db("extdata")
 
 # fuzzy search allows full text search operators AND, OR, NOT and +
 # see https://www.sqlitetutorial.net/sqlite-full-text-search/
-am_search_fuzzy("trevally")$key
+am_search_fuzzy(search_term = "trevally") %>% pull(key)
 
 # exact search without parameters returns all results
 nrow(am_search_exact())
@@ -61,7 +63,8 @@ am_search_exact(
   deepwater = NULL, highseas = NULL, m_invertebrates = NULL)
 
 # exact search without NULL params, specifying values
-hits <- am_search_exact(angling = 1, diving = 1, dangerous = 0)
+hits <- 
+  am_search_exact(angling = 1, diving = 1, dangerous = 0)
 
 # display results
 display <- 

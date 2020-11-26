@@ -2,6 +2,8 @@ library(aquamapsdata)
 
 context("Name Search")
 
+default_db("extdata")
+
 test_that("fuzzy name search works with OR", {
   with_OR <- am_search_fuzzy(search_term = "Bluespotted OR trevally")
   without_OR <- am_search_fuzzy(search_term = "Bluespotted")

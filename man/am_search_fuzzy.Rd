@@ -17,6 +17,8 @@ tibble with matching keys (database identifiers)
 Fuzzy search for terms related to taxonomic names
 }
 \examples{
- am_search_fuzzy("cod")
- am_search_fuzzy("cod OR shark")
+\dontrun{
+am_search_fuzzy("trevally")
+am_search_fuzzy("trevally OR animalia")
+}
 }

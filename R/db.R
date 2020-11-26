@@ -6,13 +6,14 @@
 #' @param source_type one of "duckdb", "sqlite" or "mysql" with "sqlite" being default
 #' @return database connection
 #' @export
-con_am <- function(source_type = c("sqlite", "mysql", "duckdb"))
+con_am <- function(source_type = c("sqlite", "mysql", "duckdb", "extdata"))
 {
   type <- match.arg(source_type)
   switch(type,
      mysql = con_am_mysql(),
      sqlite = con_am_sqlite(),
-     duckdb = con_am_duckdb()
+     duckdb = con_am_duckdb(),
+     extdata = con_am_extdata()
   )
 }
 
@@ -113,6 +114,20 @@ con_am_sqlite <- function(create = FALSE, overwrite = FALSE, copy_from_raw)
   DBI::dbConnect(RSQLite::SQLite(), synchronous = "normal",
     dbname = db_path, flags = sqliteflag)
 
+}
+
+#' Connection to AquaMaps data source using SQLite3 db
+#'
+#' This function relies on a bundled minified "am.db" file being bundled in the
+#' R package (inst/extdata directory) for a connection to the SQLite3 data source.
+#'
+#' @importFrom RSQLite SQLITE_RO SQLite
+#' @importFrom DBI dbConnect
+#' @noRd
+con_am_extdata <- function() {
+  extdata <-
+    system.file("extdata", "am.db", package = "aquamapsdata", mustWork = TRUE)
+  DBI::dbConnect(RSQLite::SQLite(), extdata, flags = RSQLite::SQLITE_RO)
 }
 
 #' Connection to AquaMaps data source using duck db
@@ -433,9 +448,10 @@ am_create_fts <- function(con, overwrite = TRUE) {
 #' @param search_term token query, phrase query or NEAR query
 #' (see http://www.sqlite.org/fts5.html)
 #' @return tibble with matching keys (database identifiers)
-#' @examples
-#'  am_search_fuzzy("cod")
-#'  am_search_fuzzy("cod OR shark")
+#' @examples \dontrun{
+#' am_search_fuzzy("trevally")
+#' am_search_fuzzy("trevally OR animalia")
+#' }
 #' @export
 am_search_fuzzy <- function(search_term) {
 
@@ -456,8 +472,8 @@ am_search_fuzzy <- function(search_term) {
 am_custom_query <- function(sql_query, con, ...){
 
   if (missing(con)) {
-    con <- con_am("sqlite")
-    on.exit(DBI::dbDisconnect(con))
+    con <- db_cache$local_db #con_am("sqlite")
+    #on.exit(DBI::dbDisconnect(con))
   }
 
   con %>%
@@ -573,8 +589,8 @@ am_create_indexes <- function(con) {
 }
 
 am_keys <- function() {
-  con <- con_am("sqlite")
-  on.exit(DBI::dbDisconnect(con))
+  con <- db_cache$local_db #con_am("sqlite")
+  #on.exit(DBI::dbDisconnect(con))
   con %>% dplyr::tbl("speciesoccursum_r") %>%
     dplyr::distinct(.data$SpeciesID) %>%
     dplyr::collect() %>%
@@ -590,8 +606,8 @@ am_nativemaps <- function(key) {
   if (!all(key %in% am_keys()))
     stop("Please specify valid key(s)")
 
-  con <- con_am("sqlite")
-  on.exit(dbDisconnect(con))
+  con <- db_cache$local_db #con_am("sqlite")
+  #on.exit(dbDisconnect(con))
 
   vals <-
     con %>% dplyr::tbl("hcaf_species_native") %>%
@@ -749,3 +765,46 @@ am_use_offline_db <- function() {
   on.exit(RSQLite::dbDisconnect(con))
   return(invisible(is_valid))
 }
+
+
+#' Set or switch the default database used
+#'
+#' The database connection used when a specific connection is not provided
+#' can be set with this function. It can also be switched.
+#' @details the "extdata" source refers to a minified < 1MB sqlite3 db
+#' with a very small subset of the full data, which is bundled into the
+#' package and which allows tests and vignettes to run in the package without
+#' having the full dataset installed locally (during for staged installation).
+#' @param source string, one of "sqlite", "duckdb", "mysql" or "extdata"
+#' @export
+default_db <- function(source = Sys.getenv("AM_DB_SOURCE")){
+
+  db <- mget("local_db", envir = db_cache, ifnotfound = NA)[[1]]
+  src <- mget("source", envir = db_cache, ifnotfound = NA)[[1]]
+  if (inherits(db, "DBIConnection")) {
+    if (DBI::dbIsValid(db) & source == src) {
+      return(db)
+    }
+  }
+  db <- con_am(source_type = source)
+  assign("local_db", db, envir = db_cache)
+  assign("source", source, envir = db_cache)
+  db
+}
+
+#' Disconnect the default database connection
+#' @param env the environment holding the connection, by default db_cache
+#' @export
+db_disco <- function(env = db_cache){
+  db <- mget("local_db", envir = env, ifnotfound = NA)[[1]]
+  if (inherits(db, "DBIConnection")) {
+    suppressWarnings(
+      DBI::dbDisconnect(db)
+    )
+  }
+}
+
+# Environment to store the cached copy of the connection
+# and a finalizer to close the connection on exit.
+db_cache <- new.env()
+reg.finalizer(db_cache, db_disco, onexit = TRUE)

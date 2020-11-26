@@ -4,7 +4,7 @@
 \alias{con_am}
 \title{Connection to aquamapsdata}
 \usage{
-con_am(source_type = c("sqlite", "mysql", "duckdb"))
+con_am(source_type = c("sqlite", "mysql", "duckdb", "extdata"))
 }
 \arguments{
 \item{source_type}{one of "duckdb", "sqlite" or "mysql" with "sqlite" being default}
