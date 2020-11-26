@@ -48,3 +48,5 @@ Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+SystemRequirements:
+    rgdal
