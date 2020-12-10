@@ -11,3 +11,17 @@ This function is used to support CI with staged installation and
 building of vignettes before package gets finally installed; it uses
 data from a minified aquamapsdb bundled in the package at "inst/extdata".
 }
+\seealso{
+Other admin: 
+\code{\link{am_custom_query}()},
+\code{\link{am_db_duckdb}()},
+\code{\link{am_db_sqlite}()},
+\code{\link{con_am}()},
+\code{\link{db_disco}()},
+\code{\link{db_minify_path}()},
+\code{\link{db_minify}()},
+\code{\link{db_sync}()},
+\code{\link{default_db}()},
+\code{\link{http_ping}()}
+}
+\concept{admin}

@@ -15,3 +15,17 @@ db_minify(key, slice_file)
 Creates a minimized version of a larger AquaMaps database,
 by filtering all tables to contain a single identifier.
 }
+\seealso{
+Other admin: 
+\code{\link{am_custom_query}()},
+\code{\link{am_db_duckdb}()},
+\code{\link{am_db_sqlite}()},
+\code{\link{am_use_offline_db}()},
+\code{\link{con_am}()},
+\code{\link{db_disco}()},
+\code{\link{db_minify_path}()},
+\code{\link{db_sync}()},
+\code{\link{default_db}()},
+\code{\link{http_ping}()}
+}
+\concept{admin}

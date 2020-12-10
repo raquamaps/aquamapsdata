@@ -1,18 +1,24 @@
 #' Connection to aquamapsdata
 #'
-#' This function returns a db connection to one of two possible pre-configured
-#' data sources containing aquamaps data
+#' This function returns a db connection to a pre-configured
+#' data source containing aquamaps data
 #'
-#' @param source_type one of "duckdb", "sqlite" or "mysql" with "sqlite" being default
+#' @param source_type one of "sqlite", "duckdb", "mysql" or "extdata",
+#'  with "sqlite" being default
 #' @return database connection
+#' @examples \dontrun{
+#' library(DBI)
+#' con <- con_am("sqlite")
+#' dbDisconnect(con)
+#' }
 #' @export
-con_am <- function(source_type = c("sqlite", "mysql", "duckdb", "extdata"))
-{
+#' @family admin
+con_am <- function(source_type = c("sqlite", "duckdb", "mysql", "extdata")) {
   type <- match.arg(source_type)
   switch(type,
-     mysql = con_am_mysql(),
      sqlite = con_am_sqlite(),
      duckdb = con_am_duckdb(),
+     mysql = con_am_mysql(),
      extdata = con_am_extdata()
   )
 }
@@ -41,6 +47,7 @@ db_env <- function() {
 #' @importFrom DBI dbConnect
 #' @importFrom RMySQL dbConnect MySQL
 #' @noRd
+#' @family admin
 con_am_mysql <- function() {
 
   cs <- db_env()
@@ -52,47 +59,47 @@ con_am_mysql <- function() {
 }
 
 #' Location of sqlite3 db file
-#'
-#' @export
 #' @return character string representing on disk location for db file
 #' @importFrom rappdirs app_dir
-#'
+#' @export
+#' @family admin
 am_db_sqlite <- function() {
   file.path(rappdirs::app_dir("aquamaps")$config(), "am.db")
 }
 
 #' Location of duck db file
-#'
-#' @export
 #' @return character string representing on disk location for db file
 #' @importFrom rappdirs app_dir
-#'
+#' @export
+#' @family admin
 am_db_duckdb <- function() {
   file.path(rappdirs::app_dir("aquamaps")$config(), "am.duck")
 }
 
 #' Connection to AquaMaps data source using SQLite3 db
 #'
-#' This function relies on a "am.db" file being present in the relevant application
-#' directory for a connection to the SQLite3 data source.
-#'
+#' This function relies on a "am.db" file being present in the relevant
+#' application directory for a connection to the SQLite3 data source.
 #' @importFrom RSQLite SQLITE_RWC SQLITE_RW SQLite
 #' @importFrom DBI dbConnect
 #' @importFrom rappdirs app_dir
 #' @importFrom readr write_file
 #' @noRd
-con_am_sqlite <- function(create = FALSE, overwrite = FALSE, copy_from_raw)
-{
+#' @family admin
+con_am_sqlite <- function(create = FALSE, overwrite = FALSE, copy_from_raw) {
+
   db_path <- am_db_sqlite()
 
   if (!file.exists(db_path) & !create)
     stop("No sqlite3 db available at ", db_path)
 
   if (file.exists(db_path) & create & !overwrite)
-    stop("A file exists at ", db_path, ", use `overwrite` = TRUE to overwrite it.")
+    stop("A file exists at ", db_path,
+      ", use `overwrite` = TRUE to overwrite it.")
 
   if (file.exists(db_path) & create & overwrite) {
-    message("Deleting database at ", db_path, ", creating new empty database there.")
+    message("Deleting database at ", db_path,
+      ", creating new empty database there.")
     unlink(db_path)
   }
 
@@ -101,11 +108,9 @@ con_am_sqlite <- function(create = FALSE, overwrite = FALSE, copy_from_raw)
     dir.create(dirname(db_path), recursive = TRUE, showWarnings = FALSE)
     if (!missing(copy_from_raw)) {
       message("Creating db based on raw copy... ")
+      # this may not run during "staged installation"
+      # where no files can be written anywhere in the fs
       readr::write_file(copy_from_raw, db_path)
-      #res <- file.copy(copy_from, db_path, overwrite = FALSE,
-      #         copy.mode = FALSE)
-      #if (!res == TRUE)
-      #  warning("Failed to create copy...")
     }
   }
 
@@ -119,11 +124,13 @@ con_am_sqlite <- function(create = FALSE, overwrite = FALSE, copy_from_raw)
 #' Connection to AquaMaps data source using SQLite3 db
 #'
 #' This function relies on a bundled minified "am.db" file being bundled in the
-#' R package (inst/extdata directory) for a connection to the SQLite3 data source.
+#' R package (inst/extdata directory) for a connection to the
+#' SQLite3 data source.
 #'
 #' @importFrom RSQLite SQLITE_RO SQLite
 #' @importFrom DBI dbConnect
 #' @noRd
+#' @family meta
 con_am_extdata <- function() {
   extdata <-
     system.file("extdata", "am.db", package = "aquamapsdata", mustWork = TRUE)
@@ -132,11 +139,12 @@ con_am_extdata <- function() {
 
 #' Connection to AquaMaps data source using duck db
 #'
-#' This function relies on a "am.duck" file being present in the relevant application
-#' directory for a connection to the duck db data source.
+#' This function relies on a "am.duck" file being present in the
+#' relevant application directory for a connection to the duck db data source.
 #'
 #' @importFrom duckdb dbConnect duckdb
 #' @noRd
+#' @family meta
 con_am_duckdb <- function(create = FALSE, overwrite = FALSE) {
 
   db_path <- am_db_duckdb()
@@ -145,10 +153,12 @@ con_am_duckdb <- function(create = FALSE, overwrite = FALSE) {
     stop("No duck db available at ", db_path)
 
   if (file.exists(db_path) & create & !overwrite)
-    stop("A file exists at ", db_path, ", use `overwrite` = TRUE to overwrite it.")
+    stop("A file exists at ", db_path,
+      ", use `overwrite` = TRUE to overwrite it.")
 
   if (file.exists(db_path) & create & overwrite) {
-    message("Deleting database at ", db_path, ", creating new empty database there.")
+    message("Deleting database at ", db_path,
+      ", creating new empty database there.")
     unlink(db_path)
   }
 
@@ -163,6 +173,7 @@ con_am_duckdb <- function(create = FALSE, overwrite = FALSE) {
 #' @importFrom DBI dbListTables
 #' @importFrom purrr map_df
 #' @noRd
+#' @family admin
 db_counts <- function(con, tables) {
 
   if (missing(tables))
@@ -171,9 +182,8 @@ db_counts <- function(con, tables) {
   # fcn to count nr of rows in a db table
   df_rowcount <- function(x)
     tbl(con, x) %>%
-    #count() %>% collect() %>%
-    #rename(n_rows = n) %>%
-    summarize(count = n()) %>% collect() %>%
+    summarize(count = n()) %>%
+    collect() %>%
     mutate(table = x)
 
   # fcn to count nr of cols in a db table
@@ -194,6 +204,7 @@ db_counts <- function(con, tables) {
 
 }
 
+#' @family admin
 db_tables <- function(con) {
 
   if (missing(con)) {
@@ -224,14 +235,14 @@ db_tables <- function(con) {
     tables <- RSQLite::dbListTables(con) %>% mygrep()
     if (length(tables) > 0)
       res <- db_counts(con, tables) else res <- NULL
-    return (res)
+    return(res)
   }
 
   enum_tables_duckdb <- function() {
     tables <- duckdb::dbListTables(con)
     if (length(tables) > 0)
       res <- db_counts(con, tables) else res <- NULL
-    return (res)
+    return(res)
   }
 
   switch(source_type,
@@ -244,6 +255,7 @@ db_tables <- function(con) {
 
 #' @importFrom DBI dbIsValid dbDisconnect
 #' @noRd
+#' @family admin
 db_reconnect <- function(con) {
 
   if (DBI::dbIsValid(con)) return(con)
@@ -269,10 +281,11 @@ db_reconnect <- function(con) {
 #' @importFrom purrr as_vector
 #' @importFrom DBI dbRemoveTable dbFetch dbIsValid dbWriteTable dbClearResult
 #' @noRd
+#' @family admin
 db_sync_table <- function(
   table, chunk_size = 1e4,
-  con_src, con_dest, overwrite = FALSE)
-{
+  con_src, con_dest, overwrite = FALSE) {
+
   if (missing(con_src)) {
     con_src <- con_am("mysql")
     on.exit(dbDisconnect(con_src))
@@ -290,10 +303,12 @@ db_sync_table <- function(
     stop("Table ", table, " is not available in the source connection.")
 
   if (table %in% tables_dest & !overwrite)
-    stop("Table ", table, " is in the destination connection, use `overwrite = TRUE`")
+    stop("Table ", table, " is in the destination connection, ",
+      "use `overwrite = TRUE`")
 
   if (table %in% tables_dest & overwrite)
-    message("\nTable ", table, " will be overwritten at the destination connection")
+    message("\nTable ", table, " will be overwritten at the ",
+      "destination connection")
 
   rc_sql <- sprintf("SELECT COUNT(*) as n FROM %s;", table)
   rc <- dbGetQuery(con_src, rc_sql) %>% purrr::as_vector()
@@ -318,7 +333,7 @@ db_sync_table <- function(
 
 }
 
-#' Sync the MySQL database to a local SQLite3 db
+#' Sync a MariaDB/MySQL database to a local SQLite3 db
 #'
 #' This function syncs db tables from a mysql source db and
 #' writes the data into a local SQLite3 db using buffering, with
@@ -336,16 +351,17 @@ db_sync_table <- function(
 #' @param con_dest db connection to destination db
 #' @param overwrite_existing logical to indicate if existing tables at
 #' destination db should be overwritten, Default: FALSE
-#' @return invisible result with vector of boolean status flags for synced tables
+#' @return invisible result with vector of boolean status flags for
+#' synced tables
 #' @importFrom purrr map set_names
 #' @importFrom DBI dbDisconnect
 #' @importFrom stringr str_starts
 #' @importFrom dplyr pull
 #' @export
+#' @family admin
 db_sync <- function(tables_included,
   tables_excluded = c("hcaf_species_native", "occurrencecells_r"),
-  con_src, con_dest, overwrite_existing = FALSE)
-{
+  con_src, con_dest, overwrite_existing = FALSE) {
 
   if (missing(con_src)) {
     con_src <- con_am("mysql")
@@ -398,7 +414,7 @@ db_sync <- function(tables_included,
   # iterate over all tables for side-effects of synching
   message("excluded tables: ", paste(tables_excluded, collapse = ", "))
   message("syncing these tables from source db:\n",
-    if (length(tables) > 0) paste(collapse = ", ", tables) else "nothing to sync")
+    if (length(tables) > 0) paste(collapse = ", ", tables) else "no sync need")
 
   res <- purrr::map_lgl(tables, sync_possibly)
   names(res) <- as.character(tables)
@@ -408,6 +424,7 @@ db_sync <- function(tables_included,
 
 #' @importFrom DBI dbDisconnect dbExistsTable dbExecute dbGetQuery
 #' @noRd
+#' @family admin
 am_create_fts <- function(con, overwrite = TRUE) {
 
   if (missing(con)) {
@@ -436,12 +453,6 @@ am_create_fts <- function(con, overwrite = TRUE) {
     }
     n_keys <- DBI::dbGetQuery(con, "select count(*) from fts;")
     message("Added FTS index for ", n_keys, " keys.")
-    # res <- am_name_search() %>% collect %>%
-    #   tidyr::unite(terms, -key, sep = " ") %>%
-    #   select(key, terms)
-    #
-    # RSQLite::dbWriteTable(src_sqlite_aquamapsdata(),
-    #  "fts", res, overwrite = FALSE, row.names = FALSE)
 }
 
 #' Fuzzy search for terms related to taxonomic names
@@ -453,27 +464,31 @@ am_create_fts <- function(con, overwrite = TRUE) {
 #' am_search_fuzzy("trevally OR animalia")
 #' }
 #' @export
+#' @family general
 am_search_fuzzy <- function(search_term) {
 
   query <- paste("select key, terms from fts",
    sprintf("where terms match '%s'", search_term))
-  res <- am_custom_query(query)
-  #return(as_tibble(res))
-  return (res)
+
+  am_custom_query(query)
+
 }
 
 #' Run a custom SQL query
 #' @param sql_query the query
 #' @param con the connection to use, if missing an sqlite con is used
 #' @param ... other arguments to be passed to the sql() fcn
+#' @examples \dontrun{
+#' am_custom_query("select * from speciesoccursum_r", con = con_am("extdata"))
+#' }
 #' @importFrom dplyr sql tbl collect
 #' @importFrom DBI dbDisconnect
 #' @export
-am_custom_query <- function(sql_query, con, ...){
+#' @family admin
+am_custom_query <- function(sql_query, con, ...) {
 
   if (missing(con)) {
-    con <- db_cache$local_db #con_am("sqlite")
-    #on.exit(DBI::dbDisconnect(con))
+    con <- db_cache$local_db
   }
 
   con %>%
@@ -485,6 +500,7 @@ am_custom_query <- function(sql_query, con, ...){
 #' @importFrom DBI dbRemoveTable
 #' @importFrom purrr map
 #' @noRd
+#' @family admin
 am_drop_fts <- function(con) {
 
   if (missing(con)) {
@@ -493,7 +509,8 @@ am_drop_fts <- function(con) {
   }
 
   fts_shadow_tables <- function(tablename)
-    sprintf("%s_%s", tablename, c("data", "idx", "config", "content", "docsize"))
+    sprintf("%s_%s", tablename,
+      c("data", "idx", "config", "content", "docsize"))
 
   drop_table <- function(x)
     DBI::dbRemoveTable(con, x, fail_if_missing = FALSE)
@@ -505,35 +522,63 @@ am_drop_fts <- function(con) {
 }
 
 #' Exact search for taxonomic names
-#' @param SpeciesID AquaMaps unique identifier for a valid species used by the Catalogue of Life Annual Checklist (www.catalogueoflife.org). Example for the whale shark: Fis-30583
+#'
+#' Search taxonomic names with or without parameters specified.
+#' - If parameters are given, the intersection of matching records
+#' are returned.
+#' - If no parameters are given, all records are returned.
+#' - If parameters are specified with NULL specified, examples of
+#' valid combinations of values are returned.
+#' @param SpeciesID AquaMaps unique identifier for a valid species used by the
+#' Catalogue of Life Annual Checklist (www.catalogueoflife.org). Example for
+#' the whale shark: Fis-30583
 #' @param SpecCode Species identifier used in FishBase or SeaLifeBase
 #' @param Genus Genus name of the species
 #' @param Species Specific epithet of the species
 #' @param FBname Common name suggested by FishBase or SeaLifeBase
 #' @param OccurRecs Number of point records used to generate good cells
 #' @param OccurCells Number of good cells used to generate species envelope
-#' @param StockDefs Distribution of the species as recorded in FishBase or SeaLifeBase
+#' @param StockDefs Distribution of the species as recorded in
+#' FishBase or SeaLifeBase
 #' @param Kingdom Kingdom to which the species belongs
 #' @param Phylum Phylum to which the species belongs
 #' @param Class Class to which the species belongs
 #' @param Order Order to which the species belongs
 #' @param Family Family to which the species belongs
-#' @param deepwater Does the species occur in the deep-sea (i.e. tagged  bathypelagic or bathydemersal in FishBase or SeaLifeBase)? 0=No, 1=Yes
-#' @param angling Is the species a sport fish (i.e. tagged as a GameFish in FishBase)? 0=No, 1=Yes
-#' @param diving Is the species found on a dive (i.e. where DepthPrefMin in HSPEN < 20 meters)? 0=No, 1=Yes
-#' @param dangerous Is the species dangerous (i.e. tagged as traumatogenic or venonous in FishBase or SeaLifeBase)? 0=No, 1=Yes
+#' @param deepwater Does the species occur in the deep-sea (i.e. tagged
+#' bathypelagic or bathydemersal in FishBase or SeaLifeBase)? 0=No, 1=Yes
+#' @param angling Is the species a sport fish (i.e. tagged as a GameFish in
+#' FishBase)? 0=No, 1=Yes
+#' @param diving Is the species found on a dive (i.e. where DepthPrefMin in
+#' HSPEN < 20 meters)? 0=No, 1=Yes
+#' @param dangerous Is the species dangerous (i.e. tagged as traumatogenic or
+#' venonous in FishBase or SeaLifeBase)? 0=No, 1=Yes
 #' @param m_invertebrates Is the species a marine invertebrate? 0=No, 1=Yes
-#' @param highseas Is the species an open ocean fish species (i.e. tagged as pelagic-oceanic in FishBase)? 0=No, 1=Yes
-#' @param invasive Is the species recorded to be invasive (i.e. in FishBase or SeaLifeBase)? 0=No, 1=Yes
-#' @param resilience Resilience of the species (i.e. as recorded in FishBase/SeaLifeBase)
+#' @param highseas Is the species an open ocean fish species (i.e. tagged as
+#' pelagic-oceanic in FishBase)? 0=No, 1=Yes
+#' @param invasive Is the species recorded to be invasive (i.e. in FishBase
+#' or SeaLifeBase)? 0=No, 1=Yes
+#' @param resilience Resilience of the species (i.e. as recorded in
+#' FishBase/SeaLifeBase)
 #' @param iucn_id IUCN species identifier
 #' @param iucn_code IUCN Red list classification assigned to the species
 #' @param iucn_version IUCN version
 #' @param provider FishBase (FB) or SeaLifeBase (SLB)?
-#' @return tibble with matching identifiers...
+#' @return tibble with results...
+#' @examples \dontrun{
+#' am_search_exact()
+#' am_search_exact(Species = "bucculentus")
+#' am_search_exact(FBname = NULL, provider = NULL)
+#' }
 #' @export
+#' @family general
 am_search_exact <- function(
-  SpeciesID=NULL, SpecCode=NULL, Genus=NULL, Species=NULL, FBname=NULL, OccurRecs=NULL, OccurCells=NULL, StockDefs=NULL, Kingdom=NULL, Phylum=NULL, Class=NULL, Order=NULL, Family=NULL, deepwater=NULL, angling=NULL, diving=NULL, dangerous=NULL, m_invertebrates=NULL, highseas=NULL, invasive=NULL, resilience=NULL, iucn_id=NULL, iucn_code=NULL, iucn_version=NULL, provider=NULL){
+  SpeciesID=NULL, SpecCode=NULL, Genus=NULL, Species=NULL, FBname=NULL,
+  OccurRecs=NULL, OccurCells=NULL, StockDefs=NULL, Kingdom=NULL, Phylum=NULL,
+  Class=NULL, Order=NULL, Family=NULL, deepwater=NULL, angling=NULL,
+  diving=NULL, dangerous=NULL, m_invertebrates=NULL, highseas=NULL,
+  invasive=NULL, resilience=NULL, iucn_id=NULL, iucn_code=NULL,
+  iucn_version=NULL, provider=NULL) {
 
   args <-  as.list(match.call(expand.dots = TRUE)[-1])
 
@@ -544,7 +589,10 @@ am_search_exact <- function(
     nullfields <- paste0(collapse = ", ", names(tcn(args)))
     message("Got NULL params for ", nullfields)
     message("Showing some example combinations")
-    sql <- sprintf("select distinct * from (select %s from speciesoccursum_r limit 100) limit 10", nullfields)
+
+    sql <-
+      sprintf(paste0("select distinct * from (select %s ",
+        "from speciesoccursum_r limit 100) limit 10"), nullfields)
     return(am_custom_query(sql))
   }
 
@@ -552,18 +600,22 @@ am_search_exact <- function(
     return(am_custom_query("select * from speciesoccursum_r"))
 
   dbq <- function(x)
-    DBI::dbQuoteString(DBI::ANSI(), DBI::dbQuoteString(DBI::ANSI(), DBI::SQL(x)))
+    DBI::dbQuoteString(DBI::ANSI(),
+      DBI::dbQuoteString(DBI::ANSI(), DBI::SQL(x)))
 
   sql_where <- function(x)
     sprintf('%s = "%s"', names(x), dbq(x))
 
-  sql_where <- paste(collapse = " and ", sql_where(tc(args)))
+  kv <- purrr::map(tc(args), eval)
+  sql_where <- paste(collapse = " and ", sql_where(kv))
   sql <- sprintf("select * from speciesoccursum_r where %s", sql_where)
+  message("query: ", sql)
   am_custom_query(sql)
 }
 
 #' @importFrom DBI dbDisconnect dbExecute
 #' @noRd
+#' @family admin
 am_create_indexes <- function(con) {
 
   if (missing(con)) {
@@ -573,11 +625,15 @@ am_create_indexes <- function(con) {
 
   i <-
     aquamapsdata::am_meta %>%
-    filter(.data$field %in% c("SpeciesID", "LOICZID")) %>%
-    select(vars("table", "field"))
+    filter(.data$field %in% c("SpeciesID", "LOICZID", "CsquareCode")) %>%
+    select(.data$table, .data$field)
 
-  idx <- paste0(i$field, 1:length(i$field))
-  sql <- sprintf("create index if not exists [%s] on %s([%s])", idx, i$table, i$field)
+  idx <- paste0(i$field, seq_len(length(i$field)))
+
+  sql <-
+    sprintf("create index if not exists [%s] on %s([%s])",
+      idx, i$table, i$field)
+
   execute <- function(x) {
     res <- DBI::dbExecute(con, x)
     message("Index created: ", res, ", sql: ", x)
@@ -588,93 +644,37 @@ am_create_indexes <- function(con) {
   if (!all(res == 0)) message("Done")
 }
 
+#' @family general
 am_keys <- function() {
-  con <- db_cache$local_db #con_am("sqlite")
-  #on.exit(DBI::dbDisconnect(con))
-  con %>% dplyr::tbl("speciesoccursum_r") %>%
+
+  con <- db_cache$local_db
+
+  con %>%
+    dplyr::tbl("speciesoccursum_r") %>%
     dplyr::distinct(.data$SpeciesID) %>%
     dplyr::collect() %>%
-    dplyr::pull(.data$SpeciesID) #%>% dplyr::collect() %>%
-#    dplyr::filter(grepl("Fis", dplyr::vars("SpeciesID"))) %>%
-#    .$SpeciesID
+    dplyr::pull(.data$SpeciesID)
 }
 
 #' @importFrom rlang .data
 #' @noRd
+#' @family general
 am_nativemaps <- function(key) {
 
   if (!all(key %in% am_keys()))
     stop("Please specify valid key(s)")
 
-  con <- db_cache$local_db #con_am("sqlite")
-  #on.exit(dbDisconnect(con))
+  con <- db_cache$local_db
 
-  vals <-
-    con %>% dplyr::tbl("hcaf_species_native") %>%
+  con %>%
+    dplyr::tbl("hcaf_species_native") %>%
     dplyr::filter(.data$SpeciesID %in% key) %>%
     dplyr::collect() %>%
-    dplyr::select(.data$SpeciesID, .data$CenterLat, .data$CenterLong, .data$Probability) %>%
+    dplyr::select(
+      .data$SpeciesID, .data$CsquareCode,
+      .data$CenterLat, .data$CenterLong,
+      .data$Probability) %>%
     dplyr::rename(lat = "CenterLat", lon = "CenterLong")
-
-  #  coords <-
-  #    vals %>%
-  #    pull(CsquareCode) %>%
-  #    map_df(csquare_to_dd) %>% collect()
-
-  #  bind_cols(vals, coords)
-  vals
-}
-
-#' Raster with native habitat map data for one or several species
-#' @details if the fun parameter is omitted, the probability field will be
-#' used
-#' @param key a string identifier for the species
-#' @param resolution the grid resolution in degress, by default 0.5
-#' @param fun the aggregation fun to use when grid cells are
-#' covered by multiple spatial features, by default their count
-#' @importFrom raster raster rasterize extent
-#' @export
-am_raster <- function(key, resolution = 0.5, fun = c("count", "last", "first")) {
-
-  nm <- am_nativemaps(key)
-  nm$resolution <- resolution
-  nr <- diff(range(nm$lat)) / unique(nm$resolution)
-  nc <- diff(range(nm$lon)) / unique(nm$resolution)
-  ext <- raster::extent(min(nm$lon), max(nm$lon), min(nm$lat), max(nm$lat))
-  #  ext <- raster::extent(min(nm$lat), max(nm$lat), min(nm$lon), max(nm$lon))
-  #  r1 <- raster::raster(nrows = nc, ncols = nr, ext = ext, resolution = nm$resolution)
-  r1 <- raster::raster(nrows = nr, ncols = nc, ext = ext, resolution = nm$resolution)
-
-  if (missing(fun))
-    return(raster::rasterize(tibble(nm$lon, nm$lat), r1, field = nm$Probability))
-
-  raster::rasterize(tibble(nm$lon, nm$lat), r1, fun = fun)
-}
-
-#' Map for native habitat
-#'
-#' Shows a leaflet map for the native habitat given a species identifier
-#' @param ras a raster object, for example from the am_raster function
-#' @param title a string to use as legend title, by default blank
-#' @param cols a vector with three hex colors to use for a numeric color
-#' legend, default:
-#' @export
-#' @importFrom leaflet leaflet addTiles addRasterImage addLegend colorNumeric projectRasterForLeaflet
-#' @importFrom raster values
-am_map_leaflet <- function(ras, title = "",
-  cols = c("#FFFFCC", "#0C2C84", "#41B6C4")) {
-
-  ras <- leaflet::projectRasterForLeaflet(ras, method = "bilinear")
-
-  pal <- leaflet::colorNumeric(cols,
-    raster::values(ras),
-    na.color = "transparent")
-
-  leaflet() %>% addTiles() %>%
-    addRasterImage(ras, project = FALSE,
-      colors = pal, opacity = 0.8) %>%
-    addLegend(values = raster::values(ras),
-      title = title, pal = pal)
 
 }
 
@@ -682,6 +682,7 @@ am_map_leaflet <- function(ras, title = "",
 #'
 #' A minified sqlite db is bundled in the package for technical reasons.
 #' @export
+#' @family admin
 db_minify_path <- function()
   system.file("extdata", "am.db", package = "aquamapsdata", mustWork = TRUE)
 
@@ -696,26 +697,31 @@ db_minify_path <- function()
 #' @importFrom RSQLite dbConnect SQLite dbDisconnect dbWriteTable
 #' @importFrom purrr iwalk
 #' @importFrom dplyr tbl filter distinct pull
+#' @family admin
 db_minify <- function(key, slice_file) {
 
   con <- con_am("sqlite")
   on.exit(DBI::dbDisconnect(con))
 
   csc <-
-    con %>% tbl("hcaf_species_native") %>%
+    con %>%
+    tbl("hcaf_species_native") %>%
     filter(.data$SpeciesID == key) %>%
     distinct(.data$CsquareCode) %>%
     pull(.data$CsquareCode)
 
   hcaf_r <-
-    con %>% tbl("hcaf_r") %>%
+    con %>%
+    tbl("hcaf_r") %>%
     filter(.data$CsquareCode %in% csc) %>%
     collect()
 
-  tbls <- aquamapsdata::am_meta %>% .data$table %>% unique()
+  tbls <-
+    aquamapsdata::am_meta %>% .data$table %>% unique()
 
   ft <- function(x)
-    con %>% tbl(x) %>%
+    con %>%
+    tbl(x) %>%
     filter(.data$SpeciesID == key) %>%
     collect()
 
@@ -743,6 +749,7 @@ db_minify <- function(key, slice_file) {
 #'
 #' @export
 #' @importFrom readr read_file_raw write_file
+#' @family admin
 am_use_offline_db <- function() {
 
   if (file.exists(am_db_sqlite())) {
@@ -750,22 +757,21 @@ am_use_offline_db <- function() {
     return(invisible(FALSE))
   }
 
-  offline_db <- system.file("extdata", "am.db", package = "aquamapsdata", mustWork = TRUE)
-  #message("Using offline db from ", offline_db)
-  #message("Working directory is: ", getwd())
-  #message("dir for basedir: ", dir(dirname(offline_db), all.files = TRUE, full.names = TRUE, recursive = TRUE))
-  #message("file.info: ", print(file.info(offline_db)))
+  offline_db <-
+    system.file("extdata", "am.db",
+      package = "aquamapsdata", mustWork = TRUE)
+
   if (!dir.exists(basename(am_db_sqlite()))) {
     message("Creating local dir for sqlite3 db at ", dirname(offline_db))
     dir.create(basename(am_db_sqlite()), recursive = TRUE, showWarnings = TRUE)
   }
+
   readr::write_file(readr::read_file_raw(offline_db), am_db_sqlite())
   con <- con_am()
   is_valid <- RSQLite::dbIsValid(con)
   on.exit(RSQLite::dbDisconnect(con))
   return(invisible(is_valid))
 }
-
 
 #' Set or switch the default database used
 #'
@@ -777,7 +783,8 @@ am_use_offline_db <- function() {
 #' having the full dataset installed locally (during for staged installation).
 #' @param source string, one of "sqlite", "duckdb", "mysql" or "extdata"
 #' @export
-default_db <- function(source = Sys.getenv("AM_DB_SOURCE")){
+#' @family admin
+default_db <- function(source = Sys.getenv("AM_DB_SOURCE")) {
 
   db <- mget("local_db", envir = db_cache, ifnotfound = NA)[[1]]
   src <- mget("source", envir = db_cache, ifnotfound = NA)[[1]]
@@ -795,7 +802,8 @@ default_db <- function(source = Sys.getenv("AM_DB_SOURCE")){
 #' Disconnect the default database connection
 #' @param env the environment holding the connection, by default db_cache
 #' @export
-db_disco <- function(env = db_cache){
+#' @family admin
+db_disco <- function(env = db_cache) {
   db <- mget("local_db", envir = env, ifnotfound = NA)[[1]]
   if (inherits(db, "DBIConnection")) {
     suppressWarnings(
@@ -808,3 +816,37 @@ db_disco <- function(env = db_cache){
 # and a finalizer to close the connection on exit.
 db_cache <- new.env()
 reg.finalizer(db_cache, db_disco, onexit = TRUE)
+
+#' Half degree cell location reference data
+#' This table represents an authority file with reference data for half degree
+#' cell locations.
+#' @examples \dontrun{
+#' am_hcaf()
+#' }
+#' @export
+#' @importFrom dplyr tbl
+#' @family general
+am_hcaf <- function() {
+
+  con <- db_cache$local_db
+
+  con %>%
+    dplyr::tbl("hcaf_r")
+}
+
+#' Environmental envelope preference data for suitable habitats for species
+#' This table provides data on species environmental parameters / preferences
+#' @examples \dontrun{
+#' keys <- am_search_fuzzy("trevally")$key[1:2]
+#' am_hspen() %>% filter(SpeciesID %in% keys)
+#' }
+#' @export
+#' @importFrom dplyr tbl
+#' @family general
+am_hspen <- function() {
+
+  con <- db_cache$local_db
+
+  con %>%
+    dplyr::tbl("hspen_r")
+}

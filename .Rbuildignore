@@ -21,3 +21,4 @@
 ^logo\.png$
 ^inst/extdata/am\.db\.backup$
 
+^Meta$

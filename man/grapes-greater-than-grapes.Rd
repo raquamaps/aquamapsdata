@@ -4,6 +4,15 @@
 \alias{\%>\%}
 \title{pipe - convert nested functions into sequential statements}
 \description{
-This package uses the pipe function, \verb{\\\%>\\\%} to turn
+This package uses the pipe function, \code{`\%>\%`} to turn
 function composition into a series of imperative statements.
 }
+\seealso{
+Other general: 
+\code{\link{am_hcaf}()},
+\code{\link{am_hspen}()},
+\code{\link{am_search_exact}()},
+\code{\link{am_search_fuzzy}()},
+\code{\link{download_db}()}
+}
+\concept{general}

@@ -33,7 +33,7 @@
 #' #' @importFrom dplyr sql tbl collect
 #' #' @importFrom RSQLite dbDisconnect
 #' #' @export
-#' am_sql_query <- function(sql_query, ...){
+#' am_sql_query <- function(sql_query, ...) {
 #'
 #'   con <- src_sqlite_aquamapsdata()
 #'
@@ -78,7 +78,8 @@
 #' }
 #'
 #' #' Fuzzy search for terms related to taxonomic names
-#' #' @param search_term token query, phrase query or NEAR query (see http://www.sqlite.org/fts3.html)
+#' #' @param search_term token query, phrase query or NEAR query
+#' (see http://www.sqlite.org/fts3.html)
 #' #' @return tibble with matching keys (database identifiers)
 #' #' @examples
 #' #'  am_name_search_fuzzy("cod")
@@ -104,8 +105,11 @@
 #' #' @param rank_class a string with the class name
 #' #' @param rank_order a string with the order name
 #' #' @return tibble with matching identifiers...
-#' #' #' If the function is called with only one argument and NULL as the value, the result will list all unique values that are available
-#' #' If the function is called with one or more arguments with real values a tibble will be return with keys or identifiers which exactly matches the search
+#' #' #' If the function is called with only one argument and NULL as
+#' the value, the result will list all unique values that are available
+#' #' If the function is called with one or more arguments with real
+#' values a tibble will be return with keys or identifiers which exactly
+#' matches the search
 #' #' @examples
 #' #'  am_name_search_exact(vernacular = "Atlantic cod")
 #' #'  am_name_search_exact(key = "Fis-23638")

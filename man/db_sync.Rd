@@ -2,7 +2,7 @@
 % Please edit documentation in R/db.R
 \name{db_sync}
 \alias{db_sync}
-\title{Sync the MySQL database to a local SQLite3 db}
+\title{Sync a MariaDB/MySQL database to a local SQLite3 db}
 \usage{
 db_sync(
   tables_included,
@@ -28,7 +28,8 @@ to not explicitly exclude any tables}
 destination db should be overwritten, Default: FALSE}
 }
 \value{
-invisible result with vector of boolean status flags for synced tables
+invisible result with vector of boolean status flags for
+synced tables
 }
 \description{
 This function syncs db tables from a mysql source db and
@@ -36,3 +37,17 @@ writes the data into a local SQLite3 db using buffering, with
 chunk size set to 1e4 items per chunk, in order to avoid out of
 memory exceptions when moving large tables.
 }
+\seealso{
+Other admin: 
+\code{\link{am_custom_query}()},
+\code{\link{am_db_duckdb}()},
+\code{\link{am_db_sqlite}()},
+\code{\link{am_use_offline_db}()},
+\code{\link{con_am}()},
+\code{\link{db_disco}()},
+\code{\link{db_minify_path}()},
+\code{\link{db_minify}()},
+\code{\link{default_db}()},
+\code{\link{http_ping}()}
+}
+\concept{admin}

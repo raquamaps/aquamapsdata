@@ -8,8 +8,15 @@
 This package provides data access to curated data from aquamaps.org.
 }
 \details{
-A local SQLite db is created based on raw data files from https://ftp.geomar.de/users/cgarilao/AquaMaps_ver0816.zip
+A local SQLite db is created based on raw data files
+from https://ftp.geomar.de/users/cgarilao/AquaMaps_ver0816.zip
 
 This database is then exposed in this package for querying (using dplyr)
 }
+\seealso{
+Other meta: 
+\code{\link{am_citation}()},
+\code{\link{am_meta}}
+}
+\concept{meta}
 \keyword{package}

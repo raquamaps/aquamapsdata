@@ -1,4 +1,5 @@
 <!-- badges: start -->
+
 [![Build
 Status](https://travis-ci.org/raquamaps/aquamapsdata.svg?branch=master)](https://travis-ci.org/raquamaps/aquamapsdata)
 ![R-CMD-check](https://github.com/raquamaps/aquamapsdata/workflows/R-CMD-check/badge.svg)
@@ -9,10 +10,9 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 coverage](https://codecov.io/gh/raquamaps/aquamapsdata/branch/master/graph/badge.svg)](https://codecov.io/gh/raquamaps/aquamapsdata?branch=master)
 <!-- badges: end -->
 
--   Rscript -e ‘covr::codecov()’
-
 <!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) -->
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+
 ``` console
 Welcome to ...
   _.  _.      _. ._ _   _. ._   _  _|  _. _|_  _.
@@ -49,19 +49,13 @@ Quick start
 Load the package in your R environment:
 
 ``` r
-
 library(aquamapsdata)
-library(purrr)
 
-download_db(force = TRUE)
+# downloads about 2 GB of data, approx 10 GB when unpacked
+download_db()
+default_db("sqlite")
 
-my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
-
-my_db %>% tbl("nativemaps")
-my_db %>% tbl("hcaf")
-my_db %>% tbl("hspen")
-my_db %>% tbl("occ")
-my_db %>% tbl("taxa")
+am_citation()
 ```
 
 To see some quick usage examples to get you started, open the Vignette.

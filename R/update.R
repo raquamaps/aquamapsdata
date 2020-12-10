@@ -1,47 +1,41 @@
 #' Perform downloading of compressed SQLite db, storing it locally
 #' @param force boolean to indicate whether to overwrite an existing db
+#' @param passphrase passphrase if using encrypted db, default: NULL
+#' @examples \dontrun{
+#' download_db()
+#' }
 #' @importFrom R.utils gunzip isGzipped
 #' @importFrom utils download.file
+#' @importFrom rcrypt encrypt decrypt
 #' @export
-download_db <- function(force = FALSE) {
+#' @family general
+download_db <- function(force = FALSE, passphrase = NULL) {
 
-  #SRC <- "http://archive.org/download/aquamapsdata/am.db.gz"
-  SRC <- "http://archive.org/download/aquamapsdata/am2.db.gz"
-  TMP <- file.path(dirname(tempdir()), "am.db.gz")
-  #TGT <- file.path(system.file(package = "aquamapsdata"), "extdata", "am.db")
-  TGT <- am_db_sqlite()
+  src <- "https://archive.org/download/aquamapsdb/am.db.gpg"
+  #"http://archive.org/download/aquamapsdata/am.db.gpg"
+  temp <- file.path(dirname(tempdir()), "am.db.gpg")
+  tgt <- am_db_sqlite()
 
-  # SRC <- paste0("http://archive.org/download/aquamapsdata/",
-  #               "aquamapsdata_files.xml")
-  # TMP <- paste0(dirname(tempdir()),
-  #               "/aquamapsdata_files.xml")
-  #
-  # TGT <- paste0(system.file(package = "aquamapsdata"),
-  #               "/extdata/aquamapsdata_files.xml")
-
-  if (file.exists(TGT) && !force)
-    stop("An existing db exists at ", TGT,
+  if (file.exists(tgt) && !force)
+    stop("An existing db exists at ", tgt,
          ", to overwrite, pls rerun with force = TRUE")
 
-  message("Download of aquamapsdata (",
-            SRC, " -> ", TMP, " -> ", TGT, ")")
+  message("Download of aquamapsdb (",
+            src, " -> ", temp, " -> ", tgt, ")")
 
-  if (!file.exists(TMP)) {
-    download.file(SRC, TMP)
+  if (!file.exists(temp)) {
+    download.file(src, temp)
   } else {
     message("data appears to have been downloaded already?")
     message("proceeding to extract data ....")
   }
 
-  if (isGzipped(TMP)) {
-    gunzip(TMP, destname = TGT, overwrite = force, remove = FALSE)
-  } else if (!file.exists(TGT)) {
-    if (!dir.exists(dirname(TGT)))
-      dir.create(dirname(TGT))
-    res <- file.copy(TMP, TGT)
+  if (!file.exists(tgt)) {
+    message("... decrypting ", temp, " to ", tgt)
+    rcrypt::decrypt(temp, passphrase = passphrase, output = tgt)
+    message("done")
   } else {
     message("data appears to have been extracted already?")
   }
-  message("done updating.")
+  return(invisible(file.exists(tgt)))
 }
-

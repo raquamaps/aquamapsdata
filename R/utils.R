@@ -5,25 +5,26 @@
 #'@return TRUE if web site is up, FALSE otherwise
 #'@importFrom R.utils withTimeout
 #'@export
-#'@examples
-#'\dontrun{
+#'@examples \dontrun{
 #'  http_ping("http://aquamaps.org")
 #'}
 #'
+#' @family admin
 http_ping <- function(url = "http://aquamaps.org", timeout = 10) {
   req <- withTimeout({
     httr::GET(url)
   }, timeout = timeout, onTimeout = "warning")
 
-  if (is.null(req)) return (FALSE)
+  if (is.null(req)) return(FALSE)
   return(req$status_code == 200)
 }
 
 #' @noRd
+#' @family admin
 has_sqlite3 <- function() {
   if (Sys.which("sqlite3") == "") {
     warning("Cannot find sqlite3 database engine. Please install it.")
-    return (FALSE)
+    return(FALSE)
   }
-  return (TRUE)
+  return(TRUE)
 }

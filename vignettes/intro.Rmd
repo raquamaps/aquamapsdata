@@ -1,7 +1,5 @@
 ---
 title: "Introduction to aquamapsdata"
-author: "Markus Skyttner"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Introduction to aquamapsdata}
@@ -11,9 +9,9 @@ vignette: >
 
 This document describes how to use the `aquamapsdata` R data package to access curated data through a static database assembled from data sourced from http://aquamaps.org
 
-Immediately after installing the package, a run-once action is needed, in order to download and locally create the SQLite database containing all the AquaMaps data.
+Immediately after installing the package, a run-once action is needed, in order to download and locally create the SQLite database containing all the AquaMaps data. A small minified limited (< 1MB) variant of the database is included in the package to simplify package development, and can be activated by using `default_db("extdata")`.
 
-Approximately 5G disk space is needed locally for the database file. The download is around 1G compressed and therefore a speedy Internet connection is recommended for this initial step.
+Approximately 10G disk space is needed locally when remotely downloading the database file. The download is around 2G compressed and therefore a speedy Internet connection is recommended for this initial step.
 
 ```{r, eval=FALSE}
 
@@ -21,32 +19,49 @@ Approximately 5G disk space is needed locally for the database file. The downloa
 
 install.packages("devtools") 
 library("devtools")
-install_gitub("raquamaps/aquamapsdata")
+install_gitub("raquamaps/aquamapsdata", dependencies = TRUE)
 
 # initial run-once step required to install remote db locally
 
 library(aquamapsdata)
 download_db(force = TRUE)
-
+default_db("sqlite")
 ```
 
 Once the database is available locally, it can be queried using a couple of different functions.
 
-# Examples
+Please remember to being your session with activating the connection to the downloaded database:
 
-Here is an example of fuzzy and exact name searches, returning keys with the internal identifiers used in the database. Those keys could be said to represent species lists that can be used to retrieve other information, such as environmental envelopes etc.
+```{r, eval=FALSE}
+library(aquamapsdata)
+default_db("sqlite")
+```
 
-```{r, message=FALSE}
+# Examples of usage
+
+This package provides data that can be queried with tidyverse tools such as `dplyr`.
+
+It also requires some spatial tools (`sp` and `raster`) to be installed.
+
+```{r, message=FALSE, echo=TRUE}
 library(aquamapsdata)
 library(dplyr)
 
-# This uses a minified offline db bundled into the package,
+# This vignette is built using a minified offline db bundled into the package,
 # so vignettes can be built in the cloud without requiring a 
 # full install and download of the database (time saver)
 
-# NB: normally download_db() would be used 
+invisible(default_db("extdata"))
 
-default_db("extdata")
+# NB: normally download_db() would be used first, followed by 
+# default_db("sqlite")
+```
+
+Taxonomy can be searched and queried using fuzzy and exact name searches, returning keys with the internal identifiers used in the database. 
+
+Those keys could be said to represent species lists that can be used to retrieve other information, such as environmental envelopes etc.
+
+```{r, message=FALSE}
 
 # fuzzy search allows full text search operators AND, OR, NOT and +
 # see https://www.sqlitetutorial.net/sqlite-full-text-search/
@@ -77,6 +92,8 @@ knitr::kable(display)
 
 ## Species maps
 
+With a species identifier, likely locations of habitat can be displayed on a map, but native habitat data can also be retrieved in raster format.
+
 Here we display a map with likely native habitats for the Bluespotted trevally:
 
 ```{r "map", echo=TRUE, fig.width=7, message=FALSE}
@@ -90,35 +107,123 @@ key <- am_search_fuzzy("bluespotted")$key
 ras <- am_raster(key)
 
 # show the native habitat map
-am_map_leaflet(ras)
+am_map_leaflet(ras, title = "Bluespotted trevally") %>%
+  leaflet::fitBounds(lng1 = 100, lat1 = -46, lng2 = 172, lat2 = -2)
+
 ```
-We can also display a map for several identifiers, with genus "Clupea" at once:
+
+Source: `r am_citation("md")`
+
+## Including attribution
+
+Attribution with citation information and copyright disclaimer should be included. There is a function called `am_citation()` which provides this information in "text" or "md" format (suitable for use inside Rmarkdown documents).
+
+```{r}
+# include a citation in text format
+
+am_citation()
+
+```
+
+## Maps that include several species
+
+We can also display a map using several species identifiers, for example those associated with the  genus "Caranx", but should then provide an aggregation function such as "count", for example using:
 
 ```{r, echo=TRUE, fig.width=7, message=FALSE, eval=FALSE}
 
-keys <- am_search_exact(Genus = "Clupea")$SpeciesID
+keys <- am_search_exact(Genus = "Caranx")$SpeciesID
 ras <- am_raster(keys, fun = "count")
-am_map_leaflet(ras, title = "Clupea", cols = c("#FFFFFF", "#000000"))
+
+am_map_leaflet(ras, title = "Caranx") %>%
+  leaflet::fitBounds(lng1 = 100, lat1 = -46, lng2 = 172, lat2 = -2)
+
+am_citation("md")
 
 ```
 
+
+## Other usage examples
+
+A few examples follow below and describe how the data in the database can be queried using the provided functions in the package.
+
+### Locations in cells and the half degree cell "authority file" table
+
+Likely occurrences for a species is provided for locations in a half degree cell grid. Individual cells have characteristics associated, in a *H*alf degree *C*ell *A*uthority *F*ile, with data available through the `am_hcaf()` function. 
+
+Information about this table is available in the help with fields explained in the `am_meta` dataset.
+
+A subset of HCAF records can be retrieved based on a certain criteria or field in that table.
+
+```{r, echo=TRUE, fig.width=7, message=FALSE}
+
+am_hcaf() %>% head(1) %>% collect() %>% names()
+
+# compute depth across all cells
+am_hcaf() %>% 
+  summarize(depth = mean(DepthMean, na.rm = TRUE)) %>% 
+  collect() %>% 
+  pull(depth)
+
+# cells with a depth value larger than 4000
+deepwater <- 
+  am_hcaf() %>% filter(DepthMean > 4000) %>% pull(CsquareCode)
+
+# some of the on average deepest locations
+deepwater
+```
+
+The cell location identifier CsquareCode can be used to look up what species are likely occuring there.
+
+```{r, echo=TRUE, fig.width=7, message=FALSE}
+# species likely to occur in deepwater location(s)
+deepwater_species <- am_species_in_csc(deepwater, min_prob = 0.5)
+deepwater_species
+
+key <- deepwater_species$SpeciesID
+am_search_exact(SpeciesID = key)
+```
+### Species preferences or environmental envelope
+
+The am_hspen() function provides the parameters for species' environmental envelopes; data on circumstances that the species are likely to tolerate. Information about this table is available in the help with fields explained in the `am_meta` dataset.
+
+HSPEN data can be queried for example based on taxonomy for a single species or higher taxa associated with that species, or any other relevant species identifiers.
+
+```{r, echo=TRUE, fig.width=7, message=FALSE}
+# use one or more keys for species
+key <- am_species_in_csc(deepwater, min_prob = 0.5)$SpeciesID
+am_hspen() %>% filter(SpeciesID == key) %>% head(1) %>% collapse%>% glimpse()
+
+# for higher taxa - find the keys associated with higher taxa 
+# am_search_exact(Family = am_search_exact(SpeciesID = key)$Family)
+
+```
+
+### Species and locations
+
+In the beginning of the vignette, the taxonomy name search functions were illustrated with some examples. These allow for getting a list of available mapped species based on a certain criteria, so that native habitat can be mapped for a set of species based on taxonomic criteria.
+
+We can also use a function to list species occurring in an area; a location with cells identified by a single or multiple CsquareCode identifiers. Another function allows querying for species diversity or richness across a set of cells. Both these functions allows for specifying a minimum threshold for the probability that the cell is a suitable native species habitat.
+
+A location can be determined based on a user defined bounding box or extent (given by four coordinates). Using am_hcaf() a set of cells can be determined based on other criteria, allowing retrieval of CsquareCode cell identifiers that belong to a specific LME, for example.
+
+```{r, echo=TRUE, fig.width=7, message=FALSE}
+# get cell identifiers for a bounding box or extent
+csc <- am_csc_from_extent(100, 120, -22, -7)$CsquareCode
+
+# within in this area, the following species are listed appear, each in n cells
+am_species_in_csc(csc)
+
+# in each cell location, the following number of distinct species are likely
+# a measure of species diversity or "richness"
+am_species_per_csc(csc, min_prob = 0.8)
+
+```
 
 ## Data scope and content
 
 The `dplyr` package can be used to query the various tables available in the database.
 
-Here is an example showing what tables and fields are included in the data.
-
-First a query for the total record counts:
-
-```{r, message=FALSE, eval = FALSE}
-
-con <- aquamapsdata:::con_am("sqlite")
-aquamapsdata:::db_counts(con)
-DBI::dbDisconnect(con)
-```
-
-Then a description of tables and fields which are included.
+Here is a description of tables and fields which are included.
 
 ```{r}
 knitr::kable(am_meta)

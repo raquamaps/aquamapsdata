@@ -12,3 +12,17 @@ db_disco(env = db_cache)
 \description{
 Disconnect the default database connection
 }
+\seealso{
+Other admin: 
+\code{\link{am_custom_query}()},
+\code{\link{am_db_duckdb}()},
+\code{\link{am_db_sqlite}()},
+\code{\link{am_use_offline_db}()},
+\code{\link{con_am}()},
+\code{\link{db_minify_path}()},
+\code{\link{db_minify}()},
+\code{\link{db_sync}()},
+\code{\link{default_db}()},
+\code{\link{http_ping}()}
+}
+\concept{admin}

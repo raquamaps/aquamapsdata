@@ -15,7 +15,7 @@ A data frame:
 }
 }
 \source{
-\url{https://aquamaps.org/}
+\href{https://aquamaps.org/}{AquaMaps}
 }
 \usage{
 am_meta
@@ -30,10 +30,11 @@ field description and original data type in the AquaMaps.org source db.
 There are five tables:
 \itemize{
 \item \strong{speciesoccursum_r}: This table provides general information about taxa,
-such as identifiers and taxonomy for mapped species, and allows for searching.
-This is a simplified version, excluding fields in the source database which
-are used for internal purposes. \emph{NB}: To be updated when invasive,
-resilience and IUCN fields are filled and m_invertebrates field is updated.
+such as identifiers and taxonomy for mapped species, and allows for
+searching. This is a simplified version, excluding fields in the source
+database which are used for internal purposes. \emph{NB}: To be updated when
+invasive, resilience and IUCN fields are filled and m_invertebrates field
+is updated.
 \item \strong{hcaf_species_native}: This table stores native habitat map data;
 usually referred to as HSPEC-native. This is a simplified version,
 providing only overall probability of occurrence of a species in a cell.
@@ -44,8 +45,8 @@ primary production, sea ice concentration, bottom oxygen, distance to land).
 where Probability=0 to explicitly show cells where species is not
 predicted to occur within its known native distribution.
 \item \strong{hspen_r}: This table provides the parameters used in maps from AquaMaps,
-such as the \strong{sp}ecies environmental \strong{en}velope for each mapped species. The data
-is relevant mostly for single species maps.
+such as the \strong{sp}ecies environmental \strong{en}velope for each mapped species.
+The data is relevant mostly for single species maps.
 \item \strong{hcaf_r}: This \strong{a}uthority\strong{f}ile describes some attributes for 0.5
 degree raster grid cells with species presence in the data. The data in this
 table excludes future environmental parameter fields. Contact the AquaMaps
@@ -53,9 +54,15 @@ team if you are interested in the future environmental parameters.
 Available datasets correspond to IPCC RCP 2.6 (2100),
 RCP 4.5 (2050 and 2100), RCP 8.5 (2050 and 2100).
 \item \strong{occurrencecells_r}: This table provides the occurrence cells generated
-from assembled occurrence data and it is used to generate the species envelope
-for each mapped species. \emph{NB}: Fields where null=No should be updated
-to 0=No.
+from assembled occurrence data and it is used to generate the species
+envelope for each mapped species. \emph{NB}: Fields where null=No should be
+updated to 0=No.
 }
 }
+\seealso{
+Other meta: 
+\code{\link{am_citation}()},
+\code{\link{aquamapsdata-package}}
+}
+\concept{meta}
 \keyword{datasets}

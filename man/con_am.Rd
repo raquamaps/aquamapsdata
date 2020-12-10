@@ -4,15 +4,37 @@
 \alias{con_am}
 \title{Connection to aquamapsdata}
 \usage{
-con_am(source_type = c("sqlite", "mysql", "duckdb", "extdata"))
+con_am(source_type = c("sqlite", "duckdb", "mysql", "extdata"))
 }
 \arguments{
-\item{source_type}{one of "duckdb", "sqlite" or "mysql" with "sqlite" being default}
+\item{source_type}{one of "sqlite", "duckdb", "mysql" or "extdata",
+with "sqlite" being default}
 }
 \value{
 database connection
 }
 \description{
-This function returns a db connection to one of two possible pre-configured
-data sources containing aquamaps data
+This function returns a db connection to a pre-configured
+data source containing aquamaps data
 }
+\examples{
+\dontrun{
+library(DBI)
+con <- con_am("sqlite")
+dbDisconnect(con)
+}
+}
+\seealso{
+Other admin: 
+\code{\link{am_custom_query}()},
+\code{\link{am_db_duckdb}()},
+\code{\link{am_db_sqlite}()},
+\code{\link{am_use_offline_db}()},
+\code{\link{db_disco}()},
+\code{\link{db_minify_path}()},
+\code{\link{db_minify}()},
+\code{\link{db_sync}()},
+\code{\link{default_db}()},
+\code{\link{http_ping}()}
+}
+\concept{admin}

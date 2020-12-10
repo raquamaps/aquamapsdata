@@ -33,7 +33,9 @@ Imports:
     raster,
     stringr,
     rlang,
-    readr
+    readr,
+    rcrypt,
+    sp
 Suggests: 
     knitr,
     httr,

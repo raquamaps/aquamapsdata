@@ -12,10 +12,10 @@ test_that("fuzzy name search works with OR", {
 })
 
 
-# test_that("custom query works", {
-#   res <- am_sql_query("select key from fts where terms match 'trevally'")
-#   expect_gt(nrow(res), 0)
-# })
+test_that("custom query works", {
+  res <- am_custom_query("select key from fts where terms match 'trevally'")
+  expect_gt(nrow(res), 0)
+})
 
 test_that("exact name search works", {
 

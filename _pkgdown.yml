@@ -1,1 +1,15 @@
 destination: docs
+
+reference:
+- title: General
+  contents:
+  - has_concept("general")
+- title: Spatial
+  contents:
+  - has_concept("spatial")
+- title: About
+  contents:
+  - has_concept("meta")
+- title: Data Management
+  contents:
+  - has_concept("admin")
