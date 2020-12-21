@@ -35,7 +35,8 @@ Imports:
     rlang,
     readr,
     rcrypt,
-    sp
+    sp,
+    curl
 Suggests: 
     knitr,
     httr,
