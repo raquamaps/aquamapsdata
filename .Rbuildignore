@@ -18,3 +18,7 @@
 ^docs$
 ^pkgdown$
 ^codecov\.yml$
+^logo\.png$
+^inst/extdata/am\.db\.backup$
+
+^Meta$

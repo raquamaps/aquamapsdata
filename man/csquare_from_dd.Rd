@@ -11,7 +11,8 @@ csquare_from_dd(lat, lon, resolution = 1e-04)
 
 \item{lon}{longitude in decimal degrees}
 
-\item{resolution}{the resolution in decimal degress (one of 0.1, 0.01, 0.001, 0.0001 etc)}
+\item{resolution}{the resolution in decimal degress
+(one of 0.1, 0.01, 0.001, 0.0001 etc)}
 }
 \value{
 a character string with the code
@@ -23,3 +24,15 @@ http://www.cmar.csiro.au/csquares/csq-faq.htm
 \examples{
 csquare_from_dd(50.93578, -114.01435, resolution = 0.00001)
 }
+\seealso{
+Other spatial: 
+\code{\link{am_csc_from_extent}()},
+\code{\link{am_map_leaflet}()},
+\code{\link{am_raster}()},
+\code{\link{am_species_in_csc}()},
+\code{\link{am_species_per_csc}()},
+\code{\link{csquare_to_dd}()},
+\code{\link{rasterize_coords}()},
+\code{\link{which_cells_in_raster}()}
+}
+\concept{spatial}

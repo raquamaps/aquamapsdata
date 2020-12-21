@@ -23,3 +23,17 @@ Ping a web site
 }
 
 }
+\seealso{
+Other admin: 
+\code{\link{am_custom_query}()},
+\code{\link{am_db_duckdb}()},
+\code{\link{am_db_sqlite}()},
+\code{\link{am_use_offline_db}()},
+\code{\link{con_am}()},
+\code{\link{db_disco}()},
+\code{\link{db_minify_path}()},
+\code{\link{db_minify}()},
+\code{\link{db_sync}()},
+\code{\link{default_db}()}
+}
+\concept{admin}

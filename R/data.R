@@ -1,231 +1,290 @@
-#' SQLite database connection to the aquamaps data
-#' @importFrom dplyr src_sqlite
-#' @importFrom RSQLite dbConnect
+#' @importFrom DBI dbDisconnect dbExistsTable dbExecute dbGetQuery
 #' @noRd
-src_sqlite_aquamapsdata <- function() {
+#' @family admin
+am_create_fts <- function(con, overwrite = TRUE) {
 
-  AM_DB <- am_db_path()
-
-  if (!file.exists(AM_DB))
-    stop("No database available at ", AM_DB,
-         " please use download_db()")
-
-  if (file.size(AM_DB) == 0) {
-    message("Removing emtpy db at ", AM_DB)
-    unlink(AM_DB)
-    stop("Database empty, aborting, please use download_db()")
+  if (missing(con)) {
+    con <- con_am("sqlite")
+    on.exit(DBI::dbDisconnect(con))
   }
 
-  my_db <- RSQLite::dbConnect(RSQLite::SQLite(), AM_DB)
-  #my_db <- dplyr::src_sqlite(AM_DB)
-  return (my_db)
+  if (overwrite)
+    if (DBI::dbExistsTable(con, "fts"))
+      am_drop_fts()
+
+  if (!"fts" %in% dbListTables(con)) {
+
+    DBI::dbExecute(con, statement =
+                     "create virtual table fts using fts5(
+        key, terms
+      );")
+
+    DBI::dbExecute(con, statement = paste0(
+      "insert into fts select SpeciesID as key, printf('",
+      paste(collapse = " ", rep("%s", 8)), "',
+          `Genus`, `Species`, `FBname`,
+          `Kingdom`, `Phylum`, `Class`,
+          `Order`, `Family`
+          ) as terms FROM speciesoccursum_r;"))
+  }
+  n_keys <- DBI::dbGetQuery(con, "select count(*) from fts;")
+  message("Added FTS index for ", n_keys, " keys.")
 }
 
-#' @noRd
-am_db_path <- function() {
-  file.path(system.file(package = "aquamapsdata"),
-    "extdata", "am.db")
+#' Fuzzy search for terms related to taxonomic names
+#' @param search_term token query, phrase query or NEAR query
+#' (see http://www.sqlite.org/fts5.html)
+#' @return tibble with matching keys (database identifiers)
+#' @examples \dontrun{
+#' am_search_fuzzy("trevally")
+#' am_search_fuzzy("trevally OR animalia")
+#' }
+#' @export
+#' @family general
+am_search_fuzzy <- function(search_term) {
+
+  query <- paste("select key, terms from fts",
+                 sprintf("where terms match '%s'", search_term))
+
+  am_custom_query(query)
+
 }
 
 #' Run a custom SQL query
 #' @param sql_query the query
+#' @param con the connection to use, if missing an sqlite con is used
 #' @param ... other arguments to be passed to the sql() fcn
+#' @examples \dontrun{
+#' am_custom_query("select * from speciesoccursum_r", con = con_am("extdata"))
+#' }
 #' @importFrom dplyr sql tbl collect
-#' @importFrom RSQLite dbDisconnect
+#' @importFrom DBI dbDisconnect
 #' @export
-am_sql_query <- function(sql_query, ...){
+#' @family admin
+am_custom_query <- function(sql_query, con, ...) {
 
-  con <- src_sqlite_aquamapsdata()
+  if (missing(con)) {
+    con <- db_cache$local_db
+  }
 
-  res <-  con %>%
+  con %>%
     tbl(sql(sql_query, ...)) %>%
     collect()
 
-  on.exit(dbDisconnect(con))
-
-  return (res)
 }
 
+#' @importFrom DBI dbRemoveTable
+#' @importFrom purrr map
 #' @noRd
-add_fts_table <- function() {
+#' @family admin
+am_drop_fts <- function(con) {
 
-  con <- src_sqlite_aquamapsdata()
-
-  if (!"fts" %in% dbListTables(con)) {
-    dbSendQuery(con, statement =
-    "create virtual table fts using fts5(
-      key, terms
-    );")
-
-    dbSendQuery(con, statement = paste0(
-    "insert into fts select SPECIESID as key, printf('",
-    paste(collapse = " ", rep("%s", 8)), "',
-    `Genus`, `Species`, `FBname`,
-    `Kingdom`, `Phylum`, `Class`,
-    `Order`, `Family`
-    ) as terms FROM taxa;"))
+  if (missing(con)) {
+    con <- con_am("sqlite")
+    on.exit(DBI::dbDisconnect(con))
   }
 
-  on.exit(dbDisconnect(con))
+  fts_shadow_tables <- function(tablename)
+    sprintf("%s_%s", tablename,
+            c("data", "idx", "config", "content", "docsize"))
 
-  # res <- am_name_search() %>% collect %>%
-  #   tidyr::unite(terms, -key, sep = " ") %>%
-  #   select(key, terms)
-  #
-  # RSQLite::dbWriteTable(src_sqlite_aquamapsdata(),
-  #  "fts", res, overwrite = FALSE, row.names = FALSE)
+  drop_table <- function(x)
+    DBI::dbRemoveTable(con, x, fail_if_missing = FALSE)
 
-}
+  fts_tabs <- c("fts", fts_shadow_tables("fts"))
 
-#' Fuzzy search for terms related to taxonomic names
-#' @param search_term token query, phrase query or NEAR query (see http://www.sqlite.org/fts3.html)
-#' @return tibble with matching keys (database identifiers)
-#' @examples
-#'  am_name_search_fuzzy("cod")
-#'  am_name_search_fuzzy("cod OR shark")
-#' @export
-am_name_search_fuzzy <- function(search_term) {
-  query <- paste("select key from fts",
-    sprintf("where terms match '%s'", search_term))
-  res <- am_sql_query(query)
-  #return(as_tibble(res))
-  return (res)
+  fts_tabs %>% purrr::map(drop_table)
+
 }
 
 #' Exact search for taxonomic names
-#' @param key a database identifier string
-#' @param binomial a string on the form Genus Species
-#' @param vernacular a string with a popular name
-#' @param rank_genus a string with the genus name
-#' @param rank_species a string with the species name
-#' @param rank_family a string with the family name
-#' @param rank_kingdom a string with the kingdom name
-#' @param rank_phylum a string with the phylum name
-#' @param rank_class a string with the class name
-#' @param rank_order a string with the order name
-#' @return tibble with matching identifiers...
-#' #' If the function is called with only one argument and NULL as the value, the result will list all unique values that are available
-#' If the function is called with one or more arguments with real values a tibble will be return with keys or identifiers which exactly matches the search
-#' @examples
-#'  am_name_search_exact(vernacular = "Atlantic cod")
-#'  am_name_search_exact(key = "Fis-23638")
+#'
+#' Search taxonomic names with or without parameters specified.
+#' - If parameters are given, the intersection of matching records
+#' are returned.
+#' - If no parameters are given, all records are returned.
+#' - If parameters are specified with NULL specified, examples of
+#' valid combinations of values are returned.
+#' @param SpeciesID AquaMaps unique identifier for a valid species used by the
+#' Catalogue of Life Annual Checklist (www.catalogueoflife.org). Example for
+#' the whale shark: Fis-30583
+#' @param SpecCode Species identifier used in FishBase or SeaLifeBase
+#' @param Genus Genus name of the species
+#' @param Species Specific epithet of the species
+#' @param FBname Common name suggested by FishBase or SeaLifeBase
+#' @param OccurRecs Number of point records used to generate good cells
+#' @param OccurCells Number of good cells used to generate species envelope
+#' @param StockDefs Distribution of the species as recorded in
+#' FishBase or SeaLifeBase
+#' @param Kingdom Kingdom to which the species belongs
+#' @param Phylum Phylum to which the species belongs
+#' @param Class Class to which the species belongs
+#' @param Order Order to which the species belongs
+#' @param Family Family to which the species belongs
+#' @param deepwater Does the species occur in the deep-sea (i.e. tagged
+#' bathypelagic or bathydemersal in FishBase or SeaLifeBase)? 0=No, 1=Yes
+#' @param angling Is the species a sport fish (i.e. tagged as a GameFish in
+#' FishBase)? 0=No, 1=Yes
+#' @param diving Is the species found on a dive (i.e. where DepthPrefMin in
+#' HSPEN < 20 meters)? 0=No, 1=Yes
+#' @param dangerous Is the species dangerous (i.e. tagged as traumatogenic or
+#' venonous in FishBase or SeaLifeBase)? 0=No, 1=Yes
+#' @param m_invertebrates Is the species a marine invertebrate? 0=No, 1=Yes
+#' @param highseas Is the species an open ocean fish species (i.e. tagged as
+#' pelagic-oceanic in FishBase)? 0=No, 1=Yes
+#' @param invasive Is the species recorded to be invasive (i.e. in FishBase
+#' or SeaLifeBase)? 0=No, 1=Yes
+#' @param resilience Resilience of the species (i.e. as recorded in
+#' FishBase/SeaLifeBase)
+#' @param iucn_id IUCN species identifier
+#' @param iucn_code IUCN Red list classification assigned to the species
+#' @param iucn_version IUCN version
+#' @param provider FishBase (FB) or SeaLifeBase (SLB)?
+#' @return tibble with results...
+#' @examples \dontrun{
+#' am_search_exact()
+#' am_search_exact(Species = "bucculentus")
+#' am_search_exact(FBname = NULL, provider = NULL)
+#' }
 #' @export
-am_name_search_exact <- function(
-  key = NULL, binomial = NULL, vernacular = NULL,
-  rank_genus = NULL, rank_species = NULL,
-  rank_family = NULL, rank_kingdom = NULL, rank_phylum = NULL,
-  rank_class = NULL, rank_order = NULL) {
+#' @family general
+am_search_exact <- function(
+  SpeciesID=NULL, SpecCode=NULL, Genus=NULL, Species=NULL, FBname=NULL,
+  OccurRecs=NULL, OccurCells=NULL, StockDefs=NULL, Kingdom=NULL, Phylum=NULL,
+  Class=NULL, Order=NULL, Family=NULL, deepwater=NULL, angling=NULL,
+  diving=NULL, dangerous=NULL, m_invertebrates=NULL, highseas=NULL,
+  invasive=NULL, resilience=NULL, iucn_id=NULL, iucn_code=NULL,
+  iucn_version=NULL, provider=NULL) {
 
-  con <- src_sqlite_aquamapsdata()
-  on.exit(dbDisconnect(con))
+  args <-  as.list(match.call(expand.dots = TRUE)[-1])
 
-  taxa <- con %>% tbl("taxa") %>% collect %>% mutate(binomen = paste(Genus, Species))
+  tc <- function(l) Filter(Negate(is.null), l)
+  tcn <- function(l) Filter(is.null, l)
 
-  unique_values <- function(param, col_name) {
-    message("returning unique values for argument/parameter ", param)
-    res <- taxa %>% select(!!col_name) %>%
-      distinct %>% collect %>%
-      select(1)
-    names(res) <- param
-    return (res)
+  if (length(tcn(args)) > 0) {
+    nullfields <- paste0(collapse = ", ", names(tcn(args)))
+    message("Got NULL params for ", nullfields)
+    message("Showing some example combinations")
+
+    sql <-
+      sprintf(paste0("select distinct * from (select %s ",
+                     "from speciesoccursum_r limit 100) limit 10"), nullfields)
+    return(am_custom_query(sql))
   }
 
-  if (!missing(key) && is.null(key))
-    return (unique_values("key", "SPECIESID"))
+  if (!(length(tc(args)) > 0))
+    return(am_custom_query("select * from speciesoccursum_r"))
 
-  if (!missing(binomial) && is.null(binomial)) {
-    message("returning distinct binomial (Genus, Species) values")
-    res <- taxa %>% select(binomen) %>% distinct() %>% collect %>% select(binomen)
-#      select(Genus, Species) %>%
-#      distinct %>% collect %>%
-#      mutate(binomial = paste(Genus, Species)) %>%
-#      select(binomial)
-    return (res)
-  }
+  dbq <- function(x)
+    DBI::dbQuoteString(DBI::ANSI(),
+                       DBI::dbQuoteString(DBI::ANSI(), DBI::SQL(x)))
 
-  if (!missing(vernacular) && is.null(vernacular))
-    return(unique_values("vernacular", "FBname"))
+  sql_where <- function(x)
+    sprintf('%s = "%s"', names(x), dbq(x))
 
-  if (!missing(rank_genus) && is.null(rank_genus))
-    return(unique_values("rank_genus", "Genus"))
-
-  if (!missing(rank_species) && is.null(rank_species))
-    return(unique_values("rank_species", "Species"))
-
-  if (!missing(rank_family) && is.null(rank_family))
-    return(unique_values("rank_family", "Family"))
-
-  if (!missing(rank_class) && is.null(rank_class))
-    return(unique_values("rank_class", "Class"))
-
-  if (!missing(rank_order) && is.null(rank_order))
-    return(unique_values("rank_order", "Order"))
-
-  if (!missing(rank_kingdom) && is.null(rank_kingdom))
-    return(unique_values("rank_kingdom", "Kingdom"))
-
-  if (!missing(rank_phylum) && is.null(rank_phylum))
-    return(unique_values("rank_phylum", "Phylum"))
-
-  res <- taxa
-
-
-  if (!is.null(key)) res <- res %>%
-    filter(SPECIESID == key)
-
-  if (!is.null(binomial)) {
-    res <- res %>%
-      filter(binomen == binomial)
-  }
-
-  if (!is.null(vernacular)) res <- res %>%
-    filter(FBname == vernacular)
-
-  if (!is.null(rank_genus)) res <- res %>%
-    filter(Genus == rank_genus)
-
-  if (!is.null(rank_species)) res <- res %>%
-    filter(Species == rank_species)
-
-  if (!is.null(rank_family)) res <- res %>%
-    filter(`Family` == rank_family)
-
-  if (!is.null(rank_order)) res <- res %>%
-    filter(`Order` == rank_order)
-
-  if (!is.null(rank_phylum)) res <- res %>%
-    filter(Phylum == rank_phylum)
-
-  if (!is.null(rank_class)) res <- res %>%
-    filter(Class == rank_class)
-
-  if (!is.null(rank_kingdom)) res <- res %>%
-    filter(Kingdom == rank_kingdom)
-
-#see https://stackoverflow.com/questions/42123011/sqlite-row-value-misused-error-in-sqlite
-#   SELECT *
-# FROM `taxa`
-# WHERE (`Genus` = CASE WHEN (1.0) THEN (('Salmo', 'trutta')) END AND `Species` = CASE WHEN (2.0) THEN (('Salmo', 'trutta')) END)
-
-  res <- res %>% collect() %>%
-    select(key = SPECIESID, binomial = binomen,
-           vernacular = FBname,
-           rank_genus = Genus, rank_species = Species,
-           rank_kingdom = Kingdom, rank_phylum = Phylum,
-           rank_class = Class,
-           rank_order = `Order`, rank_family = `Family`)
-  return (res)
+  kv <- purrr::map(tc(args), eval)
+  sql_where <- paste(collapse = " and ", sql_where(kv))
+  sql <- sprintf("select * from speciesoccursum_r where %s", sql_where)
+  message("query: ", sql)
+  am_custom_query(sql)
 }
 
-#' @importFrom utils globalVariables
-if (getRversion() >= "2.15.1")
-  globalVariables(names = unlist(strsplit(split = " ",
- paste0("Class FBname Family Genus Kingdom Order ",
-  "Phylum SPECIESID Species binomen"))))
+#' @importFrom DBI dbDisconnect dbExecute
+#' @noRd
+#' @family admin
+am_create_indexes <- function(con) {
+
+  if (missing(con)) {
+    con <- con_am("sqlite")
+    on.exit(DBI::dbDisconnect(con))
+  }
+
+  i <-
+    aquamapsdata::am_meta %>%
+    filter(.data$field %in% c("SpeciesID", "LOICZID", "CsquareCode")) %>%
+    select(.data$table, .data$field)
+
+  idx <- paste0(i$field, seq_len(length(i$field)))
+
+  sql <-
+    sprintf("create index if not exists [%s] on %s([%s])",
+            idx, i$table, i$field)
+
+  execute <- function(x) {
+    res <- DBI::dbExecute(con, x)
+    message("Index created: ", res, ", sql: ", x)
+    res
+  }
+  res <- sql %>% map(execute)
+
+  if (!all(res == 0)) message("Done")
+}
+
+#' @family general
+am_keys <- function() {
+
+  con <- db_cache$local_db
+
+  con %>%
+    dplyr::tbl("speciesoccursum_r") %>%
+    dplyr::distinct(.data$SpeciesID) %>%
+    dplyr::collect() %>%
+    dplyr::pull(.data$SpeciesID)
+}
+
+#' @importFrom rlang .data
+#' @noRd
+#' @family general
+am_nativemaps <- function(key) {
+
+  if (!all(key %in% am_keys()))
+    stop("Please specify valid key(s)")
+
+  con <- db_cache$local_db
+
+  con %>%
+    dplyr::tbl("hcaf_species_native") %>%
+    dplyr::filter(.data$SpeciesID %in% key) %>%
+    dplyr::collect() %>%
+    dplyr::select(
+      .data$SpeciesID, .data$CsquareCode,
+      .data$CenterLat, .data$CenterLong,
+      .data$Probability) %>%
+    dplyr::rename(lat = "CenterLat", lon = "CenterLong")
+
+}
 
 
-# taxa() %>%
-#   group_by(Class, `Order`, `Family`) %>%
-#   summarize(count = n()) %>%
-#   collect %>%
-#   arrange(desc(count), Class, `Order`)
+#' Half degree cell location reference data
+#' This table represents an authority file with reference data for half degree
+#' cell locations.
+#' @examples \dontrun{
+#' am_hcaf()
+#' }
+#' @export
+#' @importFrom dplyr tbl
+#' @family general
+am_hcaf <- function() {
+
+  con <- db_cache$local_db
+
+  con %>%
+    dplyr::tbl("hcaf_r")
+}
+
+#' Environmental envelope preference data for suitable habitats for species
+#' This table provides data on species environmental parameters / preferences
+#' @examples \dontrun{
+#' keys <- am_search_fuzzy("trevally")$key[1:2]
+#' am_hspen() %>% filter(SpeciesID %in% keys)
+#' }
+#' @export
+#' @importFrom dplyr tbl
+#' @family general
+am_hspen <- function() {
+
+  con <- db_cache$local_db
+
+  con %>%
+    dplyr::tbl("hspen_r")
+}

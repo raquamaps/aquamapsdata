@@ -5,7 +5,7 @@ library(devtools)
 install.packages("codemetar", dependencies = TRUE)
 
 # for adding repostatus badge
-install_github("ropensci/rodev", dependencies = TRUE)
+remotes::install_github("ropensci/rodev", dependencies = TRUE)
 
 codemetar::give_opinions()
 codemetar::write_codemeta()

@@ -11,8 +11,6 @@ output:
 [![Codecov test coverage](https://codecov.io/gh/raquamaps/aquamapsdata/branch/master/graph/badge.svg)](https://codecov.io/gh/raquamaps/aquamapsdata?branch=master)
 <!-- badges: end -->
 
-- Rscript -e 'covr::codecov()'
-
 <!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) -->
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -59,17 +57,12 @@ Load the package in your R environment:
 ```{r message=FALSE, warning=FALSE, results="hide", eval=FALSE}
 
 library(aquamapsdata)
-library(purrr)
 
-download_db(force = TRUE)
+# downloads about 2 GB of data, approx 10 GB when unpacked
+download_db()
+default_db("sqlite")
 
-my_db <- aquamapsdata:::src_sqlite_aquamapsdata()
-
-my_db %>% tbl("nativemaps")
-my_db %>% tbl("hcaf")
-my_db %>% tbl("hspen")
-my_db %>% tbl("occ")
-my_db %>% tbl("taxa")
+am_citation()
 
 ```
 

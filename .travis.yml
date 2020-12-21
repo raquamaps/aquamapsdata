@@ -16,6 +16,10 @@ addons:
     - r-recommended
     - libxml2-dev
     - libcurl4-openssl-dev
+    - gdal-bin
+    - proj-bin
+    - libgdal-dev
+    - libproj-dev
 
 before_install:
 - tlmgr install index
