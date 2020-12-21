@@ -4,12 +4,14 @@
 \alias{db_minify}
 \title{Minify a larger aquamaps dataset by slicing}
 \usage{
-db_minify(key, slice_file)
+db_minify(key, slice_file, chunk_size = 10000)
 }
 \arguments{
 \item{key}{the species identifier to keep}
 
 \item{slice_file}{the file path for storing the resulting SQLite3 db}
+
+\item{chunk_size}{for chunked data transfer, default: 1e4}
 }
 \description{
 Creates a minimized version of a larger AquaMaps database,

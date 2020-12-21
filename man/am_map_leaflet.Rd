@@ -23,8 +23,14 @@ Shows a leaflet map for the native habitat given a species identifier
 }
 \examples{
 \dontrun{
-ras <- am_raster(am_search_fuzzy("trevally")$key)
-am_map_leaflet(ras, title = "Bluespotted trevally")
+# native habitat for blue trevally
+ras <- am_raster(am_search_fuzzy("blue trevally")$key)
+am_map_leaflet(ras, title = "Blue trevally (p)")
+
+# where do both blue and white trevally occur?
+ras <- am_raster(am_search_fuzzy("trevally AND (white OR blue)")$key,
+  fun = "count")
+am_map_leaflet(ras, title = "Blue and white trevally (n)")
 }
 }
 \seealso{
