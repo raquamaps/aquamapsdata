@@ -44,8 +44,14 @@ am_raster <- function(key, resolution = 0.5,
 #' @param cols a vector with three hex colors to use for a numeric color
 #' legend, default: c("#FEB24C", "#FD8D3C", "#FC4E2A", "#E31A1C", "#B10026")
 #' @examples \dontrun{
-#' ras <- am_raster(am_search_fuzzy("trevally")$key)
-#' am_map_leaflet(ras, title = "Bluespotted trevally")
+#' # native habitat for blue trevally
+#' ras <- am_raster(am_search_fuzzy("blue trevally")$key)
+#' am_map_leaflet(ras, title = "Blue trevally (p)")
+#'
+#' # where do both blue and white trevally occur?
+#' ras <- am_raster(am_search_fuzzy("trevally AND (white OR blue)")$key,
+#'   fun = "count")
+#' am_map_leaflet(ras, title = "Blue and white trevally (n)")
 #' }
 #' @export
 #' @importFrom leaflet leaflet addTiles addRasterImage addLegend colorNumeric projectRasterForLeaflet
