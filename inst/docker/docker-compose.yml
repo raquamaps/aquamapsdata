@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+
+  caddy:
+    image: lucaslorentz/caddy-docker-proxy
+    ports:
+      - 80:80
+      - 443:443
+      - 2019:2019
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      caddy.auto_https: disable_redirects
+
+  app:
+    image: raquamaps/aquamapsdata:rocker
+    ports:
+      - 8787:8787
+    volumes:
+      - ${HOME}/.config/aquamaps/am.db:/home/rstudio/.config/aquamaps/am.db:ro
+    environment:
+      - PASSWORD=aquamapsdata
+    labels:
+      caddy: aquamapsdb.org
+      caddy.redir_1: "/auth-sign-in /rstudio/auth-sign-in?appUri=%2Frstudio 307"
+      caddy.redir_2: "/auth-sign-out /rstudio/auth-sign-out?appUri=%2Frstudio 307"
+      caddy.redir_3: "/rstudio /rstudio/ 307"
+      caddy.@match.path: "/rstudio/*"
+      caddy.route: "@match"
+      caddy.route.0_uri: "strip_prefix /rstudio"
+      caddy.route.1_reverse_proxy: "{{upstreams 8787}}"
+      caddy.tls: "internal"

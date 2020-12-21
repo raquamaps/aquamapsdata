@@ -20,3 +20,10 @@ browse:
 		-e PASSWORD=aquamapsdata \
 		-v $$HOME/.config/aquamaps/am.db:/home/rstudio/.config/aquamaps/am.db:ro \
 		raquamaps/aquamapsdata:rocker
+
+up:
+	docker-compose up -d
+	sleep 5 && xdg-open https://aquamapsdb.org/rstudio &
+
+down:
+	docker-compose down
