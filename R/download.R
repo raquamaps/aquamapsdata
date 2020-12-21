@@ -4,14 +4,17 @@
 #' @examples \dontrun{
 #' download_db()
 #' }
-#' @importFrom R.utils gunzip isGzipped
+#' @importFrom R.utils gunzip isGzipped bunzip2
 #' @importFrom curl curl_download
 #' @importFrom rcrypt encrypt decrypt
 #' @export
 #' @family general
 download_db <- function(force = FALSE, passphrase = NULL) {
-  src <- "https://archive.org/download/aquamapsdb/am.db.gpg"
-  temp <- file.path(dirname(tempdir()), "am.db.gpg")
+
+  has_pass <- !is.null(passphrase)
+  ext <- ifelse(has_pass, ".gpg", ".bz2")
+  src <- paste0("https://archive.org/download/aquamapsdb/am.db", ext)
+  temp <- file.path(dirname(tempdir()), paste0("am.db", ext))
   tgt <- am_db_sqlite()
 
   if (file.exists(tgt) && !force)
@@ -28,8 +31,12 @@ download_db <- function(force = FALSE, passphrase = NULL) {
 
   if (!file.exists(tgt)) {
     if (!dir.exists(dirname(tgt))) dir.create(dirname(tgt), recursive = TRUE)
-    message("... decrypting ", temp, " to ", tgt)
-    rcrypt::decrypt(temp, passphrase = passphrase, output = tgt)
+    message("... unpacking ", temp, " to ", tgt)
+    if (has_pass) {
+      R.utils::bunzip2(filename = temp, destname = tgt)
+    } else {
+      rcrypt::decrypt(temp, passphrase = passphrase, output = tgt)
+    }
     message("done")
   } else {
     message("data appears to have been extracted already?")

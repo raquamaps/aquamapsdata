@@ -7,12 +7,15 @@ library(dplyr)
 
 #am_search_exact(SpeciesID = "Fis-29757") %>% View()
 
+default_db("sqlite")
+
 am_search_fuzzy("Bluespotted trevally")$key %>%
-  db_minify("inst/extdata/am.db")
+  db_minify(slice_file = "inst/extdata/am.db")
 
 db_min <- RSQLite::dbConnect(RSQLite::SQLite(),
   "inst/extdata/am.db")
 
+db_counts(db_min)
 #am_create_indexes(db_min)
 am_create_fts(db_min)
 
