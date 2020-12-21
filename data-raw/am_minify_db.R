@@ -16,7 +16,7 @@ db_min <- RSQLite::dbConnect(RSQLite::SQLite(),
   "inst/extdata/am.db")
 
 db_counts(db_min)
-#am_create_indexes(db_min)
+am_create_indexes(db_min)
 am_create_fts(db_min)
 
 dbDisconnect(db_min)

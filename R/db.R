@@ -442,6 +442,7 @@ db_minify_path <- function()
 #' @importFrom RSQLite dbConnect SQLite dbDisconnect dbWriteTable
 #' @importFrom purrr iwalk
 #' @importFrom dplyr tbl filter distinct pull
+#' @importFrom utils capture.output tail
 #' @family admin
 db_minify <- function(key, slice_file, chunk_size = 1e4) {
 
