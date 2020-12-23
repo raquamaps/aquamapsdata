@@ -13,3 +13,7 @@ reference:
 - title: Data Management
   contents:
   - has_concept("admin")
+
+extra_packages:
+  - rgdal
+
