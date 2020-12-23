@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">aquamapsdata</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -46,7 +46,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -72,7 +72,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/raquamaps/aquamapsdata/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -86,17 +86,14 @@
 
       
 
-      </header><script src="intro_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="intro_files/htmlwidgets-1.5.2/htmlwidgets.js"></script><script src="intro_files/jquery-1.12.4/jquery.min.js"></script><link href="intro_files/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet">
-<script src="intro_files/datatables-binding-0.15/datatables.js"></script><link href="intro_files/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet">
-<link href="intro_files/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet">
-<script src="intro_files/dt-core-1.10.20/js/jquery.dataTables.min.js"></script><link href="intro_files/crosstalk-1.1.0.1/css/crosstalk.css" rel="stylesheet">
-<script src="intro_files/crosstalk-1.1.0.1/js/crosstalk.min.js"></script><div class="row">
+      </header><script src="intro_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="intro_files/htmlwidgets-1.5.3/htmlwidgets.js"></script><script src="intro_files/jquery-1.12.4/jquery.min.js"></script><link href="intro_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="intro_files/leaflet-1.3.1/leaflet.js"></script><link href="intro_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="intro_files/Proj4Leaflet-1.0.1/proj4-compressed.js"></script><script src="intro_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="intro_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="intro_files/leaflet-binding-2.0.3/leaflet.js"></script><script src="intro_files/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script><script src="intro_files/leaflet-providers-plugin-2.0.3/leaflet-providers-plugin.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to aquamapsdata</h1>
-                        <h4 class="author">Markus Skyttner</h4>
             
-            <h4 class="date">2020-10-05</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/raquamaps/aquamapsdata/blob/master/vignettes/intro.Rmd"><code>vignettes/intro.Rmd</code></a></small>
       <div class="hidden name"><code>intro.Rmd</code></div>
@@ -106,863 +103,1534 @@
     
     
 <p>This document describes how to use the <code>aquamapsdata</code> R data package to access curated data through a static database assembled from data sourced from <a href="http://aquamaps.org" class="uri">http://aquamaps.org</a></p>
-<p>Immediately after installing the package, a run-once action is needed, in order to download and locally create the SQLite database containing all the AquaMaps data.</p>
-<p>Approximately 5G disk space is needed locally for the database file. The download is around 1G compressed and therefore a speedy Internet connection is recommended for this initial step.</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="co"># install aquamapsdata from GitHub using devtools</span>
+<p>Immediately after installing the package, a run-once action is needed, in order to download and locally create the SQLite database containing all the AquaMaps data. A small minified limited (&lt; 1MB) variant of the database is included in the package to simplify package development, and can be activated by using <code><a href="../reference/default_db.html">default_db("extdata")</a></code>.</p>
+<p>Approximately 10G disk space is needed locally when remotely downloading the database file. The download is around 2G compressed and therefore a speedy Internet connection is recommended for this initial step.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># install aquamapsdata from GitHub using devtools</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span> 
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">install_gitub</span><span class="op">(</span><span class="st">"raquamaps/aquamapsdata"</span><span class="op">)</span>
+<span class="fu">install_gitub</span><span class="op">(</span><span class="st">"raquamaps/aquamapsdata"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
 <span class="co"># initial run-once step required to install remote db locally</span>
 
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
-<span class="fu"><a href="../reference/download_db.html">download_db</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
-<p>Once the database is available locally, it can be queries using a couple of different functions.</p>
-<div id="examples" class="section level1">
+<span class="fu"><a href="../reference/download_db.html">download_db</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="../reference/default_db.html">default_db</a></span><span class="op">(</span><span class="st">"sqlite"</span><span class="op">)</span></code></pre></div>
+<p>Once the database is available locally, it can be queried using a couple of different functions.</p>
+<p>Please remember to being your session with activating the connection to the downloaded database:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
+<span class="fu"><a href="../reference/default_db.html">default_db</a></span><span class="op">(</span><span class="st">"sqlite"</span><span class="op">)</span></code></pre></div>
+<div id="examples-of-usage" class="section level1">
 <h1 class="hasAnchor">
-<a href="#examples" class="anchor"></a>Examples</h1>
-<p>The following code shows a few ways to query the database through some functions provided in the package</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
+<a href="#examples-of-usage" class="anchor"></a>Examples of usage</h1>
+<p>This package provides data that can be queried with tidyverse tools such as <code>dplyr</code>.</p>
+<p>It also requires some spatial tools (<code>sp</code> and <code>raster</code>) to be installed.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 
-<span class="va">my_db</span> <span class="op">&lt;-</span> <span class="fu">aquamapsdata</span><span class="fu">:::</span><span class="fu">src_sqlite_aquamapsdata</span><span class="op">(</span><span class="op">)</span>
+<span class="co"># This vignette is built using a minified offline db bundled into the package,</span>
+<span class="co"># so vignettes can be built in the cloud without requiring a </span>
+<span class="co"># full install and download of the database (time saver)</span>
 
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"nativemaps"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"hcaf"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"hspen"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"occ"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"taxa"</span><span class="op">)</span></pre></div>
-<div id="queries" class="section level2">
+<span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="fu"><a href="../reference/default_db.html">default_db</a></span><span class="op">(</span><span class="st">"extdata"</span><span class="op">)</span><span class="op">)</span>
+
+<span class="co"># NB: normally download_db() would be used first, followed by </span>
+<span class="co"># default_db("sqlite")</span></code></pre></div>
+<p>Taxonomy can be searched and queried using fuzzy and exact name searches, returning keys with the internal identifiers used in the database.</p>
+<p>Those keys could be said to represent species lists that can be used to retrieve other information, such as environmental envelopes etc.</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># fuzzy search allows full text search operators AND, OR, NOT and +</span>
+<span class="co"># see https://www.sqlitetutorial.net/sqlite-full-text-search/</span>
+<span class="fu"><a href="../reference/am_search_fuzzy.html">am_search_fuzzy</a></span><span class="op">(</span>search_term <span class="op">=</span> <span class="st">"trevally"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "Fis-29757"</code></pre>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># exact search without parameters returns all results</span>
+<span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="fu"><a href="../reference/am_search_exact.html">am_search_exact</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># exact search giving NULL params shows examples of existing values</span>
+<span class="co"># here we see what combinations are present in the dataset for </span>
+<span class="co"># angling, diving, dangerous, highseas, deepwater organisms</span>
+<span class="fu"><a href="../reference/am_search_exact.html">am_search_exact</a></span><span class="op">(</span>
+  angling <span class="op">=</span> <span class="cn">NULL</span>, diving <span class="op">=</span> <span class="cn">NULL</span>, dangerous <span class="op">=</span> <span class="cn">NULL</span>, 
+  deepwater <span class="op">=</span> <span class="cn">NULL</span>, highseas <span class="op">=</span> <span class="cn">NULL</span>, m_invertebrates <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 6
+##   deepwater angling diving dangerous m_invertebrates highseas
+##       &lt;int&gt;   &lt;int&gt;  &lt;int&gt;     &lt;int&gt;           &lt;int&gt;    &lt;int&gt;
+## 1         0       1      1         0               0        0</code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># exact search without NULL params, specifying values</span>
+<span class="va">hits</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="../reference/am_search_exact.html">am_search_exact</a></span><span class="op">(</span>angling <span class="op">=</span> <span class="fl">1</span>, diving <span class="op">=</span> <span class="fl">1</span>, dangerous <span class="op">=</span> <span class="fl">0</span><span class="op">)</span>
+
+<span class="co"># display results</span>
+<span class="va">display</span> <span class="op">&lt;-</span> 
+  <span class="va">hits</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>binomen <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">Genus</span>, <span class="va">Species</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">SpeciesID</span>, <span class="va">binomen</span>, <span class="va">SpecCode</span>, <span class="va">FBname</span><span class="op">)</span>
+
+<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">display</span><span class="op">)</span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">SpeciesID</th>
+<th align="left">binomen</th>
+<th align="right">SpecCode</th>
+<th align="left">FBname</th>
+</tr></thead>
+<tbody><tr class="odd">
+<td align="left">Fis-29757</td>
+<td align="left">Caranx bucculentus</td>
+<td align="right">1896</td>
+<td align="left">Bluespotted trevally</td>
+</tr></tbody>
+</table>
+<div id="species-maps" class="section level2">
 <h2 class="hasAnchor">
-<a href="#queries" class="anchor"></a>Queries</h2>
-<p>The <code>dplyr</code> package can be used to query the various tables available in the database.</p>
-<p>Here is an example of a query for the total record count in one of the tables:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
+<a href="#species-maps" class="anchor"></a>Species maps</h2>
+<p>With a species identifier, likely locations of habitat can be displayed on a map, but native habitat data can also be retrieved in raster format.</p>
+<p>Here we display a map with likely native habitats for the Bluespotted trevally:</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster">raster</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 
-<span class="va">my_db</span> <span class="op">&lt;-</span> <span class="fu">aquamapsdata</span><span class="fu">:::</span><span class="fu">src_sqlite_aquamapsdata</span><span class="op">(</span><span class="op">)</span>
+<span class="co"># get the identifier for the species</span>
+<span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_search_fuzzy.html">am_search_fuzzy</a></span><span class="op">(</span><span class="st">"bluespotted"</span><span class="op">)</span><span class="op">$</span><span class="va">key</span>
+<span class="va">ras</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_raster.html">am_raster</a></span><span class="op">(</span><span class="va">key</span><span class="op">)</span>
 
-<span class="va">record_count</span> <span class="op">&lt;-</span> 
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"occ"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="va">collect</span> <span class="op">%&gt;%</span> 
-  <span class="va">.</span><span class="op">$</span><span class="va">count</span>
+<span class="co"># show the native habitat map</span>
+<span class="fu"><a href="../reference/am_map_leaflet.html">am_map_leaflet</a></span><span class="op">(</span><span class="va">ras</span>, title <span class="op">=</span> <span class="st">"Bluespotted trevally"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-methods.html">fitBounds</a></span><span class="op">(</span>lng1 <span class="op">=</span> <span class="fl">100</span>, lat1 <span class="op">=</span> <span class="op">-</span><span class="fl">46</span>, lng2 <span class="op">=</span> <span class="fl">172</span>, lat2 <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span></code></pre></div>
+<pre><code>## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj
+## = prefer_proj): Discarded ellps WGS 84 in CRS definition: +proj=merc +a=6378137
+## +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null
+## +wktext +no_defs +type=crs</code></pre>
+<pre><code>## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =
+## prefer_proj): Discarded datum World Geodetic System 1984 in CRS definition</code></pre>
+<pre><code>## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj
+## = prefer_proj): Discarded ellps WGS 84 in CRS definition: +proj=merc +a=6378137
+## +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null
+## +wktext +no_defs +type=crs</code></pre>
+<pre><code>## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =
+## prefer_proj): Discarded datum World Geodetic System 1984 in CRS definition</code></pre>
+<div id="htmlwidget-b3a79fde43e93a3560bb" style="width:672px;height:432.632880098888px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-b3a79fde43e93a3560bb">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.OceanBasemap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addRasterImage","args":["data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAs8AAAAfCAYAAAAY0yCxAAAHuElEQVR4nO3dv2oiXRgG8OcYKwsRiwVnFSSgRapFLANeQMzkJlJs73XYb5GbcNZcQCBlkK0sFEJAv1lIEWQLK+P5iuw7OY4zzoz/YtznB/KtZhxHbR7f7z3vUSAiIiI6Yh1U9aVT9e6n7K5K8vzX9rnWdy/4/fAn8tiSO1YAMLPPtPm4auRx0roPfF3z2FtnhisMvHOknb56bZ9rAJBr6LmZJJePS6ea+D2HkWtNO/21zyefp2rk4baflv4un+EhGFlFXXLHamQVNfB2bQdzcURERET7MHeaOmV3lYTTOM+Z2Wf698MfFOrZpRBttcqBIVAU6lkACA2+F3ba+7f/3IV6FqqRBxAvPNesKQAsHNNsf4Gq5DC/ecTvhz+xw+nIKmqrVQYAL/hLeA77IRH33FHnSXq+XZLvXq4l9dEXRERERLRPZhV27jT1qmNF2ukrCZJ+q4JzkJo19UKuX8/NLIVjffeCk9a9kuAslWnTFQYqKDjL9f33/Zd3f2afaamkhumg6lW7u61n77782JAfBEHPk9uq88t5rFY59Fx+Ude8K/Ldv7bP9Wv7XH94miciIiL6TOZOU89vHnHrzBI/t2ZNvWqy234KrCIHhWMhVdCvP755gbhQzyLt9JUE1po1jWztqFlTWK2yV1HuoKrldc3zAG/VX3lMjhlZRR1UhU/6fsLOYzqE6jPw9r3r4QQHcTFEREREn40ZKIMqrUGhcWaf6bDgbB4f1FssvcIAkLo+BQDMbx69+3o4Qbf1nOg9mEH70qnipz3w/nZhp5G6PvUq9f4A3UFV+yvo5nsyz70qQJvCqsuHFKAP4kKIiIiIPruwAB1U1fUfA7xXYU1meAWWF9vJ8dIXnTQ8h6lZU3z98e39OnwBOo51Fyr6A3RUADd711/b5zpsYea2MDwTERHR0fJXS/f5mnGYkzVkQaKQVoaem8GFnQ5tEwnrdQ47LupYf3AGFvvE13l/6xpZRb0qPJs/ODaZAJIEFwwSERHR0dpnaDZfU27ymDkqz/93adEwq8hSSZbgGNVfLc8NW4gYN2CbUnZXyS3s/UV9vkGLB6PCt/l3s10j6Hkld6zijBDcJlaeiYiI6CglGUW3L2YLB/AenCUsC333staCxG1Zp+XCrBIHiftDZp3/W/DaPteqktvaPOtVWHkmIiKio3SIwRl47+mVzU/8wfmkda9UI79ypF3Y43GYc6VXPZZUyR3HrkjHkaQ9RPqc444e3MTmnxQRERERJSIVZ5maIfRwAuAtDM6dpjbnMwszOEtIlYVyUYGzZk2hGmXAWVxYaI6625Z1A7RM6Uj6/H1UnQG2bRARERHtlYyrAwBVyXmBudt6XtgN0D9BI0nbQ9is57DeZ/80kI/oFTfJ7oa7npyxjoO7ICIiIqJjEjY+Tdo2ZIfCnptBzZoubEpiihNoV22UYrZmmP3U8prm8y/s9MG1vRwK9jwTERER7YgEZPkv8FZV7aCqZetrc0vunptZOQs6ivRJhy3cU4380m5+5ng8qUzfOrOlbbz30U/8GTA8ExEREe2IVJz13QtGVlGbITruNI1NFgcKqTqrSm5pF0BTyR0rOfbWmaHnZrzgv6+e4kPH8ExERES0Q9KWAbyF6KCqsH9KRc2aotn+ggs7Df+ug0nVrKlXbf7v+6+FwGy1ykvHp52+usJAyXGyJTi94S8IIiIioh2RnQOB90V6/raKbS/OC3pNeR1pw5DHL50q5jePgf3NZv+0uVnJv46VZyIiIqIdGFnFwBBrVpJ3MdUi7fRVoZ6F1SovVJk7qGqzvxpAaHA2JdmV8F/AOc9EREREWyAL6qQ3WKZn+HuMb53dh9G001dw/s6TXnOnwisMvKkfh7hb4z7Id6qHE6hKDgDbNoiIiIg2Zk6i0MMJTlr3StonzPDcbH9Bt/W89znKci2FenZh2kbULGXZzOXWma21ZfdnZi7uFKqSQ4pjR4iIiIg2o4cT7ybSTl99/fHNu3+FgZINT/Yt7fRVyR2r1PUprFYZVquMkjtWUZuQmNXmoN0Oj53bflpc8DmcsPJMREREtA1SpTUDpzmz+aN37RNmRTXODn5m9Rk4nPexayOrqHtu5n3MXyMPVcmx55mIiIhoGyQ0j6yiPuTpFEm3vJZtwmsPT+i5GcjEjkN+j9tQcsdKfjjIZwCw55mIiIgosbnT1Cm7uzT6Tex6HN2+zZ2mnt88Qnq4a9YUhXoWt87s07+3KDP7TEvVGWB4JiIiIkpE2h6kf3nVdtjy92Oo0s6dptbDCfTdy1KIBhA58u4zMyepHO2bJCIiItq2DqpaJmbEdWyVWbNnWoJ0oZ6FauQTt4SsQ6r+u36dMEf1ZRIRERHtytxp6p/2YOUxUoU+tsDsZ84/NgM0AO/fSSrR/hnZUcfKOMA1L38j3GGQiIiIKIIsHAtzhYG6wkCV3LE69uAMvIdcVclBNfILwVmYFeq4o5HjHJeyu0r6jz/C0X+5RERERJvooKqPbQHgtvgr0KnrU+jhBG77KbSVI6ztIkn1edV5do1fPBEREVEImfVbs6beY8ew+G+bzABtMts5pIXjtX2uw9otzKpz0lC8yXOTYtsGERER0QoXdtprS2BwDqcqucXb39nI5oxkILo1Y9Pwu+vds/8HoRpejP88xGQAAAAASUVORK5CYII=",[[-7.25,-179.75],[-22.75,179.75]],0.8,null,null,null]},{"method":"addLegend","args":[{"colors":["#FEB24C","#FD8D3C","#FC4E2A","#E31A1C","#B10026"],"labels":["0.0 &ndash; 0.2","0.2 &ndash; 0.4","0.4 &ndash; 0.6","0.6 &ndash; 0.8","0.8 &ndash; 1.0"],"na_color":null,"na_label":"NA","opacity":0.5,"position":"topright","type":"bin","title":"Bluespotted trevally","extra":null,"layerId":null,"className":"info legend","group":null}]}],"limits":{"lat":[-22.75,-7.25],"lng":[-179.75,179.75]},"fitBounds":[-46,100,-2,172,[]]},"evals":[],"jsHooks":[]}</script><p>Source: Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 10/2019.</p>
+<p>Content from AquaMaps as provided in this R package is licensed under a <a href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution-NonCommercial 3.0 UnportedLicense</a>: <img src="https://i.creativecommons.org/l/by-nc/3.0/80x15.png" style="border-width:0"></p>
+</div>
+<div id="including-attribution" class="section level2">
+<h2 class="hasAnchor">
+<a href="#including-attribution" class="anchor"></a>Including attribution</h2>
+<p>Attribution with citation information and copyright disclaimer should be included. There is a function called <code><a href="../reference/am_citation.html">am_citation()</a></code> which provides this information in “text” or “md” format (suitable for use inside Rmarkdown documents).</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># include a citation in text format</span>
 
-<span class="va">record_count</span></pre></div>
-<pre><code>## [1] 100</code></pre>
-<p>Here is an example of a query for a specific identifier in another table:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyr.tidyverse.org">tidyr</a></span><span class="op">)</span>
+<span class="fu"><a href="../reference/am_citation.html">am_citation</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] "Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 10/2019.\nContent from AquaMaps as provided in this R package is licensed under a Creative Commons Attribution-NonCommercial 3.0 UnportedLicense, please see http://creativecommons.org/licenses/by-nc/3.0/"</code></pre>
+</div>
+<div id="maps-that-include-several-species" class="section level2">
+<h2 class="hasAnchor">
+<a href="#maps-that-include-several-species" class="anchor"></a>Maps that include several species</h2>
+<p>We can also display a map using several species identifiers, for example those associated with the genus “Caranx”, but should then provide an aggregation function such as “count”, for example using:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_search_exact.html">am_search_exact</a></span><span class="op">(</span>Genus <span class="op">=</span> <span class="st">"Caranx"</span><span class="op">)</span><span class="op">$</span><span class="va">SpeciesID</span>
+<span class="va">ras</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_raster.html">am_raster</a></span><span class="op">(</span><span class="va">keys</span>, fun <span class="op">=</span> <span class="st">"count"</span><span class="op">)</span>
 
-<span class="co"># filter one table for a specific record</span>
-<span class="va">taxon_wide</span> <span class="op">&lt;-</span> 
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"taxa"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">SPECIESID</span> <span class="op">==</span> <span class="st">"Fis-26653"</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="va">collect</span>
+<span class="fu"><a href="../reference/am_map_leaflet.html">am_map_leaflet</a></span><span class="op">(</span><span class="va">ras</span>, title <span class="op">=</span> <span class="st">"Caranx"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-methods.html">fitBounds</a></span><span class="op">(</span>lng1 <span class="op">=</span> <span class="fl">100</span>, lat1 <span class="op">=</span> <span class="op">-</span><span class="fl">46</span>, lng2 <span class="op">=</span> <span class="fl">172</span>, lat2 <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span>
 
-<span class="co"># pivot the result for easier display  </span>
-<span class="va">taxon_tall</span> <span class="op">&lt;-</span> 
-  <span class="va">taxon_wide</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://tidyr.tidyverse.org/reference/gather.html">gather</a></span><span class="op">(</span><span class="va">col_name</span>, <span class="va">col_val</span><span class="op">)</span>
+<span class="fu"><a href="../reference/am_citation.html">am_citation</a></span><span class="op">(</span><span class="st">"md"</span><span class="op">)</span></code></pre></div>
+</div>
+<div id="other-usage-examples" class="section level2">
+<h2 class="hasAnchor">
+<a href="#other-usage-examples" class="anchor"></a>Other usage examples</h2>
+<p>A few examples follow below and describe how the data in the database can be queried using the provided functions in the package.</p>
+<div id="locations-in-cells-and-the-half-degree-cell-authority-file-table" class="section level3">
+<h3 class="hasAnchor">
+<a href="#locations-in-cells-and-the-half-degree-cell-authority-file-table" class="anchor"></a>Locations in cells and the half degree cell “authority file” table</h3>
+<p>Likely occurrences for a species is provided for locations in a half degree cell grid. Individual cells have characteristics associated, in a <em>H</em>alf degree <em>C</em>ell <em>A</em>uthority <em>F</em>ile, with data available through the <code><a href="../reference/am_hcaf.html">am_hcaf()</a></code> function.</p>
+<p>Information about this table is available in the help with fields explained in the <code>am_meta</code> dataset.</p>
+<p>A subset of HCAF records can be retrieved based on a certain criteria or field in that table.</p>
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/am_hcaf.html">am_hcaf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/names.html">names</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>##  [1] "ID"               "CsquareCode"      "LOICZID"          "NLimit"          
+##  [5] "Slimit"           "WLimit"           "ELimit"           "CenterLat"       
+##  [9] "CenterLong"       "CellArea"         "OceanArea"        "PWater"          
+## [13] "ClimZoneCode"     "FAOAreaM"         "FAOAreaIn"        "CountryMain"     
+## [17] "CountrySecond"    "CountryThird"     "CountrySubMain"   "CountrySubSecond"
+## [21] "CountrySubThird"  "EEZ"              "LME"              "LMEBorder"       
+## [25] "MEOW"             "OceanBasin"       "IslandsNo"        "Area0_20"        
+## [29] "Area20_40"        "Area40_60"        "Area60_80"        "Area80_100"      
+## [33] "AreaBelow100"     "ElevationMin"     "ElevationMax"     "ElevationMean"   
+## [37] "ElevationSD"      "DepthMin"         "DepthMax"         "DepthMean"       
+## [41] "DepthSD"          "SSTAnMean"        "SBTAnMean"        "SalinityMean"    
+## [45] "SalinityBMean"    "PrimProdMean"     "IceConAnn"        "OxyMean"         
+## [49] "OxyBMean"         "LandDist"         "Shelf"            "Slope"           
+## [53] "Abyssal"          "TidalRange"       "Coral"            "Estuary"         
+## [57] "Seamount"         "MPA"</code></pre>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># compute depth across all cells</span>
+<span class="fu"><a href="../reference/am_hcaf.html">am_hcaf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>depth <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">DepthMean</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/compute.html">collect</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">depth</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 438.2737</code></pre>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># cells with a depth value larger than 4000</span>
+<span class="va">deepwater</span> <span class="op">&lt;-</span> 
+  <span class="fu"><a href="../reference/am_hcaf.html">am_hcaf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">DepthMean</span> <span class="op">&gt;</span> <span class="fl">4000</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">CsquareCode</span><span class="op">)</span>
 
-<span class="co"># display</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">taxon_tall</span><span class="op">)</span></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">col_name</th>
-<th align="left">col_val</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">SPECIESID</td>
-<td align="left">Fis-26653</td>
-</tr>
-<tr class="even">
-<td align="left">SPECIESID_2016_Default</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">SPECIESID_2015</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">SPECIESID_2013</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">SPECIESID_2010</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">IDChange</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">Reviewed</td>
-<td align="left">1</td>
-</tr>
-<tr class="even">
-<td align="left">expert_id</td>
-<td align="left">7</td>
-</tr>
-<tr class="odd">
-<td align="left">SpecCode</td>
-<td align="left">7708</td>
-</tr>
-<tr class="even">
-<td align="left">Genus</td>
-<td align="left">Pomadasys</td>
-</tr>
-<tr class="odd">
-<td align="left">Species</td>
-<td align="left">stridens</td>
-</tr>
-<tr class="even">
-<td align="left">FBname</td>
-<td align="left">Striped piggy</td>
-</tr>
-<tr class="odd">
-<td align="left">FBName_DE</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">OccurRecs</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">OccurCells</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">OccurCells_Exp</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">OccurCells_2015</td>
-<td align="left">35</td>
-</tr>
-<tr class="even">
-<td align="left">OccurCells_2013</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">Kingdom</td>
-<td align="left">Animalia</td>
-</tr>
-<tr class="even">
-<td align="left">Phylum</td>
-<td align="left">Chordata</td>
-</tr>
-<tr class="odd">
-<td align="left">Class</td>
-<td align="left">Actinopterygii</td>
-</tr>
-<tr class="even">
-<td align="left">Order</td>
-<td align="left">Perciformes</td>
-</tr>
-<tr class="odd">
-<td align="left">Family</td>
-<td align="left">Haemulidae</td>
-</tr>
-<tr class="even">
-<td align="left">map_beforeafter</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">map_seasonal</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">with_gte_5</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">with_gte_6</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">with_gt_66</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">no_of_cells_3</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">no_of_cells_5</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">no_of_cells_0</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">database_id</td>
-<td align="left">10</td>
-</tr>
-<tr class="odd">
-<td align="left">picname</td>
-<td align="left">Postr_u3.jpg</td>
-</tr>
-<tr class="even">
-<td align="left">entered</td>
-<td align="left">50</td>
-</tr>
-<tr class="odd">
-<td align="left">total_native_csc_cnt</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">deepwater</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">m_mammals</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">angling</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">diving</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">dangerous</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">m_invertebrates</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">algae</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">seabirds</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">freshwater</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">highseas</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">countriesintroduced</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">invasive</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">iucn_id</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">iucn_code</td>
-<td align="left">N.E.</td>
-</tr>
-<tr class="even">
-<td align="left">iucn_version</td>
-<td align="left">2015-2</td>
-</tr>
-<tr class="odd">
-<td align="left">resilience</td>
-<td align="left">High</td>
-</tr>
-<tr class="even">
-<td align="left">no_default</td>
-<td align="left">1</td>
-</tr>
-</tbody>
-</table>
-<p>Here is an example of a summary query across several tables:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org">purrr</a></span><span class="op">)</span>
+<span class="co"># some of the on average deepest locations</span>
+<span class="va">deepwater</span></code></pre></div>
+<pre><code>## [1] "3017:488:1" "3110:205:4"</code></pre>
+<p>The cell location identifier CsquareCode can be used to look up what species are likely occuring there.</p>
+<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># species likely to occur in deepwater location(s)</span>
+<span class="va">deepwater_species</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_species_in_csc.html">am_species_in_csc</a></span><span class="op">(</span><span class="va">deepwater</span>, min_prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span>
+<span class="va">deepwater_species</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   SpeciesID     n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 Fis-29757     1</code></pre>
+<div class="sourceCode" id="cb27"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">key</span> <span class="op">&lt;-</span> <span class="va">deepwater_species</span><span class="op">$</span><span class="va">SpeciesID</span>
+<span class="fu"><a href="../reference/am_search_exact.html">am_search_exact</a></span><span class="op">(</span>SpeciesID <span class="op">=</span> <span class="va">key</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 25
+##   SpeciesID SpecCode Genus Species FBname OccurRecs OccurCells StockDefs Kingdom
+##   &lt;chr&gt;        &lt;int&gt; &lt;chr&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;int&gt;      &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;  
+## 1 Fis-29757     1896 Cara… buccul… Blues…       314        295 Southwes… Animal…
+## # … with 16 more variables: Phylum &lt;chr&gt;, Class &lt;chr&gt;, Order &lt;chr&gt;,
+## #   Family &lt;chr&gt;, deepwater &lt;int&gt;, angling &lt;int&gt;, diving &lt;int&gt;,
+## #   dangerous &lt;int&gt;, m_invertebrates &lt;int&gt;, highseas &lt;int&gt;, invasive &lt;int&gt;,
+## #   resilience &lt;chr&gt;, iucn_id &lt;int&gt;, iucn_code &lt;chr&gt;, iucn_version &lt;chr&gt;,
+## #   provider &lt;chr&gt;</code></pre>
+</div>
+<div id="species-preferences-or-environmental-envelope" class="section level3">
+<h3 class="hasAnchor">
+<a href="#species-preferences-or-environmental-envelope" class="anchor"></a>Species preferences or environmental envelope</h3>
+<p>The am_hspen() function provides the parameters for species’ environmental envelopes; data on circumstances that the species are likely to tolerate. Information about this table is available in the help with fields explained in the <code>am_meta</code> dataset.</p>
+<p>HSPEN data can be queried for example based on taxonomy for a single species or higher taxa associated with that species, or any other relevant species identifiers.</p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># use one or more keys for species</span>
+<span class="va">key</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_species_in_csc.html">am_species_in_csc</a></span><span class="op">(</span><span class="va">deepwater</span>, min_prob <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">$</span><span class="va">SpeciesID</span>
+<span class="fu"><a href="../reference/am_hspen.html">am_hspen</a></span><span class="op">(</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">SpeciesID</span> <span class="op">==</span> <span class="va">key</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/pkg/raster/man/headtail.html">head</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">collapse</span><span class="op">%&gt;%</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## Rows: ??
+## Columns: 56
+## Database: sqlite 3.33.0 [/Users/runner/work/_temp/Library/aquamapsdata/extdata/am.db]
+## $ SpeciesID       &lt;chr&gt; "Fis-29757"
+## $ Speccode        &lt;int&gt; 1896
+## $ LifeStage       &lt;chr&gt; "adults"
+## $ FAOAreas        &lt;chr&gt; "57, 61, 71"
+## $ FAOComplete     &lt;int&gt; NA
+## $ NMostLat        &lt;dbl&gt; -7
+## $ SMostLat        &lt;dbl&gt; -23
+## $ WMostLong       &lt;dbl&gt; NA
+## $ EMostLong       &lt;dbl&gt; NA
+## $ DepthYN         &lt;int&gt; 1
+## $ DepthMin        &lt;int&gt; 7
+## $ DepthPrefMin    &lt;int&gt; 12
+## $ DepthPrefMax    &lt;int&gt; 36
+## $ DepthMax        &lt;int&gt; 63
+## $ MeanDepth       &lt;int&gt; 0
+## $ Pelagic         &lt;int&gt; 0
+## $ TempYN          &lt;int&gt; 1
+## $ TempMin         &lt;dbl&gt; 23.97
+## $ TempPrefMin     &lt;dbl&gt; 25.84
+## $ TempPrefMax     &lt;dbl&gt; 28.45
+## $ TempMax         &lt;dbl&gt; 32.65
+## $ SalinityYN      &lt;int&gt; 1
+## $ SalinityMin     &lt;dbl&gt; 29.93
+## $ SalinityPrefMin &lt;dbl&gt; 33.82
+## $ SalinityPrefMax &lt;dbl&gt; 35.1
+## $ SalinityMax     &lt;dbl&gt; 35.61
+## $ PrimProdYN      &lt;int&gt; 1
+## $ PrimProdMin     &lt;dbl&gt; 1.48
+## $ PrimProdPrefMin &lt;dbl&gt; 3.67
+## $ PrimProdPrefMax &lt;dbl&gt; 12.88
+## $ PrimProdMax     &lt;dbl&gt; 21.71
+## $ IceConYN        &lt;int&gt; 1
+## $ IceConMin       &lt;dbl&gt; -1
+## $ IceConPrefMin   &lt;dbl&gt; 0
+## $ IceConPrefMax   &lt;dbl&gt; 0
+## $ IceConMax       &lt;dbl&gt; 0
+## $ OxyYN           &lt;int&gt; 0
+## $ OxyMin          &lt;dbl&gt; 100.38
+## $ OxyPrefMin      &lt;dbl&gt; 196.51
+## $ OxyPrefMax      &lt;dbl&gt; 209.1
+## $ OxyMax          &lt;dbl&gt; 213.7
+## $ LandDistYN      &lt;int&gt; 0
+## $ LandDistMin     &lt;dbl&gt; 3
+## $ LandDistPrefMin &lt;dbl&gt; 16
+## $ LandDistPrefMax &lt;dbl&gt; 210
+## $ LandDistMax     &lt;dbl&gt; 421
+## $ Remark          &lt;chr&gt; NA
+## $ DateCreated     &lt;chr&gt; "2019-06-24 00:00:00"
+## $ DateModified    &lt;chr&gt; NA
+## $ expert_id       &lt;int&gt; NA
+## $ DateExpert      &lt;chr&gt; NA
+## $ Layer           &lt;chr&gt; "s"
+## $ Rank            &lt;int&gt; 1
+## $ MapOpt          &lt;int&gt; 1
+## $ ExtnRuleYN      &lt;int&gt; 1
+## $ Reviewed        &lt;int&gt; NA</code></pre>
+<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># for higher taxa - find the keys associated with higher taxa </span>
+<span class="co"># am_search_exact(Family = am_search_exact(SpeciesID = key)$Family)</span></code></pre></div>
+</div>
+<div id="species-and-locations" class="section level3">
+<h3 class="hasAnchor">
+<a href="#species-and-locations" class="anchor"></a>Species and locations</h3>
+<p>In the beginning of the vignette, the taxonomy name search functions were illustrated with some examples. These allow for getting a list of available mapped species based on a certain criteria, so that native habitat can be mapped for a set of species based on taxonomic criteria.</p>
+<p>We can also use a function to list species occurring in an area; a location with cells identified by a single or multiple CsquareCode identifiers. Another function allows querying for species diversity or richness across a set of cells. Both these functions allows for specifying a minimum threshold for the probability that the cell is a suitable native species habitat.</p>
+<p>A location can be determined based on a user defined bounding box or extent (given by four coordinates). Using am_hcaf() a set of cells can be determined based on other criteria, allowing retrieval of CsquareCode cell identifiers that belong to a specific LME, for example.</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># get cell identifiers for a bounding box or extent</span>
+<span class="va">csc</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_csc_from_extent.html">am_csc_from_extent</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">120</span>, <span class="op">-</span><span class="fl">22</span>, <span class="op">-</span><span class="fl">7</span><span class="op">)</span><span class="op">$</span><span class="va">CsquareCode</span>
 
-<span class="co"># function which gives the record cound for a given table</span>
-<span class="va">ls_count</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">table</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">res</span> <span class="op">&lt;-</span> <span class="va">table</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>count <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">collect</span> <span class="op">%&gt;%</span> <span class="va">.</span><span class="op">$</span><span class="va">count</span>
-  <span class="va">title</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">table</span><span class="op">$</span><span class="va">ops</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
-  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>table <span class="op">=</span> <span class="va">title</span>, record_count <span class="op">=</span> <span class="va">res</span><span class="op">)</span>
-  
-<span class="op">}</span>
-
-<span class="co"># get record counts for all tables</span>
-<span class="va">am_counts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"nativemaps"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_count</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"hcaf"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_count</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"hspen"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_count</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"occ"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_count</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"taxa"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_count</span>
-<span class="op">)</span>
-
-<span class="co"># display</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">am_counts</span><span class="op">)</span></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">table</th>
-<th align="right">record_count</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">nativemaps</td>
-<td align="right">100</td>
-</tr>
-<tr class="even">
-<td align="left">hcaf</td>
-<td align="right">100</td>
-</tr>
-<tr class="odd">
-<td align="left">hspen</td>
-<td align="right">100</td>
-</tr>
-<tr class="even">
-<td align="left">occ</td>
-<td align="right">100</td>
-</tr>
-<tr class="odd">
-<td align="left">taxa</td>
-<td align="right">25078</td>
-</tr>
-</tbody>
-</table>
-<p>Here is an example of fuzzy and exact name searchers, returning keys with the internal identifiers used in the database. Those keys can be used to retrieve other information, such as environmental envelopes etc.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit">
-<span class="co"># fuzzy search for "trout OR cod"</span>
-
-<span class="va">keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_name_search_fuzzy.html">am_name_search_fuzzy</a></span><span class="op">(</span><span class="st">"trout OR cod"</span><span class="op">)</span><span class="op">$</span><span class="va">key</span>
-
-<span class="co"># exact results for all those keys</span>
-
-<span class="va">hits</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map_df</a></span><span class="op">(</span><span class="va">keys</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="../reference/am_name_search_exact.html">am_name_search_exact</a></span><span class="op">(</span>key <span class="op">=</span> <span class="va">x</span><span class="op">)</span><span class="op">)</span>
-
-<span class="co"># we inspect the species list we got </span>
-
-<span class="va">display</span> <span class="op">&lt;-</span> <span class="va">hits</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">key</span>, <span class="va">binomial</span>, <span class="va">rank_family</span>, <span class="va">vernacular</span><span class="op">)</span>
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">display</span><span class="op">)</span></pre></div>
+<span class="co"># within in this area, the following species are listed appear, each in n cells</span>
+<span class="fu"><a href="../reference/am_species_in_csc.html">am_species_in_csc</a></span><span class="op">(</span><span class="va">csc</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 1 x 2
+##   SpeciesID     n
+##   &lt;chr&gt;     &lt;int&gt;
+## 1 Fis-29757   105</code></pre>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># in each cell location, the following number of distinct species are likely</span>
+<span class="co"># a measure of species diversity or "richness"</span>
+<span class="fu"><a href="../reference/am_species_per_csc.html">am_species_per_csc</a></span><span class="op">(</span><span class="va">csc</span>, min_prob <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></code></pre></div>
+<pre><code>## # A tibble: 53 x 2
+##    CsquareCode n_species
+##    &lt;chr&gt;           &lt;int&gt;
+##  1 3010:475:2          1
+##  2 3011:486:4          1
+##  3 3011:487:3          1
+##  4 3011:487:4          1
+##  5 3011:488:3          1
+##  6 3011:488:4          1
+##  7 3011:489:3          1
+##  8 3011:489:4          1
+##  9 3011:496:2          1
+## 10 3011:497:1          1
+## # … with 43 more rows</code></pre>
+</div>
+</div>
+<div id="data-scope-and-content" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-scope-and-content" class="anchor"></a>Data scope and content</h2>
+<p>The <code>dplyr</code> package can be used to query the various tables available in the database.</p>
+<p>Here is a description of tables and fields which are included.</p>
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">am_meta</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <colgroup>
-<col width="13%">
-<col width="38%">
-<col width="20%">
-<col width="27%">
+<col width="4%">
+<col width="4%">
+<col width="87%">
+<col width="2%">
+<col width="1%">
 </colgroup>
 <thead><tr class="header">
-<th align="left">key</th>
-<th align="left">binomial</th>
-<th align="left">rank_family</th>
-<th align="left">vernacular</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">Fis-29394</td>
-<td align="left">Gadus morhua</td>
-<td align="left">Gadidae</td>
-<td align="left">Atlantic cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-21630</td>
-<td align="left">Salmo trutta</td>
-<td align="left">Salmonidae</td>
-<td align="left">Sea trout</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-22919</td>
-<td align="left">Oncorhynchus mykiss</td>
-<td align="left">Salmonidae</td>
-<td align="left">Rainbow trout</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-22950</td>
-<td align="left">Salvelinus fontinalis</td>
-<td align="left">Salmonidae</td>
-<td align="left">Brook trout</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-29393</td>
-<td align="left">Gadus macrocephalus</td>
-<td align="left">Gadidae</td>
-<td align="left">Pacific cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-29395</td>
-<td align="left">Gadus ogac</td>
-<td align="left">Gadidae</td>
-<td align="left">Greenland cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-22874</td>
-<td align="left">Eleginus gracilis</td>
-<td align="left">Gadidae</td>
-<td align="left">Saffron cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-22850</td>
-<td align="left">Boreogadus saida</td>
-<td align="left">Gadidae</td>
-<td align="left">Polar cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-23211</td>
-<td align="left">Parapercis colias</td>
-<td align="left">Pinguipedidae</td>
-<td align="left">New Zealand blue cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-23313</td>
-<td align="left">Trisopterus minutus</td>
-<td align="left">Gadidae</td>
-<td align="left">Poor cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-23375</td>
-<td align="left">Arctogadus glacialis</td>
-<td align="left">Gadidae</td>
-<td align="left">Arctic cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-30744</td>
-<td align="left">Tripterophycis gilchristi</td>
-<td align="left">Moridae</td>
-<td align="left">Grenadier cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-156254</td>
-<td align="left">Oncorhynchus clarkii</td>
-<td align="left">Salmonidae</td>
-<td align="left">Cutthroat trout</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-25479</td>
-<td align="left">Patagonotothen tessellata</td>
-<td align="left">Nototheniidae</td>
-<td align="left">Black southern cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-32206</td>
-<td align="left">Muraenolepis microps</td>
-<td align="left">Muraenolepididae</td>
-<td align="left">Smalleye moray cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-32207</td>
-<td align="left">Muraenolepis orangiensis</td>
-<td align="left">Muraenolepididae</td>
-<td align="left">Patagonian moray cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-132766</td>
-<td align="left">Guttigadus kongi</td>
-<td align="left">Moridae</td>
-<td align="left">Austral cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-32209</td>
-<td align="left">Melanonus gracilis</td>
-<td align="left">Melanonidae</td>
-<td align="left">Pelagic cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-32663</td>
-<td align="left">Euclichthys polynemus</td>
-<td align="left">Euclichthyidae</td>
-<td align="left">Eucla cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-26963</td>
-<td align="left">Plectorhinchus pictus</td>
-<td align="left">Haemulidae</td>
-<td align="left">Trout sweetlips</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-32814</td>
-<td align="left">Bregmaceros mcclellandi</td>
-<td align="left">Bregmacerotidae</td>
-<td align="left">Unicorn cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-27758</td>
-<td align="left">Patagonotothen ramsayi</td>
-<td align="left">Nototheniidae</td>
-<td align="left">Longtail southern cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-34101</td>
-<td align="left">Physiculus nigrescens</td>
-<td align="left">Moridae</td>
-<td align="left">Darktip cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-34769</td>
-<td align="left">Physiculus roseus</td>
-<td align="left">Moridae</td>
-<td align="left">Rosy cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-35280</td>
-<td align="left">Galaxias truttaceus</td>
-<td align="left">Galaxiidae</td>
-<td align="left">Spotted mountain trout</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-132770</td>
-<td align="left">Guttigadus globiceps</td>
-<td align="left">Moridae</td>
-<td align="left">Fat-headed cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-35713</td>
-<td align="left">Lepidion microcephalus</td>
-<td align="left">Moridae</td>
-<td align="left">Small-headed cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-35714</td>
-<td align="left">Physiculus luminosa</td>
-<td align="left">Moridae</td>
-<td align="left">Luminescent cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-138560</td>
-<td align="left">Scorpaena papillosa</td>
-<td align="left">Scorpaenidae</td>
-<td align="left">Red rock cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-53166</td>
-<td align="left">Lepidion inosimae</td>
-<td align="left">Moridae</td>
-<td align="left">Morid cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-53173</td>
-<td align="left">Lepidion schmidti</td>
-<td align="left">Moridae</td>
-<td align="left">Schmidt’s cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-149273</td>
-<td align="left">Gadella jordani</td>
-<td align="left">Moridae</td>
-<td align="left">Jordan’s cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-138548</td>
-<td align="left">Lotella rhacina</td>
-<td align="left">Moridae</td>
-<td align="left">Rock cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-56732</td>
-<td align="left">Bregmaceros rarisquamosus</td>
-<td align="left">Bregmacerotidae</td>
-<td align="left">Big-eye unicorn-cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-114147</td>
-<td align="left">Physiculus therosideros</td>
-<td align="left">Moridae</td>
-<td align="left">Scalyfin cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-132563</td>
-<td align="left">Physiculus longifilis</td>
-<td align="left">Moridae</td>
-<td align="left">Filament cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-158488</td>
-<td align="left">Muraenolepis marmorata</td>
-<td align="left">Muraenolepididae</td>
-<td align="left">Marbled moray cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-164244</td>
-<td align="left">Notomuraenobathys microcephalus</td>
-<td align="left">Muraenolepididae</td>
-<td align="left">Smallhead moray cod</td>
-</tr>
-<tr class="odd">
-<td align="left">Fis-132771</td>
-<td align="left">Guttigadus globosus</td>
-<td align="left">Moridae</td>
-<td align="left">Tadpole cod</td>
-</tr>
-<tr class="even">
-<td align="left">Fis-132564</td>
-<td align="left">Tripterophycis svetovidovi</td>
-<td align="left">Moridae</td>
-<td align="left">Brown grenadier cod</td>
-</tr>
-</tbody>
-</table>
-<blockquote>
-<p>What would be the most frequently needed queries? These could be wrapped up and exposed as documented functions.</p>
-</blockquote>
-</div>
-<div id="schema" class="section level2">
-<h2 class="hasAnchor">
-<a href="#schema" class="anchor"></a>Schema</h2>
-<p>For a table such as the <code>occ</code> table, columns are currently named using different styles, as seen in the earlier example. For example a mix of UPPERCASE, snake case delimited lower case words, CamelCasedWord, nocase etc:</p>
-<pre><code>SPECIESID
-SPECIESID_2016_Default
-IDChange
-Reviewed
-expert_id
-map_beforeafter
-map_seasonal
-picname</code></pre>
-<blockquote>
-<p>Should column names be harmonized? A “mapping table” could do this.</p>
-</blockquote>
-<blockquote>
-<p>If so, what would be a good set of harmonized column names?</p>
-</blockquote>
-<p>Listing all the columns in all tables of the database and their types gives us a feel for the schema:</p>
-<div class="sourceCode" id="cb9"><pre class="downlit">
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/rstudio/DT">DT</a></span><span class="op">)</span>
-
-<span class="co"># for a db table, return a tibble with the columns and their data types</span>
-<span class="va">ls_types</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">table</span><span class="op">)</span> <span class="op">{</span>
-  <span class="va">res</span> <span class="op">&lt;-</span> <span class="va">table</span> <span class="op">%&gt;%</span> <span class="va">head</span> <span class="op">%&gt;%</span> <span class="va">collect</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">type_sum</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">unlist</span>
-  <span class="va">colname</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">res</span><span class="op">)</span>
-  <span class="va">title</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="va">table</span><span class="op">$</span><span class="va">ops</span><span class="op">$</span><span class="va">x</span><span class="op">)</span>
-  <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op">(</span>table <span class="op">=</span> <span class="va">title</span>, col_name <span class="op">=</span> <span class="va">colname</span>, col_type <span class="op">=</span> <span class="va">res</span>, desc <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span>
-<span class="op">}</span>
-
-<span class="co"># run the above function on all tables</span>
-<span class="va">am_schema</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind.html">bind_rows</a></span><span class="op">(</span>
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"nativemaps"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_types</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"hcaf"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_types</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"hspen"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_types</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"occ"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_types</span>,
-  <span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/tbl.html">tbl</a></span><span class="op">(</span><span class="st">"taxa"</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="va">ls_types</span>
-<span class="op">)</span>
-
-<span class="fu"><a href="https://rdrr.io/pkg/DT/man/datatable.html">datatable</a></span><span class="op">(</span><span class="va">am_schema</span><span class="op">)</span></pre></div>
-<div id="htmlwidget-6c9c84aefa3480f7e3be" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6c9c84aefa3480f7e3be">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123","124","125","126","127","128","129","130","131","132","133","134","135","136","137","138","139","140","141","142","143","144","145","146","147","148","149","150","151","152","153","154","155","156","157","158","159","160","161","162","163","164","165","166","167","168","169","170","171","172","173","174","175","176","177","178","179","180","181","182","183","184","185","186","187","188","189","190","191","192","193","194","195","196","197","198","199","200","201","202","203","204","205","206","207","208","209","210","211","212","213","214","215","216","217","218","219","220","221","222","223","224","225","226","227","228","229","230","231","232","233","234","235","236","237","238","239","240","241","242","243","244","245","246","247","248","249"],["nativemaps","nativemaps","nativemaps","nativemaps","nativemaps","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hcaf","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","hspen","occ","occ","occ","occ","occ","occ","occ","occ","occ","occ","occ","occ","occ","occ","occ","occ","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa","taxa"],["SpeciesID","CsquareCode","probability","FAOAreaYN","BoundBoxYN","CsquareCode","LOICZID","NLimit","Slimit","WLimit","ELimit","CenterLat","CenterLong","CellArea","OceanArea","CellType","PWater","FAOAreaM","FAOAreaIn","CountryMain","CountrySecond","CountryThird","CountrySubMain","CountrySubSecond","CountrySubThird","EEZ","EEZRemark","LME","LMEBorder","MEOW","OceanBasin","Longhurst","IslandsNo","Area0_20","Area20_40","Area40_60","Area60_80","Area80_100","AreaBelow100","ElevationMin","ElevationMax","ElevationMean","ElevationSD","DepthMin","DepthMax","DepthMean","DepthSD","SSTMnMin","SSTMnMax","SSTAnMean","SSTAnSD","SSTMnRange","SBTAnMean","SalinityMin","SalinityMax","SalinityMean","SalinitySD","SalinityBMean","PrimProdMean","IceConAnn","Shelf","Slope","IceConSpr","IceConSum","IceConFal","IceConWin","LandDist","WaveHeight","TidalRange","Abyssal","Coral","Estuary","Seamount","MPA","SST1950","SBT1950","Salinity1950","SalinityB1950","PrimProd1950","IceCon1950","SST1999","SBT1999","Salinity1999","SalinityB1999","PrimProd1999","IceCon1999","SST2050","SBT2050","Salinity2050","SalinityB2050","PrimProd2050","IceCon2050","SST2100","SBT2100","Salinity2100","SalinityB2100","PrimProd2100","IceCon2100","SST1950c","SBT1950c","Salinity1950c","SalinityB1950c","PrimProd1950c","IceCon1950c","SST2050c","SBT2050c","Salinity2050c","SalinityB2050c","PrimProd2050c","IceCon2050c","SST2100c","SBT2100c","Salinity2100c","SalinityB2100c","IceCon2100c","PrimProd2100c","Speccode","SpeciesID","LifeStage","FAOAreas","FAOAreasRef","FAOComplete","NMostLat","SMostLat","WMostLong","EMostLong","LME","DepthYN","DepthMin","DepthPrefMin","DepthPrefMax","DepthMax","MeanDepth","DepthRef","Pelagic","TempYN","TempMin","TempPrefMin","TempPrefMax","TempMax","TempRef","SalinityYN","SalinityMin","SalinityPrefMin","SalinityPrefMax","SalinityMax","SalinityRef","PrimProdYN","PrimProdMin","PrimProdPrefMin","PrimProdPrefMax","PrimProdMax","PrimProdPrefRef","IceConYN","IceConMin","IceConPrefMin","IceConPrefMax","IceConMax","IceConRef","LandDistYN","LandDistMin","LandDistPrefMin","LandDistPrefMax","LandDistMax","LandDistRef","Remark","DateCreated","DateModified","Expert","DateExpert","Envelope","MapData","Effort","Layer","UsePoints","Rank","MapOpt","ExtnRuleYN","IPCC","Reviewed","OccurCells","ExpertEdited","inc","CsquareCode","SpeciesID","SpecCode","GoodCell","InFAOArea","InBoundBox","GBIFYN","OBISYN","CountryPointYN","FBSLBYN","CenterLat","CenterLong","FAOAreaM","expert_id","SPECIESID","SPECIESID_2016_Default","SPECIESID_2015","SPECIESID_2013","SPECIESID_2010","IDChange","Reviewed","expert_id","SpecCode","Genus","Species","FBname","FBName_DE","OccurRecs","OccurCells","OccurCells_Exp","OccurCells_2015","OccurCells_2013","Kingdom","Phylum","Class","Order","Family","map_beforeafter","map_seasonal","with_gte_5","with_gte_6","with_gt_66","no_of_cells_3","no_of_cells_5","no_of_cells_0","database_id","picname","entered","total_native_csc_cnt","deepwater","m_mammals","angling","diving","dangerous","m_invertebrates","algae","seabirds","freshwater","highseas","countriesintroduced","invasive","iucn_id","iucn_code","iucn_version","resilience","no_default"],["chr","chr","dbl","int","int","chr","int","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","chr","int","int","int","chr","chr","chr","chr","chr","chr","int","chr","int","int","int","int","chr","int","dbl","dbl","dbl","dbl","dbl","dbl","int","int","dbl","dbl","int","int","int","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","chr","dbl","int","dbl","dbl","dbl","dbl","dbl","dbl","dbl","int","int","int","dbl","dbl","dbl","int","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","dbl","int","dbl","dbl","dbl","dbl","dbl","int","dbl","dbl","dbl","dbl","dbl","dbl","int","dbl","chr","chr","chr","chr","chr","int","int","int","int","chr","int","dbl","dbl","dbl","dbl","chr","chr","int","int","dbl","dbl","dbl","dbl","chr","int","dbl","dbl","dbl","dbl","chr","int","dbl","dbl","dbl","dbl","chr","int","dbl","dbl","dbl","dbl","chr","int","dbl","dbl","dbl","dbl","chr","chr","dbl","chr","chr","dbl","chr","chr","chr","chr","chr","int","int","int","chr","chr","chr","chr","chr","chr","chr","int","int","int","int","int","int","int","int","dbl","dbl","int","chr","chr","chr","chr","chr","chr","int","int","int","int","chr","chr","chr","chr","int","int","chr","int","chr","chr","chr","chr","chr","chr","chr","chr","chr","chr","chr","chr","chr","chr","int","chr","int","chr","int","int","int","int","int","int","chr","chr","chr","chr","chr","chr","int","chr","chr","chr","int"],[null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>table<\/th>\n      <th>col_name<\/th>\n      <th>col_type<\/th>\n      <th>desc<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]}},"evals":[],"jsHooks":[]}</script><p>Some column names match across tables, do those represent keys that can be used for linking data across the tables?</p>
-<div class="sourceCode" id="cb10"><pre class="downlit">
-<span class="va">duplicated_colnames</span> <span class="op">&lt;-</span> 
-  <span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span><span class="op">(</span><span class="va">am_schema</span><span class="op">$</span><span class="va">col_name</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/duplicated.html">duplicated</a></span><span class="op">(</span><span class="va">am_schema</span><span class="op">$</span><span class="va">col_name</span><span class="op">)</span><span class="op">]</span><span class="op">)</span>
-
-<span class="va">am_keys</span> <span class="op">&lt;-</span> 
-  <span class="va">am_schema</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">col_name</span> <span class="op">%in%</span> <span class="va">duplicated_colnames</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">col_name</span><span class="op">)</span>
-
-<span class="co"># sometimes the datatypes are different where the column name are equal</span>
-
-<span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="va">am_keys</span><span class="op">)</span></pre></div>
-<table class="table">
-<thead><tr class="header">
 <th align="left">table</th>
-<th align="left">col_name</th>
-<th align="left">col_type</th>
-<th align="left">desc</th>
+<th align="left">field</th>
+<th align="left">description</th>
+<th align="left">type_mysql</th>
+<th align="left">type</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">hcaf</td>
+<td align="left">hcaf_r</td>
+<td align="left">ID</td>
+<td align="left">Unique HCAF ID, for internal use only.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">CsquareCode</td>
+<td align="left">A unique identifier for every half-degree cell in the global map based on the c-square method - a hierarchical cell labelling system developed at CSIRO Oceans and Atmosphere (then CSIRO Marine Research). Example: 3414:227:3</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">LOICZID</td>
+<td align="left">LOICZ ID numbers are long integers from 1 to 259200. They begin with the cell centered at 89.75 degrees N latitude and 179.75 degrees W latitude and proceed from West to East. When a full circle of 720 cells is completed, the numbering steps one cell south along the -180 meridian and continues sequentially west to east.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">NLimit</td>
+<td align="left">Northern boundary of cell in decimal degrees latitude (positive in N hemisphere, negative in S hemisphere). Points falling on this line are considered inside the cell in the S hemisphere (exception: cells adjoining the equator, i.e., where N_limit = 0). Also (polar case), points on this line are “inside” in the N hemisphere when N_limit = 90.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">Slimit</td>
+<td align="left">Southern boundary of cell in decimal degrees latitude (positive in N hemisphere, negative in S hemisphere). Points falling on this line are considered inside the cell in the N hemisphere. Also (polar case), points on this line are “inside” in the S hemisphere when S_limit = -90.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">WLimit</td>
+<td align="left">Western boundary of cell in decimal degrees latitude (positive in E hemisphere, negative in W hemisphere). Points falling on this line are considered inside the cell in the E hemisphere. Also (boundary case), points on this line are “inside” in the W hemisphere when W_limit = -180.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">ELimit</td>
+<td align="left">Eastern boundary of cell in decimal degrees latitude (positive in E hemisphere, negative in W hemisphere). Points falling on this line are considered inside the cell in the W hemisphere (exception: cells adjoining the Greenwich Meridian, i.e., where E_limit = 0). Also (boundary case), points on this line are “inside” in the E hemisphere when E_limit = 180.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
 <td align="left">CenterLat</td>
+<td align="left">The center point of the cell in decimal degrees latitude.</td>
+<td align="left">double</td>
 <td align="left">dbl</td>
-<td align="left">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">CenterLong</td>
+<td align="left">The center point of the cell in decimal degrees longitude.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
 </tr>
 <tr class="even">
-<td align="left">occ</td>
+<td align="left">hcaf_r</td>
+<td align="left">CellArea</td>
+<td align="left">The total area inside the cell in square kilometers, using WGS84 and Miller cylindrical projection (KGS description).</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">OceanArea</td>
+<td align="left">The area in the cell that is normally covered by sea water or permanent ice, in square kilometers (KGS description).</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">PWater</td>
+<td align="left">Proportion of water in each cell.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">ClimZoneCode</td>
+<td align="left">Climate zone to which the cell belongs based on climate zone shape file in SAU database.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">FAOAreaM</td>
+<td align="left">Code number of FAO statistical area to which the cell belongs, for all oceanic and coastal cells.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">FAOAreaIn</td>
+<td align="left">Code number of FAO statistical area to which the cell belongs, for all inland and coastal cells.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">CountryMain</td>
+<td align="left">UN code number of country, island or area to which the largest land area of the cell belongs, for all inland and coastal cells.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">CountrySecond</td>
+<td align="left">UN code number of country, island or area to which the second largest land area of the cell belongs, for all inland and coastal cells.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">CountryThird</td>
+<td align="left">UN code number of country, island or area to which the third largest land area of the cell belongs, for all inland and coastal cells.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">CountrySubMain</td>
+<td align="left">ISO code number of state, province, region to which the largest land area of the cell belongs.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">CountrySubSecond</td>
+<td align="left">ISO code number of state, province, region to which the second largest land area of the cell belongs.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">CountrySubThird</td>
+<td align="left">ISO code number of state, province, region to which the third largest land area of the cell belongs.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">EEZ</td>
+<td align="left">Code number of country, island or area to which the EEZ area in the cell belongs, for all coastal and oceanic cells.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">LME</td>
+<td align="left">Code number of the large marine ecosystem to which the cell belongs, as given by NOAA (<a href="http://www.lme.noaa.gov" class="uri">http://www.lme.noaa.gov</a>), for all coastal and oceanic cells.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">LMEBorder</td>
+<td align="left">Tags whether or not cell lies along the border of an LME. 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">MEOW</td>
+<td align="left">5-digit code (ECO_Code) refering to the marine ecoregion the cell belongs to, as assigned by MEOW, a biogeographic classification of the world’s coasts and shelves.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">OceanBasin</td>
+<td align="left">Major ocean basins of world with north and south sub-basins separated by latitudinal data from literature.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">IslandsNo</td>
+<td align="left">Number of coastal or oceanic islands contained in cell, as provided by the World Vector Shoreline database.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">Area0_20</td>
+<td align="left">Area in cell from 0-20 m depth, in square kilometers, as provided by Smith and Sandwell: Bathymetry and Elevation (currently only 70 N to 70 S).</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">Area20_40</td>
+<td align="left">Area in cell from 20-40 m depth, in square kilometers, as provided by Smith and Sandwell: Bathymetry and Elevation.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">Area40_60</td>
+<td align="left">Area in cell from 40-60 m depth, in square kilometers, as provided by Smith and Sandwell: Bathymetry and Elevation.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">Area60_80</td>
+<td align="left">Area in cell 60-80 m depth, in square kilometers, as provided by Smith and Sandwell: Bathymetry and Elevation.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">Area80_100</td>
+<td align="left">Area in cell from 80-100 m depth, in square kilometers, as provided by Smith and Sandwell: Bathymetry and Elevation.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">AreaBelow100</td>
+<td align="left">Area in cell below 100 m depth, in square kilometers, as provided by Smith and Sandwell: Bathymetry and Elevation.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">ElevationMin</td>
+<td align="left">Minimum elevation above sea level in meters, as provided by ETOPO2.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">ElevationMax</td>
+<td align="left">Maximum elevation above sea level in cell in meters, as provided by ETOPO2.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">ElevationMean</td>
+<td align="left">Mean elevation above sea level in meters, as provided by ETOPO2.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">ElevationSD</td>
+<td align="left">Standard deviation of mean elevation above sea level in meters, as provided by ETOPO2.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">DepthMin</td>
+<td align="left">Minimum ETOPO 2min bathymetry (negative) elevation in 30min cell.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">DepthMax</td>
+<td align="left">Maximum ETOPO 2min bathymetry (negative) elevation in 30min cell.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">DepthMean</td>
+<td align="left">Mean ETOPO 2min bathymetry (negative) elevation in 30min cell.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">DepthSD</td>
+<td align="left">Standard deviation of mean bottom depth below sea level in meters, as provided by ETOPO2.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">SSTAnMean</td>
+<td align="left">Mean annual sea surface temperature in degree Celsius (2000-2014), as derived from Bio-ORACLE, for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">SBTAnMean</td>
+<td align="left">Mean annual sea bottom temperature in degree Celsius, as derived from Bio-ORACLE (2000-2014), for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">SalinityMean</td>
+<td align="left">Mean annual surface salinity in practical salinity scale (PSS), as derived from Bio-ORACLE (2000-2014), for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">SalinityBMean</td>
+<td align="left">Mean annual bottom salinity in practical salinity scale (PSS), as derived from Bio-ORACLE (2000-2014), for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">PrimProdMean</td>
+<td align="left">Proportion of annual surface primary production in a cell in mgC·m-3·day -1, for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">IceConAnn</td>
+<td align="left">Mean annual sea ice concentration in percent (or fraction from 0-1), as derived from Bio-ORACLE (2000-2014), for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">OxyMean</td>
+<td align="left">Mean annual dissolved molecular oxygen at the surface, in millimole per cubic meter, as derived from Bio-ORACLE (2000-2014), for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">OxyBMean</td>
+<td align="left">Mean annual dissolved molecular oxygen at the surface, in millimole per cubic meter, as derived from Bio-ORACLE (2000-2014), for all coastal and oceanic cells, from 90 N to 78.5 S.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">LandDist</td>
+<td align="left">Distance (km) to the nearest coastal cell (water cells only).</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">Shelf</td>
+<td align="left">The water area of the cell that lies within the shelf zone (0 - 200m depth); based on min/max elevation and proportion in depth zone.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">Slope</td>
+<td align="left">The water area of the cell that lies within the slope zone (&gt;200 - 4000m depth); based on min/max elevation and proportion in depth zone.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">Abyssal</td>
+<td align="left">The water area of the cell that lies within the abyssal zone (&gt; 4000m depth); based on min/max elevation and proportion in depth zone.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">TidalRange</td>
+<td align="left">Extent of tides in scaled discrete classes as provided by the original LOICZ Database, for all coastal and oceanic cells.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">Coral</td>
+<td align="left">Proportion of whole (even non-water) cell covered by coral WCMC pixelclassify - NOT corrected to 284,300 sq km globally World Atlas of Coral Reefs UNEP WCMC 2001.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">Estuary</td>
+<td align="left">Area covered by estuaries in the cell.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_r</td>
+<td align="left">Seamount</td>
+<td align="left">Number of known seamounts attributed to the cell.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_r</td>
+<td align="left">MPA</td>
+<td align="left">Proportion of cell covered by a Marine Protected Area.</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">SpeciesID</td>
+<td align="left">AquaMaps’ unique identifier for a valid species used by the Catalogue of Life Annual Checklist (www.catalogueoflife.org). Example for the whale shark: Fis-30583</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">SpecCode</td>
+<td align="left">Species identifier used in FishBase or SeaLifeBase</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">Genus</td>
+<td align="left">Genus name of the species</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">Species</td>
+<td align="left">Specific epithet of the species</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">FBname</td>
+<td align="left">Common name suggested by FishBase or SeaLifeBase</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">OccurRecs</td>
+<td align="left">Number of point records used to generate good cells</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">OccurCells</td>
+<td align="left">Number of good cells used to generate species envelope</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">StockDefs</td>
+<td align="left">Distribution of the species as recorded in FishBase or SeaLifeBase</td>
+<td align="left">longtext</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">Kingdom</td>
+<td align="left">Kingdom to which the species belongs</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">Phylum</td>
+<td align="left">Phylum to which the species belongs</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">Class</td>
+<td align="left">Class to which the species belongs</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">Order</td>
+<td align="left">Order to which the species belongs</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">Family</td>
+<td align="left">Family to which the species belongs</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">deepwater</td>
+<td align="left">Does the species occur in the deep-sea (i.e. tagged bathypelagic or bathydemersal in FishBase or SeaLifeBase)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">angling</td>
+<td align="left">Is the species a sport fish (i.e. tagged as a GameFish in FishBase)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">diving</td>
+<td align="left">Is the species found on a dive (i.e. where DepthPrefMin in HSPEN &lt; 20 meters)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">dangerous</td>
+<td align="left">Is the species dangerous (i.e. tagged as ‘traumatogenic or venonous’ in FishBase or SeaLifeBase)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">m_invertebrates</td>
+<td align="left">Is the species a marine invertebrate? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">highseas</td>
+<td align="left">Is the species an open ocean fish species (i.e. tagged as pelagic-oceanic in FishBase)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">invasive</td>
+<td align="left">Is the species recorded to be invasive (i.e. in FishBase or SeaLifeBase)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">resilience</td>
+<td align="left">Resilience of the species (i.e. as recorded in FishBase/SeaLifeBase)</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">iucn_id</td>
+<td align="left">IUCN species identifier</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">iucn_code</td>
+<td align="left">IUCN Red list classification assigned to the species</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">speciesoccursum_r</td>
+<td align="left">iucn_version</td>
+<td align="left">IUCN version</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">speciesoccursum_r</td>
+<td align="left">provider</td>
+<td align="left">FishBase (FB) or SeaLifeBase (SLB)?</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
+<td align="left">RecordID</td>
+<td align="left">Unique occurrencecells ID, for internal use only.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">occurrencecells_r</td>
+<td align="left">CsquareCode</td>
+<td align="left">A unique identifier for every half-degree cell in the global map based on the c-square method - a hierarchical cell labelling system developed at CSIRO Oceans and Atmosphere (then CSIRO Marine Research). Example: 3414:227:3</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
+<td align="left">SpeciesID</td>
+<td align="left">AquaMaps’ unique identifier for a valid species used by the Catalogue of Life Annual Checklist (www.catalogueoflife.org). Example for the whale shark: Fis-30583</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">occurrencecells_r</td>
+<td align="left">SpecCode</td>
+<td align="left">Species identifier used in FishBase/SeaLifeBase.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
+<td align="left">GoodCell</td>
+<td align="left">Is the cell a good cell (following the AquaMaps’ definition of a good cell i.e. cCell falls inside the known bounding box and/or FAO areas where the species is reported to occur)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">occurrencecells_r</td>
+<td align="left">InFAOArea</td>
+<td align="left">Does the cell occur within the FAO areas where the species is reported to occur? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
+<td align="left">InBoundBox</td>
+<td align="left">Does the cell occur within the bounding box where the species is reported to occur? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">occurrencecells_r</td>
+<td align="left">GBIF_YN</td>
+<td align="left">Is the cell partially/completely based on GBIF point data? null=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
+<td align="left">OBIS_YN</td>
+<td align="left">Is the cell partially/completely based on OBIS point data? null=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">occurrencecells_r</td>
+<td align="left">FBSLB_YN</td>
+<td align="left">Is the cell partially/completely based on FishBase/SeaLifeBase occurrence records? null=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
+<td align="left">CountryPoint_YN</td>
+<td align="left">Is the cell partially/completely based on FishBase/SeaLifeBase country records? null=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">occurrencecells_r</td>
+<td align="left">AWI_YN</td>
+<td align="left">Is the cell partially/completely based on AWI point data? null=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
+<td align="left">IATTC_YN</td>
+<td align="left">Is the cell partially/completely based on IATTC point data? null=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">occurrencecells_r</td>
+<td align="left">UWA_YN</td>
+<td align="left">Is the cell partially/completely based on UWA point data? null=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">occurrencecells_r</td>
 <td align="left">CenterLat</td>
+<td align="left">The center point of the cell in decimal degrees latitude. Example: 89.75</td>
+<td align="left">double</td>
 <td align="left">dbl</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">hcaf</td>
+<td align="left">occurrencecells_r</td>
 <td align="left">CenterLong</td>
-<td align="left">dbl</td>
 <td align="left">NA</td>
+<td align="left">NA</td>
+<td align="left">dbl</td>
 </tr>
 <tr class="even">
-<td align="left">occ</td>
+<td align="left">occurrencecells_r</td>
+<td align="left">FAOAreaM</td>
+<td align="left">FAO area to which the cell belongs.</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">SpeciesID</td>
+<td align="left">AquaMaps’ unique identifier for a valid species used by the Catalogue of Life Annual Checklist (www.catalogueoflife.org). Example for the whale shark: Fis-30583</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">Speccode</td>
+<td align="left">Species identifier used in FishBase or SeaLifeBase.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">LifeStage</td>
+<td align="left">Life stage of the species. Currently all envelopes refer to adult environmental preferences.</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">FAOAreas</td>
+<td align="left">Comma-delimited string containing the FAO area codes where native occurrence of the species has been reported in the literature. Example: 5, 7, 18, 27, 37</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">FAOComplete</td>
+<td align="left">Are the FAO areas listed in FAOAreas complete for this species? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">NMostLat</td>
+<td align="left">Northern-most latitude of distributional range of this species, in decimal degrees. Example: 55.5</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">SMostLat</td>
+<td align="left">Southern-most latitude of distributional range of this species, in decimal degrees. Example: -15</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">WMostLong</td>
+<td align="left">Western-most longitude of distributional range of this species in decimal degrees. Example: -130</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">EMostLong</td>
+<td align="left">Eastern-most longitude of distributional range of this species in decimal degrees. Example: -80</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">DepthYN</td>
+<td align="left">Is the depth parameter used in computing map data? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">DepthMin</td>
+<td align="left">Minimum depth where the species has been found (in meters). Example: 20</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">DepthPrefMin</td>
+<td align="left">Minimum depth PREFERRED by the species (in meters). Example: 30</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">DepthPrefMax</td>
+<td align="left">Maximum depth PREFERRED by the species (in meters). Example: 60</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">DepthMax</td>
+<td align="left">Maximum depth range where this species has been found (in meters). Example: 120</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">MeanDepth</td>
+<td align="left">Is mean depth used to fit the depth envelope? By default, marine mammals use mean depth. 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">Pelagic</td>
+<td align="left">Does the species occurs in the water column well above and largely independent of the bottom? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">TempYN</td>
+<td align="left">Is the temperature parameter used in computing map data? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">TempMin</td>
+<td align="left">Minimum temperature tolerated by the species (in deg C). Example: 16</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">TempPrefMin</td>
+<td align="left">Minimum temperature PREFERRED by the species (in deg C). Example: 20.0</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">TempPrefMax</td>
+<td align="left">Maximum temperature PREFERRED by the species (in deg C). Example: 27.0</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">TempMax</td>
+<td align="left">Maximum temperature tolerated by the species (in deg C). Example: 31</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">SalinityYN</td>
+<td align="left">Is the salinity parameter used in generating map data? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">SalinityMin</td>
+<td align="left">Minimum salinity tolerated by the species (in psu). Example: 20</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">SalinityPrefMin</td>
+<td align="left">Minimum salinity PREFERRED by the species (in psu). Example: 33.4</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">SalinityPrefMax</td>
+<td align="left">Maximum salinity PREFERRED by the species (in psu). Example: 35.7</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">SalinityMax</td>
+<td align="left">Maximum salinity tolerated by the species (in psu). Example: 38</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">PrimProdYN</td>
+<td align="left">Is the primary production parameter used in computing map data? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">PrimProdMin</td>
+<td align="left">Minimum amount of primary production tolerated by the species (in mgC·m-3·day-1). Example: 0</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">PrimProdPrefMin</td>
+<td align="left">Minimum amount of primary production PREFERRED by the species (in mgC·m-3·day-1). Example: 579</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">PrimProdPrefMax</td>
+<td align="left">Maximum amount of primary production PREFERRED by the species (in mgC·m-3·day-1). Example: 1754</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">PrimProdMax</td>
+<td align="left">Maximum amount of primary production tolerated by the species (in mgC·m-3·day-1). Example: 2935</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">IceConYN</td>
+<td align="left">Is the ice concentration parameter used in computing map data? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">IceConMin</td>
+<td align="left">Minimum sea ice concentration tolerated by the species (0-1 fraction).</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">IceConPrefMin</td>
+<td align="left">Minimum sea ice concentration PREFERRED by the species (0-1 fraction).</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">IceConPrefMax</td>
+<td align="left">Maximum sea ice concentration PREFERRED by the species (0-1 fraction).</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">IceConMax</td>
+<td align="left">Maximum sea ice concentration tolerated by the species (0-1 fraction).</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">OxyYN</td>
+<td align="left">Is the dissolved bottom oxygen parameter used in computing map data? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">OxyMin</td>
+<td align="left">Minimum dissolved bottom oxygen tolerated by the species (in mmol·m-3). Example 1.33</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">OxyPrefMin</td>
+<td align="left">Minimum dissolved bottom oxygen PREFERRED by the species (in mmol·m-3). Example 231.42</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">OxyPrefMax</td>
+<td align="left">Maximum dissolved bottom oxygen PREFERRED by the species (in mmol·m-3). Example 327.77</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">OxyMax</td>
+<td align="left">Maximum dissolved bottom oxygen tolerated by the species (in mmol·m-3). Example 408.99</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">LandDistYN</td>
+<td align="left">Is the distance to land parameter used in computing map data? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">LandDistMin</td>
+<td align="left">Minimum distance to land tolerated by the species (in km). Example: 20</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">LandDistPrefMin</td>
+<td align="left">Minimum distance to land PREFERRED by the species in (km). Example: 33</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">LandDistPrefMax</td>
+<td align="left">Maximum distance to land PREFERRED by the species (in km). Example: 35</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">LandDistMax</td>
+<td align="left">Maximum distance to land tolerated by the species (in km). Example: 38</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">Remark</td>
+<td align="left">Text field to accommodate any remarks relevant to this record.</td>
+<td align="left">longtext</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">DateCreated</td>
+<td align="left">Date and time when this record was first created. Example: 2019-06-24 00:00:00</td>
+<td align="left">datetime</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">DateModified</td>
+<td align="left">Date and time when this record was last modified. If the record has not been modified, field is empty. Example: 2019-08-19 00:00:00</td>
+<td align="left">datetime</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">expert_id</td>
+<td align="left">ID of the expert who last reviewed the envelope.</td>
+<td align="left">int</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">DateExpert</td>
+<td align="left">Date and time when this record was last edited by an expert. Example: 2019-08-29 00:00:00</td>
+<td align="left">datetime</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">Layer</td>
+<td align="left">Indicates whether the temperature and salinity parameters are based on bottom (=b) or surface (=s) values of half-degree cells used to compute the envelope.</td>
+<td align="left">char</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">Rank</td>
+<td align="left">Internal code for basis of computation for environmental envelope (1 = with &gt;10 good cells; 2 = with 3-9 good cells only; 3 = restricted range, one known point, new species).</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">MapOpt</td>
+<td align="left">Indicates how native map (predicted probabilities) is plotted: 1 = area covered by both species’ bounding box and FAO areas, 2 = area covered by species’ FAO areas only, 3 = area covered by species’ bounding box only.</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hspen_r</td>
+<td align="left">ExtnRuleYN</td>
+<td align="left">Was the FAO extension rule applied in the generation of the species envelope? 0=No, 1=Yes, null</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="even">
+<td align="left">hspen_r</td>
+<td align="left">Reviewed</td>
+<td align="left">Is this a reviewed envelope? 0=No, 1=Yes, null</td>
+<td align="left">tinyint</td>
+<td align="left">int</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_species_native</td>
+<td align="left">SpeciesID</td>
+<td align="left">AquaMaps’ unique identifier for a valid species used by the Catalogue of Life Annual Checklist (www.catalogueoflife.org). Example for the whale shark: Fis-30583</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_species_native</td>
+<td align="left">CsquareCode</td>
+<td align="left">A unique identifier for every half-degree cell in the global map based on the c-square method - a hierarchical cell labelling system developed at CSIRO Oceans and Atmosphere (then CSIRO Marine Research). Example: 3414:227:3</td>
+<td align="left">varchar</td>
+<td align="left">chr</td>
+</tr>
+<tr class="odd">
+<td align="left">hcaf_species_native</td>
+<td align="left">CenterLat</td>
+<td align="left">The center point of the cell in decimal degrees latitude. Example: 89.75</td>
+<td align="left">double</td>
+<td align="left">dbl</td>
+</tr>
+<tr class="even">
+<td align="left">hcaf_species_native</td>
 <td align="left">CenterLong</td>
+<td align="left">The center point of the cell in decimal degrees longitude. Example: -179.75</td>
+<td align="left">double</td>
 <td align="left">dbl</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">nativemaps</td>
-<td align="left">CsquareCode</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hcaf</td>
-<td align="left">CsquareCode</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">occ</td>
-<td align="left">CsquareCode</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hcaf</td>
-<td align="left">DepthMax</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">hspen</td>
-<td align="left">DepthMax</td>
+<td align="left">hcaf_species_native</td>
+<td align="left">Probability</td>
+<td align="left">Overall probability of occurrence of the species in the cell (ranging from 0.01 to 1). Example: 0.71</td>
+<td align="left">float</td>
 <td align="left">dbl</td>
-<td align="left">NA</td>
 </tr>
 <tr class="even">
-<td align="left">hcaf</td>
-<td align="left">DepthMin</td>
+<td align="left">hcaf_species_native</td>
+<td align="left">FAOAreaYN</td>
+<td align="left">Does this cell fall within an FAO area where the species is known to occur (endemic/native)? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
 <td align="left">int</td>
-<td align="left">NA</td>
 </tr>
 <tr class="odd">
-<td align="left">hspen</td>
-<td align="left">DepthMin</td>
-<td align="left">dbl</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">occ</td>
-<td align="left">expert_id</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">taxa</td>
-<td align="left">expert_id</td>
+<td align="left">hcaf_species_native</td>
+<td align="left">BoundBoxYN</td>
+<td align="left">Does this cell fall within the geographical bounding box known for the species? 0=No, 1=Yes</td>
+<td align="left">tinyint</td>
 <td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hcaf</td>
-<td align="left">FAOAreaM</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">occ</td>
-<td align="left">FAOAreaM</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hcaf</td>
-<td align="left">LME</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">hspen</td>
-<td align="left">LME</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hspen</td>
-<td align="left">OccurCells</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">taxa</td>
-<td align="left">OccurCells</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hspen</td>
-<td align="left">Reviewed</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">taxa</td>
-<td align="left">Reviewed</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hcaf</td>
-<td align="left">SalinityMax</td>
-<td align="left">dbl</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">hspen</td>
-<td align="left">SalinityMax</td>
-<td align="left">dbl</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">hcaf</td>
-<td align="left">SalinityMin</td>
-<td align="left">dbl</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">hspen</td>
-<td align="left">SalinityMin</td>
-<td align="left">dbl</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">occ</td>
-<td align="left">SpecCode</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">taxa</td>
-<td align="left">SpecCode</td>
-<td align="left">int</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">nativemaps</td>
-<td align="left">SpeciesID</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="odd">
-<td align="left">hspen</td>
-<td align="left">SpeciesID</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
-</tr>
-<tr class="even">
-<td align="left">occ</td>
-<td align="left">SpeciesID</td>
-<td align="left">chr</td>
-<td align="left">NA</td>
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>Are those the relevant keys? Do the data types make sense?</p>
-</blockquote>
-<div class="sourceCode" id="cb11"><pre class="downlit">
-<span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span><span class="op">(</span><span class="va">am_schema</span>, path <span class="op">=</span> <span class="st">"~/am-schema.csv"</span><span class="op">)</span>
-<span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span><span class="op">(</span><span class="va">am_keys</span>, path <span class="op">=</span> <span class="st">"~/am-keys.csv"</span><span class="op">)</span></pre></div>
+</div>
+<div id="data-management" class="section level2">
+<h2 class="hasAnchor">
+<a href="#data-management" class="anchor"></a>Data management</h2>
+<p>This section describes how the data was prepared for usage in this R package. It may be of interest maybe not primarily for package users, but for those interested in understanding the data preparation steps involved in preparing the dataset for use in this package.</p>
+<p>For data management and preparation, several steps are involved in preparing the dataset used in this package. These steps involve moving the relevant parts of the source data from its primary source into a local SQLite3 database that the package uses.</p>
+<div id="local-replication-of-source-database" class="section level3">
+<h3 class="hasAnchor">
+<a href="#local-replication-of-source-database" class="anchor"></a>Local replication of source database</h3>
+<p>The source data lives in a MySQL/MariaDB database. If this data is made available in the form of a backup from a raw datadir or, preferably, in the form of a data dump, this can be loaded into a local MariaDB database engine.</p>
+<p>With <code>docker-compose</code> this can be done in one step, using the command <code>docker-compose up -d</code> and this <code>docker-compose.yml</code> file:</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb37-1"><a href="#cb37-1"></a><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb37-2"><a href="#cb37-2"></a><span class="at">  </span><span class="fu">db</span><span class="kw">:</span></span>
+<span id="cb37-3"><a href="#cb37-3"></a></span>
+<span id="cb37-4"><a href="#cb37-4"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb37-5"><a href="#cb37-5"></a></span>
+<span id="cb37-6"><a href="#cb37-6"></a><span class="at">  </span><span class="fu">db</span><span class="kw">:</span></span>
+<span id="cb37-7"><a href="#cb37-7"></a><span class="at">    </span><span class="fu">image</span><span class="kw">:</span><span class="at"> mariadb:latest</span></span>
+<span id="cb37-8"><a href="#cb37-8"></a><span class="at">    </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb37-9"><a href="#cb37-9"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="st">"3306:3306"</span></span>
+<span id="cb37-10"><a href="#cb37-10"></a><span class="at">    </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb37-11"><a href="#cb37-11"></a><span class="at">      </span><span class="kw">-</span><span class="at"> MYSQL_ROOT_PASSWORD=your_root_db_password</span></span>
+<span id="cb37-12"><a href="#cb37-12"></a><span class="at">      </span><span class="kw">-</span><span class="at"> MYSQL_DATABASE=aquamapsdb</span></span>
+<span id="cb37-13"><a href="#cb37-13"></a><span class="at">      </span><span class="kw">-</span><span class="at"> MYSQL_USER=your_db_user</span></span>
+<span id="cb37-14"><a href="#cb37-14"></a><span class="at">      </span><span class="kw">-</span><span class="at"> MYSQL_PASSWORD=your_db_password</span></span>
+<span id="cb37-15"><a href="#cb37-15"></a><span class="at">    </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb37-16"><a href="#cb37-16"></a><span class="at">      </span><span class="kw">-</span><span class="at"> db:/var/lib/mysql</span></span>
+<span id="cb37-17"><a href="#cb37-17"></a><span class="at">      </span><span class="kw">-</span><span class="at"> ./aquamaps.sql:/docker-entrypoint-initdb.d/aquamaps.sql:ro</span></span></code></pre></div>
+<p>After this step, the data is available to access locally through <code>aquamapsdata::am_con()</code>.</p>
+<p>The “metadata” for table and field names and their descriptions is provided through <code><a href="../reference/am_meta.html">aquamapsdata::am_meta</a></code> which is prepared by means of (data-raw/am-meta.R). This metadata is used in package documentation and the <code><a href="../reference/am_search_exact.html">am_search_exact()</a></code> function allows for taxonomic searches using some of those fields.</p>
+</div>
+<div id="syncing-into-sqlite3" class="section level3">
+<h3 class="hasAnchor">
+<a href="#syncing-into-sqlite3" class="anchor"></a>Syncing into SQLite3</h3>
+<p>A set of functions then allows for syncing the data into an SQLite3 database with full text search support, which gets indexed.</p>
+<p>Relevant steps are:</p>
+<ul>
+<li>Chunkwise sync using <code><a href="../reference/db_sync.html">db_sync()</a></code> from source connection to target db.</li>
+<li>Add full text search functionality using <code>am_create_fts()</code>
+</li>
+<li>Add indexes through <code>am_create_indexes()</code>
+</li>
+</ul>
+</div>
+<div id="exposing-the-data" class="section level3">
+<h3 class="hasAnchor">
+<a href="#exposing-the-data" class="anchor"></a>Exposing the data</h3>
+<p>The function <code>am_search_exact</code> takes a lot of parameters, which can be combined, to query the taxonomy in a single call.</p>
+<p>The <code>am_search_fuzzy</code> is quick and allows FTS5 search syntax (search terms which can be quoted and also combined with AND, OR, NOT).</p>
+<p>These functions returns search results containing keys or identifiers that can be used to retrieve map data in raster format through <code><a href="../reference/am_raster.html">am_raster()</a></code>. With such a raster a leaflet map can be created with <code><a href="../reference/am_map_leaflet.html">am_map_leaflet()</a></code>.</p>
+</div>
 </div>
 </div>
   </div>

@@ -79,7 +79,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">aquamapsdata</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -87,7 +87,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -113,7 +113,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/raquamaps/aquamapsdata/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -144,7 +144,7 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
+          <h2 id="section-general" class="hasAnchor"><a href="#section-general" class="anchor"></a>General</h2>
           <p class="section-desc"></p>
         </th>
       </tr>
@@ -156,27 +156,85 @@
       <tr>
         
         <td>
-          <p><code><a href="am_name_search_exact.html">am_name_search_exact()</a></code> </p>
+          <p><code><a href="am_hcaf.html">am_hcaf()</a></code> </p>
+        </td>
+        <td><p>Half degree cell location reference data
+This table represents an authority file with reference data for half degree
+cell locations.</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_hspen.html">am_hspen()</a></code> </p>
+        </td>
+        <td><p>Environmental envelope preference data for suitable habitats for species
+This table provides data on species environmental parameters / preferences</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_search_exact.html">am_search_exact()</a></code> </p>
         </td>
         <td><p>Exact search for taxonomic names</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="am_name_search_fuzzy.html">am_name_search_fuzzy()</a></code> </p>
+          <p><code><a href="am_search_fuzzy.html">am_search_fuzzy()</a></code> </p>
         </td>
         <td><p>Fuzzy search for terms related to taxonomic names</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="am_sql_query.html">am_sql_query()</a></code> </p>
+          <p><code><a href="download_db.html">download_db()</a></code> </p>
         </td>
-        <td><p>Run a custom SQL query</p></td>
+        <td><p>Perform downloading of compressed SQLite db, storing it locally</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="aquamapsdata-package.html">aquamapsdata-package</a></code> </p>
+          <p><code><a href="grapes-greater-than-grapes.html">%>%</a></code> </p>
         </td>
-        <td><p>aquamapsdata</p></td>
+        <td><p>pipe - convert nested functions into sequential statements</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-spatial" class="hasAnchor"><a href="#section-spatial" class="anchor"></a>Spatial</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="am_csc_from_extent.html">am_csc_from_extent()</a></code> </p>
+        </td>
+        <td><p>Cell identifiers for an extent or bounding box</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_map_leaflet.html">am_map_leaflet()</a></code> </p>
+        </td>
+        <td><p>Map for native habitat</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_raster.html">am_raster()</a></code> </p>
+        </td>
+        <td><p>Raster with native habitat map data for one or several species</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_species_in_csc.html">am_species_in_csc()</a></code> </p>
+        </td>
+        <td><p>Species occuring in set of grid cell</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_species_per_csc.html">am_species_per_csc()</a></code> </p>
+        </td>
+        <td><p>Total count for number of distinct species across cells, ie "richness"</p></td>
       </tr><tr>
         
         <td>
@@ -192,21 +250,125 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="download_db.html">download_db()</a></code> </p>
+          <p><code><a href="rasterize_coords.html">rasterize_coords()</a></code> </p>
         </td>
-        <td><p>Perform downloading of compressed SQLite db, storing it locally</p></td>
+        <td><p>Converts location coordinate data into raster data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="which_cells_in_raster.html">which_cells_in_raster()</a></code> </p>
+        </td>
+        <td><p>Raster grid cell identifiers (LOICZID) with presence</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-about" class="hasAnchor"><a href="#section-about" class="anchor"></a>About</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="am_citation.html">am_citation()</a></code> </p>
+        </td>
+        <td><p>Citation to use when publishing data from this source</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_meta.html">am_meta</a></code> </p>
+        </td>
+        <td><p>Metadata describing field names available</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="aquamapsdata-package.html">aquamapsdata-package</a></code> </p>
+        </td>
+        <td><p>aquamapsdata</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-data-management" class="hasAnchor"><a href="#section-data-management" class="anchor"></a>Data Management</h2>
+          <p class="section-desc"></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="am_custom_query.html">am_custom_query()</a></code> </p>
+        </td>
+        <td><p>Run a custom SQL query</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_db_duckdb.html">am_db_duckdb()</a></code> </p>
+        </td>
+        <td><p>Location of duck db file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_db_sqlite.html">am_db_sqlite()</a></code> </p>
+        </td>
+        <td><p>Location of sqlite3 db file</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="am_use_offline_db.html">am_use_offline_db()</a></code> </p>
+        </td>
+        <td><p>Staged install workaround to install temporary extdata</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="con_am.html">con_am()</a></code> </p>
+        </td>
+        <td><p>Connection to aquamapsdata</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="db_disco.html">db_disco()</a></code> </p>
+        </td>
+        <td><p>Disconnect the default database connection</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="db_minify.html">db_minify()</a></code> </p>
+        </td>
+        <td><p>Minify a larger aquamaps dataset by slicing</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="db_minify_path.html">db_minify_path()</a></code> </p>
+        </td>
+        <td><p>Location of minified bundled sqlite db</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="db_sync.html">db_sync()</a></code> </p>
+        </td>
+        <td><p>Sync a MariaDB/MySQL database to a local SQLite3 db</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="default_db.html">default_db()</a></code> </p>
+        </td>
+        <td><p>Set or switch the default database used</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="http_ping.html">http_ping()</a></code> </p>
         </td>
         <td><p>Ping a web site</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="pipe.html">%>%</a></code> </p>
-        </td>
-        <td><p>pipe - convert nested functions into sequential statements</p></td>
       </tr>
     </tbody>
     </table>

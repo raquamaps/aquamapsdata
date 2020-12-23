@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform downloading of compressed SQLite db, storing it locally — download_db • aquamapsdata</title>
+<title>Metadata describing field names available — am_meta • aquamapsdata</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Perform downloading of compressed SQLite db, storing it locally — download_db" />
-<meta property="og:description" content="Perform downloading of compressed SQLite db, storing it locally" />
+<meta property="og:title" content="Metadata describing field names available — am_meta" />
+<meta property="og:description" content="A dataset with field names and field descriptions for the included tables." />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -131,44 +131,73 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform downloading of compressed SQLite db, storing it locally</h1>
-    <small class="dont-index">Source: <a href='https://github.com/raquamaps/aquamapsdata/blob/master/R/download.R'><code>R/download.R</code></a></small>
-    <div class="hidden name"><code>download_db.Rd</code></div>
+    <h1>Metadata describing field names available</h1>
+    <small class="dont-index">Source: <a href='https://github.com/raquamaps/aquamapsdata/blob/master/R/aquamapsdata-package.R'><code>R/aquamapsdata-package.R</code></a></small>
+    <div class="hidden name"><code>am_meta.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform downloading of compressed SQLite db, storing it locally</p>
+    <p>A dataset with field names and field descriptions for the included tables.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>download_db</span><span class='op'>(</span>force <span class='op'>=</span> <span class='cn'>FALSE</span>, passphrase <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='va'>am_meta</span></pre>
 
-    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
-    <table class="ref-arguments">
-    <colgroup><col class="name" /><col class="desc" /></colgroup>
-    <tr>
-      <th>force</th>
-      <td><p>boolean to indicate whether to overwrite an existing db</p></td>
-    </tr>
-    <tr>
-      <th>passphrase</th>
-      <td><p>passphrase if using encrypted db, default: NULL</p></td>
-    </tr>
-    </table>
+
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A data frame:</p><dl>
+<dt>table</dt><dd><p>table name</p></dd>
+<dt>field</dt><dd><p>field or column name</p></dd>
+<dt>description</dt><dd><p>explanation of the field content</p></dd>
+<dt>type_mysql</dt><dd><p>original field type in the source database</p></dd>
+<dt>type</dt><dd><p>field type when used from R</p></dd>
+
+</dl>
+
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p><a href='https://aquamaps.org/'>AquaMaps</a></p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The metadata is provided as a data frame with the table name, field name,
+field description and original data type in the AquaMaps.org source db.</p>
+<p>There are five tables:</p><ul>
+<li><p><strong>speciesoccursum_r</strong>: This table provides general information about taxa,
+such as identifiers and taxonomy for mapped species, and allows for
+searching. This is a simplified version, excluding fields in the source
+database which are used for internal purposes. <em>NB</em>: To be updated when
+invasive, resilience and IUCN fields are filled and m_invertebrates field
+is updated.</p></li>
+<li><p><strong>hcaf_species_native</strong>: This table stores native habitat map data;
+usually referred to as HSPEC-native. This is a simplified version,
+providing only overall probability of occurrence of a species in a cell.
+Contact the AquaMaps team if you are interested in the individual
+probabilities of occurrence (depth, temperature, salinity,
+primary production, sea ice concentration, bottom oxygen, distance to land).
+<em>NB</em>: May be updated in the future with a version that includes records
+where Probability=0 to explicitly show cells where species is not
+predicted to occur within its known native distribution.</p></li>
+<li><p><strong>hspen_r</strong>: This table provides the parameters used in maps from AquaMaps,
+such as the <strong>sp</strong>ecies environmental <strong>en</strong>velope for each mapped species.
+The data is relevant mostly for single species maps.</p></li>
+<li><p><strong>hcaf_r</strong>: This <strong>a</strong>uthority<strong>f</strong>ile describes some attributes for 0.5
+degree raster grid cells with species presence in the data. The data in this
+table excludes future environmental parameter fields. Contact the AquaMaps
+team if you are interested in the future environmental parameters.
+Available datasets correspond to IPCC RCP 2.6 (2100),
+RCP 4.5 (2050 and 2100), RCP 8.5 (2050 and 2100).</p></li>
+<li><p><strong>occurrencecells_r</strong>: This table provides the occurrence cells generated
+from assembled occurrence data and it is used to generate the species
+envelope for each mapped species. <em>NB</em>: Fields where null=No should be
+updated to 0=No.</p></li>
+</ul>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other general: 
-<code>%&gt;%()</code>,
-<code><a href='am_hcaf.html'>am_hcaf</a>()</code>,
-<code><a href='am_hspen.html'>am_hspen</a>()</code>,
-<code><a href='am_search_exact.html'>am_search_exact</a>()</code>,
-<code><a href='am_search_fuzzy.html'>am_search_fuzzy</a>()</code></p></div>
+    <div class='dont-index'><p>Other meta: 
+<code><a href='am_citation.html'>am_citation</a>()</code>,
+<code><a href='aquamapsdata-package.html'>aquamapsdata-package</a></code></p></div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>download_db</span><span class='op'>(</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

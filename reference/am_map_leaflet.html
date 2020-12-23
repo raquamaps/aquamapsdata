@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform downloading of compressed SQLite db, storing it locally — download_db • aquamapsdata</title>
+<title>Map for native habitat — am_map_leaflet • aquamapsdata</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,8 @@
 
 
 
-<meta property="og:title" content="Perform downloading of compressed SQLite db, storing it locally — download_db" />
-<meta property="og:description" content="Perform downloading of compressed SQLite db, storing it locally" />
+<meta property="og:title" content="Map for native habitat — am_map_leaflet" />
+<meta property="og:description" content="Shows a leaflet map for the native habitat given a species identifier" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -131,42 +131,61 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform downloading of compressed SQLite db, storing it locally</h1>
-    <small class="dont-index">Source: <a href='https://github.com/raquamaps/aquamapsdata/blob/master/R/download.R'><code>R/download.R</code></a></small>
-    <div class="hidden name"><code>download_db.Rd</code></div>
+    <h1>Map for native habitat</h1>
+    <small class="dont-index">Source: <a href='https://github.com/raquamaps/aquamapsdata/blob/master/R/spatial.R'><code>R/spatial.R</code></a></small>
+    <div class="hidden name"><code>am_map_leaflet.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform downloading of compressed SQLite db, storing it locally</p>
+    <p>Shows a leaflet map for the native habitat given a species identifier</p>
     </div>
 
-    <pre class="usage"><span class='fu'>download_db</span><span class='op'>(</span>force <span class='op'>=</span> <span class='cn'>FALSE</span>, passphrase <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>am_map_leaflet</span><span class='op'>(</span>
+  <span class='va'>ras</span>,
+  title <span class='op'>=</span> <span class='st'>""</span>,
+  cols <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"#FEB24C"</span>, <span class='st'>"#FD8D3C"</span>, <span class='st'>"#FC4E2A"</span>, <span class='st'>"#E31A1C"</span>, <span class='st'>"#B10026"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>force</th>
-      <td><p>boolean to indicate whether to overwrite an existing db</p></td>
+      <th>ras</th>
+      <td><p>a raster object, for example from the am_raster function</p></td>
     </tr>
     <tr>
-      <th>passphrase</th>
-      <td><p>passphrase if using encrypted db, default: NULL</p></td>
+      <th>title</th>
+      <td><p>a string to use as legend title, by default blank</p></td>
+    </tr>
+    <tr>
+      <th>cols</th>
+      <td><p>a vector with three hex colors to use for a numeric color
+legend, default: c("#FEB24C", "#FD8D3C", "#FC4E2A", "#E31A1C", "#B10026")</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other general: 
-<code>%&gt;%()</code>,
-<code><a href='am_hcaf.html'>am_hcaf</a>()</code>,
-<code><a href='am_hspen.html'>am_hspen</a>()</code>,
-<code><a href='am_search_exact.html'>am_search_exact</a>()</code>,
-<code><a href='am_search_fuzzy.html'>am_search_fuzzy</a>()</code></p></div>
+    <div class='dont-index'><p>Other spatial: 
+<code><a href='am_csc_from_extent.html'>am_csc_from_extent</a>()</code>,
+<code><a href='am_raster.html'>am_raster</a>()</code>,
+<code><a href='am_species_in_csc.html'>am_species_in_csc</a>()</code>,
+<code><a href='am_species_per_csc.html'>am_species_per_csc</a>()</code>,
+<code><a href='csquare_from_dd.html'>csquare_from_dd</a>()</code>,
+<code><a href='csquare_to_dd.html'>csquare_to_dd</a>()</code>,
+<code><a href='rasterize_coords.html'>rasterize_coords</a>()</code>,
+<code><a href='which_cells_in_raster.html'>which_cells_in_raster</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>download_db</span><span class='op'>(</span><span class='op'>)</span>
+<span class='co'># native habitat for blue trevally</span>
+<span class='va'>ras</span> <span class='op'>&lt;-</span> <span class='fu'><a href='am_raster.html'>am_raster</a></span><span class='op'>(</span><span class='fu'><a href='am_search_fuzzy.html'>am_search_fuzzy</a></span><span class='op'>(</span><span class='st'>"blue trevally"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>key</span><span class='op'>)</span>
+<span class='fu'>am_map_leaflet</span><span class='op'>(</span><span class='va'>ras</span>, title <span class='op'>=</span> <span class='st'>"Blue trevally (p)"</span><span class='op'>)</span>
+
+<span class='co'># where do both blue and white trevally occur?</span>
+<span class='va'>ras</span> <span class='op'>&lt;-</span> <span class='fu'><a href='am_raster.html'>am_raster</a></span><span class='op'>(</span><span class='fu'><a href='am_search_fuzzy.html'>am_search_fuzzy</a></span><span class='op'>(</span><span class='st'>"trevally AND (white OR blue)"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>key</span>,
+  fun <span class='op'>=</span> <span class='st'>"count"</span><span class='op'>)</span>
+<span class='fu'>am_map_leaflet</span><span class='op'>(</span><span class='va'>ras</span>, title <span class='op'>=</span> <span class='st'>"Blue and white trevally (n)"</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

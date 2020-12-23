@@ -81,7 +81,7 @@ http://www.cmar.csiro.au/csquares/csq-faq.htm" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">aquamapsdata</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@ http://www.cmar.csiro.au/csquares/csq-faq.htm" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,7 +115,7 @@ http://www.cmar.csiro.au/csquares/csq-faq.htm" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/raquamaps/aquamapsdata/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -156,21 +156,23 @@ http://www.cmar.csiro.au/csquares/csq-faq.htm</p>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a list with decimal degrees lat and lon and resolution</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>Other spatial: 
+<code><a href='am_csc_from_extent.html'>am_csc_from_extent</a>()</code>,
+<code><a href='am_map_leaflet.html'>am_map_leaflet</a>()</code>,
+<code><a href='am_raster.html'>am_raster</a>()</code>,
+<code><a href='am_species_in_csc.html'>am_species_in_csc</a>()</code>,
+<code><a href='am_species_per_csc.html'>am_species_per_csc</a>()</code>,
+<code><a href='csquare_from_dd.html'>csquare_from_dd</a>()</code>,
+<code><a href='rasterize_coords.html'>rasterize_coords</a>()</code>,
+<code><a href='which_cells_in_raster.html'>which_cells_in_raster</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>csquare_to_dd</span><span class='op'>(</span><span class='st'>"7307:487:380:383"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $initial
-#&gt; [1] "NW"
-#&gt; 
-#&gt; $lat
-#&gt; [1] 38.88
-#&gt; 
-#&gt; $lon
-#&gt; [1] 77.03
-#&gt; 
-#&gt; $resolution
-#&gt; [1] 0.001
-#&gt; </div></pre>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'>csquare_to_dd</span><span class='op'>(</span><span class='st'>"7307:487:380:383"</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform downloading of compressed SQLite db, storing it locally — download_db • aquamapsdata</title>
+<title>Total count for number of distinct species across cells, ie "richness" — am_species_per_csc • aquamapsdata</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,8 +46,9 @@
 
 
 
-<meta property="og:title" content="Perform downloading of compressed SQLite db, storing it locally — download_db" />
-<meta property="og:description" content="Perform downloading of compressed SQLite db, storing it locally" />
+<meta property="og:title" content="Total count for number of distinct species across cells, ie "richness" — am_species_per_csc" />
+<meta property="og:description" content="Global richness map data (i.e. number of different species per cell),
+optionally filtered for taxonomy and a preferred probability threshold" />
 <meta property="og:image" content="/logo.png" />
 
 
@@ -131,42 +132,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform downloading of compressed SQLite db, storing it locally</h1>
-    <small class="dont-index">Source: <a href='https://github.com/raquamaps/aquamapsdata/blob/master/R/download.R'><code>R/download.R</code></a></small>
-    <div class="hidden name"><code>download_db.Rd</code></div>
+    <h1>Total count for number of distinct species across cells, ie "richness"</h1>
+    <small class="dont-index">Source: <a href='https://github.com/raquamaps/aquamapsdata/blob/master/R/spatial.R'><code>R/spatial.R</code></a></small>
+    <div class="hidden name"><code>am_species_per_csc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform downloading of compressed SQLite db, storing it locally</p>
+    <p>Global richness map data (i.e. number of different species per cell),
+optionally filtered for taxonomy and a preferred probability threshold</p>
     </div>
 
-    <pre class="usage"><span class='fu'>download_db</span><span class='op'>(</span>force <span class='op'>=</span> <span class='cn'>FALSE</span>, passphrase <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>am_species_per_csc</span><span class='op'>(</span><span class='va'>csc</span>, min_prob <span class='op'>=</span> <span class='fl'>0</span>, keys <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>force</th>
-      <td><p>boolean to indicate whether to overwrite an existing db</p></td>
+      <th>csc</th>
+      <td><p>a vector of strings with CsquareCodes (grid cell identifiers)</p></td>
     </tr>
     <tr>
-      <th>passphrase</th>
-      <td><p>passphrase if using encrypted db, default: NULL</p></td>
+      <th>min_prob</th>
+      <td><p>a numeric with the threshold for probable occurrence,
+default 0</p></td>
+    </tr>
+    <tr>
+      <th>keys</th>
+      <td><p>a vector of string with SpeciesID values</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other general: 
-<code>%&gt;%()</code>,
-<code><a href='am_hcaf.html'>am_hcaf</a>()</code>,
-<code><a href='am_hspen.html'>am_hspen</a>()</code>,
-<code><a href='am_search_exact.html'>am_search_exact</a>()</code>,
-<code><a href='am_search_fuzzy.html'>am_search_fuzzy</a>()</code></p></div>
+    <div class='dont-index'><p>Other spatial: 
+<code><a href='am_csc_from_extent.html'>am_csc_from_extent</a>()</code>,
+<code><a href='am_map_leaflet.html'>am_map_leaflet</a>()</code>,
+<code><a href='am_raster.html'>am_raster</a>()</code>,
+<code><a href='am_species_in_csc.html'>am_species_in_csc</a>()</code>,
+<code><a href='csquare_from_dd.html'>csquare_from_dd</a>()</code>,
+<code><a href='csquare_to_dd.html'>csquare_to_dd</a>()</code>,
+<code><a href='rasterize_coords.html'>rasterize_coords</a>()</code>,
+<code><a href='which_cells_in_raster.html'>which_cells_in_raster</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>download_db</span><span class='op'>(</span><span class='op'>)</span>
+<span class='co'># distinct number of species in a specific grid cell</span>
+<span class='fu'>am_species_per_csc</span><span class='op'>(</span><span class='st'>"7516:236:1"</span>, <span class='fl'>0.99</span><span class='op'>)</span>
+
+<span class='co'># distinct species count per grid cells in LME 1</span>
+<span class='va'>csc</span> <span class='op'>&lt;-</span> <span class='fu'><a href='am_hcaf.html'>am_hcaf</a></span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='https://rdrr.io/r/stats/filter.html'>filter</a></span><span class='op'>(</span><span class='va'>LME</span> <span class='op'>==</span> <span class='fl'>1</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>collect</span><span class='op'>(</span><span class='op'>)</span> <span class='op'>%&gt;%</span> <span class='fu'>pull</span><span class='op'>(</span><span class='va'>CsquareCode</span><span class='op'>)</span>
+<span class='fu'>am_species_per_csc</span><span class='op'>(</span><span class='va'>csc</span>, <span class='fl'>0.9</span><span class='op'>)</span>
+
+<span class='co'># global richness map data based on taxonomy</span>
+<span class='va'>keys</span> <span class='op'>&lt;-</span> <span class='fu'><a href='am_search_exact.html'>am_search_exact</a></span><span class='op'>(</span>Family <span class='op'>=</span> <span class='st'>"Carangidae"</span><span class='op'>)</span><span class='op'>$</span><span class='va'>SpeciesID</span>
+<span class='fu'>am_species_per_csc</span><span class='op'>(</span>keys <span class='op'>=</span> <span class='va'>keys</span>, min_prob <span class='op'>=</span> <span class='fl'>0.9</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

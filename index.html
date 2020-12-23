@@ -41,7 +41,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">aquamapsdata</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.5</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.6</span>
       </span>
     </div>
 
@@ -49,7 +49,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -75,7 +75,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/raquamaps/aquamapsdata/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -93,10 +93,9 @@
   <div class="contents col-md-9">
 
 
-<ul>
-<li>Rscript -e ‘covr::codecov()’</li>
-</ul>
-<!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) --><!-- README.md is generated from README.Rmd. Please edit that file --><pre class="console"><code>Welcome to ...
+<!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) -->
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+<pre class="console"><code>Welcome to ...
   _.  _.      _. ._ _   _. ._   _  _|  _. _|_  _.
  (_| (_| |_| (_| | | | (_| |_) _&gt; (_| (_|  |_ (_|
        |                   |</code></pre>
@@ -111,27 +110,21 @@
 <h2 class="hasAnchor">
 <a href="#installing-from-github" class="anchor"></a>Installing from github</h2>
 <p>If you want to install the latest version of the <code>aquamapsdata</code> package from github, you can do it like so:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"raquamaps/aquamapsdata"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"raquamaps/aquamapsdata"</span>, dependencies <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="quick-start" class="section level2">
 <h2 class="hasAnchor">
 <a href="#quick-start" class="anchor"></a>Quick start</h2>
 <p>Load the package in your R environment:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
 
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
-<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://purrr.tidyverse.org">purrr</a></span><span class="op">)</span>
+<span class="co"># downloads about 2 GB of data, approx 10 GB when unpacked</span>
+<span class="fu"><a href="reference/download_db.html">download_db</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="reference/default_db.html">default_db</a></span><span class="op">(</span><span class="st">"sqlite"</span><span class="op">)</span>
 
-<span class="fu"><a href="reference/download_db.html">download_db</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-
-<span class="va">my_db</span> <span class="op">&lt;-</span> <span class="fu">aquamapsdata</span><span class="fu">:::</span><span class="fu">src_sqlite_aquamapsdata</span><span class="op">(</span><span class="op">)</span>
-
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu">tbl</span><span class="op">(</span><span class="st">"nativemaps"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu">tbl</span><span class="op">(</span><span class="st">"hcaf"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu">tbl</span><span class="op">(</span><span class="st">"hspen"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu">tbl</span><span class="op">(</span><span class="st">"occ"</span><span class="op">)</span>
-<span class="va">my_db</span> <span class="op">%&gt;%</span> <span class="fu">tbl</span><span class="op">(</span><span class="st">"taxa"</span><span class="op">)</span></pre></div>
+<span class="fu"><a href="reference/am_citation.html">am_citation</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>To see some quick usage examples to get you started, open the Vignette.</p>
 <p>The package uses SQLite3 - a portable and fast database which is included in the RSQLite package.</p>
 </div>
