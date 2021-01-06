@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This document describes how to use the `aquamapsdata` R data package to access curated data through a static database assembled from data sourced from http://aquamaps.org
+This document describes how to use the `aquamapsdata` R data package to access curated data through a static database assembled from data sourced from https://aquamaps.org
 
 Immediately after installing the package, a run-once action is needed, in order to download and locally create the SQLite database containing all the AquaMaps data. A small minified limited (< 1MB) variant of the database is included in the package to simplify package development, and can be activated by using `default_db("extdata")`.
 
@@ -30,7 +30,7 @@ default_db("sqlite")
 
 Once the database is available locally, it can be queried using a couple of different functions.
 
-Please remember to being your session with activating the connection to the downloaded database:
+Please remember to begin your session by activating the connection to the downloaded database:
 
 ```{r, eval=FALSE}
 library(aquamapsdata)
@@ -92,9 +92,10 @@ knitr::kable(display)
 
 ## Species maps
 
-With a species identifier, likely locations of habitat can be displayed on a map, but native habitat data can also be retrieved in raster format.
+With a species identifier, probability of occurrence within the known native distribution for a species can either be retrieved in raster format or be displayed on a map .
 
-Here we display a map with likely native habitats for the Bluespotted trevally:
+ 
+Here we display the computer-generated native map for the Bluespotted trevally:
 
 ```{r "map", echo=TRUE, fig.width=7, message=FALSE}
 
@@ -125,13 +126,14 @@ am_citation()
 
 ```
 
-## Maps that include several species
+## Biodiversity Maps
 
-We can also display a map using several species identifiers, for example those associated with the  genus "Caranx", but should then provide an aggregation function such as "count", for example using:
+We can also display a map using several identifiers, for example those associated with the  genus "Caranx", and should then provide an aggregation function such as "count".
 
 ```{r, echo=TRUE, fig.width=7, message=FALSE, eval=FALSE}
 
 keys <- am_search_exact(Genus = "Caranx")$SpeciesID
+
 ras <- am_raster(keys, fun = "count")
 
 am_map_leaflet(ras, title = "Caranx") %>%
@@ -141,6 +143,7 @@ am_citation("md")
 
 ```
 
+For biodiversity maps within a specific bounding box, see the function `am_csc_from_extent`, which provides biodiversity map data for all species, optionally filtered by a user-defined probability threshold (where 0.5 is the default used at aquamaps.org, see the help for functions `am_species_in_csc` and `am_species_per_csc`).
 
 ## Other usage examples
 
@@ -184,7 +187,7 @@ am_search_exact(SpeciesID = key)
 ```
 ### Species preferences or environmental envelope
 
-The am_hspen() function provides the parameters for species' environmental envelopes; data on circumstances that the species are likely to tolerate. Information about this table is available in the help with fields explained in the `am_meta` dataset.
+The am_hspen() function provides the input data used to generate a species’environmental envelopes and the envelopes themselves. Information about this table is available in the help with fields explained in the `am_meta` dataset.
 
 HSPEN data can be queried for example based on taxonomy for a single species or higher taxa associated with that species, or any other relevant species identifiers.
 
@@ -200,9 +203,9 @@ am_hspen() %>% filter(SpeciesID == key) %>% head(1) %>% collapse%>% glimpse()
 
 ### Species and locations
 
-In the beginning of the vignette, the taxonomy name search functions were illustrated with some examples. These allow for getting a list of available mapped species based on a certain criteria, so that native habitat can be mapped for a set of species based on taxonomic criteria.
+In the beginning of the vignette, the taxonomy name search functions were illustrated with some examples. These allow the user to get a list of available mapped species based on a certain criteria (e.g. taxonomic group), so that biodiversity (or species richness) for that group can be mapped.
 
-We can also use a function to list species occurring in an area; a location with cells identified by a single or multiple CsquareCode identifiers. Another function allows querying for species diversity or richness across a set of cells. Both these functions allows for specifying a minimum threshold for the probability that the cell is a suitable native species habitat.
+We can also use a function to list species occurring in an area; a location identified by a single or multiple CsquareCode identifiers. Another function allows querying for species diversity or richness across a set of cells. Both functions allows for specifying a probability threshold as deemed fit.
 
 A location can be determined based on a user defined bounding box or extent (given by four coordinates). Using am_hcaf() a set of cells can be determined based on other criteria, allowing retrieval of CsquareCode cell identifiers that belong to a specific LME, for example.
 
@@ -220,6 +223,22 @@ am_species_per_csc(csc, min_prob = 0.8)
 ```
 
 ## Data scope and content
+
+### Scope
+
+Please note that the database file differs from the complete version available online at https://aquamaps.org in the following respects:
+
+1. The database is incomplete in terms of species mapped (26,399 /33,518). It is based on AquaMaps’ conservative rule of generating envelopes and predictions for species with >=10 ‘good cells’ and excludes records of data-poor species (i.e. endemic and/or rare species). Please contact the AquaMaps team directly if you want access to the complete dataset. 
+
+1. The map data provided (hcaf_species_native table) give computer-generated  predictions. Please contact the AquaMaps team directly if you need to access the latest reviewed/improved species maps.  
+
+1. Map data showing future species distributions for 2050 and 2100 (under different RCP scenarios) are excluded. Please contact the AquaMaps team directly if you are interested in these datasets.
+
+We strongly encourage partnering with the AquaMaps team for larger research projects or publications that would make intensive use of AquaMaps to ensure that you have access to the latest version and/or reviewed maps, that the limitations of the data set are clearly understood and addressed, and that critical maps and/or unlikely results are recognized as such and double-checked for correctness prior to drawing conclusions and/or subsequent publication. 
+
+The AquaMaps team can be contacted through Rainer Froese (rfroese@geomar.de) or Kristin Kaschner (Kristin.Kaschner@biologie.uni-freiburg.de). 
+
+### Content
 
 The `dplyr` package can be used to query the various tables available in the database.
 
@@ -272,7 +291,7 @@ A set of functions then allows for syncing the data into an SQLite3 database wit
 
 Relevant steps are:
 
-- Chunkwise sync using `db_sync()` from source connection to target db.
+- Make a chunkwise sync using `db_sync()` from source connection to target db.
 - Add full text search functionality using `am_create_fts()`
 - Add indexes through `am_create_indexes()`
 

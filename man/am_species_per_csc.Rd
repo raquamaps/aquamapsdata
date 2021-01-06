@@ -4,13 +4,13 @@
 \alias{am_species_per_csc}
 \title{Total count for number of distinct species across cells, ie "richness"}
 \usage{
-am_species_per_csc(csc, min_prob = 0, keys = NULL)
+am_species_per_csc(csc, min_prob = 0.5, keys = NULL)
 }
 \arguments{
 \item{csc}{a vector of strings with CsquareCodes (grid cell identifiers)}
 
 \item{min_prob}{a numeric with the threshold for probable occurrence,
-default 0}
+default 0.5}
 
 \item{keys}{a vector of string with SpeciesID values}
 }

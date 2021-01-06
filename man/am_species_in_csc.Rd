@@ -4,13 +4,13 @@
 \alias{am_species_in_csc}
 \title{Species occuring in set of grid cell}
 \usage{
-am_species_in_csc(csc, min_prob = 0)
+am_species_in_csc(csc, min_prob = 0.5)
 }
 \arguments{
 \item{csc}{a vector of strings with CsquareCodes (grid cell identifiers)}
 
 \item{min_prob}{a numeric with the minimum threshold for probable occurrence,
-default 0}
+default 0.5}
 }
 \description{
 Given a set of grid cell identifiers or CsquareCodes, this function

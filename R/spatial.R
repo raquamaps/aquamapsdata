@@ -144,7 +144,7 @@ am_csc_from_extent <- function(x1, x2, y1, y2) {
 #' returns a list of the species that occur there
 #' @param csc a vector of strings with CsquareCodes (grid cell identifiers)
 #' @param min_prob a numeric with the minimum threshold for probable occurrence,
-#'   default 0
+#'   default 0.5
 #' @examples \dontrun{
 #' # distinct number of species in a specific grid cell
 #' am_species_in_csc("7516:236:1", 0.99)
@@ -157,7 +157,7 @@ am_csc_from_extent <- function(x1, x2, y1, y2) {
 #' @importFrom rlang .data
 #' @export
 #' @family spatial
-am_species_in_csc <- function(csc, min_prob = 0) {
+am_species_in_csc <- function(csc, min_prob = 0.5) {
 
   db_cache$local_db %>%
     dplyr::tbl("hcaf_species_native") %>%
@@ -176,7 +176,7 @@ am_species_in_csc <- function(csc, min_prob = 0) {
 #' optionally filtered for taxonomy and a preferred probability threshold
 #' @param csc a vector of strings with CsquareCodes (grid cell identifiers)
 #' @param min_prob a numeric with the threshold for probable occurrence,
-#'   default 0
+#'   default 0.5
 #' @param keys a vector of string with SpeciesID values
 #' @examples \dontrun{
 #' # distinct number of species in a specific grid cell
@@ -193,7 +193,7 @@ am_species_in_csc <- function(csc, min_prob = 0) {
 #' @importFrom rlang .data
 #' @export
 #' @family spatial
-am_species_per_csc <- function(csc, min_prob = 0, keys = NULL) {
+am_species_per_csc <- function(csc, min_prob = 0.5, keys = NULL) {
 
   t1 <-
     db_cache$local_db %>%
