@@ -88,8 +88,8 @@
 
       </header><script src="intro_files/accessible-code-block-0.0.1/empty-anchor.js"></script><script src="intro_files/htmlwidgets-1.5.3/htmlwidgets.js"></script><script src="intro_files/jquery-1.12.4/jquery.min.js"></script><link href="intro_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
 <script src="intro_files/leaflet-1.3.1/leaflet.js"></script><link href="intro_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
-<script src="intro_files/Proj4Leaflet-1.0.1/proj4-compressed.js"></script><script src="intro_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="intro_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
-<script src="intro_files/leaflet-binding-2.0.3/leaflet.js"></script><script src="intro_files/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script><script src="intro_files/leaflet-providers-plugin-2.0.3/leaflet-providers-plugin.js"></script><div class="row">
+<script src="intro_files/proj4-2.6.2/proj4.min.js"></script><script src="intro_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="intro_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="intro_files/leaflet-binding-2.0.4.1/leaflet.js"></script><script src="intro_files/leaflet-providers-1.9.0/leaflet-providers_1.9.0.js"></script><script src="intro_files/leaflet-providers-plugin-2.0.4.1/leaflet-providers-plugin.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to aquamapsdata</h1>
@@ -102,7 +102,7 @@
 
     
     
-<p>This document describes how to use the <code>aquamapsdata</code> R data package to access curated data through a static database assembled from data sourced from <a href="http://aquamaps.org" class="uri">http://aquamaps.org</a></p>
+<p>This document describes how to use the <code>aquamapsdata</code> R data package to access curated data through a static database assembled from data sourced from <a href="https://aquamaps.org" class="uri">https://aquamaps.org</a></p>
 <p>Immediately after installing the package, a run-once action is needed, in order to download and locally create the SQLite database containing all the AquaMaps data. A small minified limited (&lt; 1MB) variant of the database is included in the package to simplify package development, and can be activated by using <code><a href="../reference/default_db.html">default_db("extdata")</a></code>.</p>
 <p>Approximately 10G disk space is needed locally when remotely downloading the database file. The download is around 2G compressed and therefore a speedy Internet connection is recommended for this initial step.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -118,7 +118,7 @@
 <span class="fu"><a href="../reference/download_db.html">download_db</a></span><span class="op">(</span>force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="fu"><a href="../reference/default_db.html">default_db</a></span><span class="op">(</span><span class="st">"sqlite"</span><span class="op">)</span></code></pre></div>
 <p>Once the database is available locally, it can be queried using a couple of different functions.</p>
-<p>Please remember to being your session with activating the connection to the downloaded database:</p>
+<p>Please remember to begin your session by activating the connection to the downloaded database:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
 <span class="fu"><a href="../reference/default_db.html">default_db</a></span><span class="op">(</span><span class="st">"sqlite"</span><span class="op">)</span></code></pre></div>
@@ -189,10 +189,10 @@
 <div id="species-maps" class="section level2">
 <h2 class="hasAnchor">
 <a href="#species-maps" class="anchor"></a>Species maps</h2>
-<p>With a species identifier, likely locations of habitat can be displayed on a map, but native habitat data can also be retrieved in raster format.</p>
-<p>Here we display a map with likely native habitats for the Bluespotted trevally:</p>
+<p>With a species identifier, probability of occurrence within the known native distribution for a species can either be retrieved in raster format or be displayed on a map .</p>
+<p>Here we display the computer-generated native map for the Bluespotted trevally:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/raster">raster</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/raquamaps/aquamapsdata">aquamapsdata</a></span><span class="op">)</span>
 
@@ -215,8 +215,8 @@
 ## +wktext +no_defs +type=crs</code></pre>
 <pre><code>## Warning in showSRID(uprojargs, format = "PROJ", multiline = "NO", prefer_proj =
 ## prefer_proj): Discarded datum World Geodetic System 1984 in CRS definition</code></pre>
-<div id="htmlwidget-c519472d2a24e4cb92cc" style="width:672px;height:432.632880098888px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-c519472d2a24e4cb92cc">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.OceanBasemap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addRasterImage","args":["data:image/png;base64,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",[[-7.25,-179.75],[-22.75,179.75]],0.8,null,null,null]},{"method":"addLegend","args":[{"colors":["#FEB24C","#FD8D3C","#FC4E2A","#E31A1C","#B10026"],"labels":["0.0 &ndash; 0.2","0.2 &ndash; 0.4","0.4 &ndash; 0.6","0.6 &ndash; 0.8","0.8 &ndash; 1.0"],"na_color":null,"na_label":"NA","opacity":0.5,"position":"topright","type":"bin","title":"Bluespotted trevally","extra":null,"layerId":null,"className":"info legend","group":null}]}],"limits":{"lat":[-22.75,-7.25],"lng":[-179.75,179.75]},"fitBounds":[-46,100,-2,172,[]]},"evals":[],"jsHooks":[]}</script><p>Source: Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 10/2019.</p>
+<div id="htmlwidget-d3c15ff6658e0d806c86" style="width:672px;height:432.632880098888px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-d3c15ff6658e0d806c86">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addProviderTiles","args":["Esri.OceanBasemap",null,null,{"errorTileUrl":"","noWrap":false,"detectRetina":false}]},{"method":"addRasterImage","args":["data:image/png;base64,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",[[-7.25,-179.75],[-22.75,179.75]],0.8,null,null,null]},{"method":"addLegend","args":[{"colors":["#FEB24C","#FD8D3C","#FC4E2A","#E31A1C","#B10026"],"labels":["0.0 &ndash; 0.2","0.2 &ndash; 0.4","0.4 &ndash; 0.6","0.6 &ndash; 0.8","0.8 &ndash; 1.0"],"na_color":null,"na_label":"NA","opacity":0.5,"position":"topright","type":"bin","title":"Bluespotted trevally","extra":null,"layerId":null,"className":"info legend","group":null}]}],"limits":{"lat":[-22.75,-7.25],"lng":[-179.75,179.75]},"fitBounds":[-46,100,-2,172,[]]},"evals":[],"jsHooks":[]}</script><p>Source: Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 10/2019.</p>
 <p>Content from AquaMaps as provided in this R package is licensed under a <a href="http://creativecommons.org/licenses/by-nc/3.0/">Creative Commons Attribution-NonCommercial 3.0 UnportedLicense</a>: <img src="https://i.creativecommons.org/l/by-nc/3.0/80x15.png" style="border-width:0"></p>
 </div>
 <div id="including-attribution" class="section level2">
@@ -229,18 +229,20 @@
 <span class="fu"><a href="../reference/am_citation.html">am_citation</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <pre><code>## [1] "Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 10/2019.\nContent from AquaMaps as provided in this R package is licensed under a Creative Commons Attribution-NonCommercial 3.0 UnportedLicense, please see http://creativecommons.org/licenses/by-nc/3.0/"</code></pre>
 </div>
-<div id="maps-that-include-several-species" class="section level2">
+<div id="biodiversity-maps" class="section level2">
 <h2 class="hasAnchor">
-<a href="#maps-that-include-several-species" class="anchor"></a>Maps that include several species</h2>
-<p>We can also display a map using several species identifiers, for example those associated with the genus “Caranx”, but should then provide an aggregation function such as “count”, for example using:</p>
+<a href="#biodiversity-maps" class="anchor"></a>Biodiversity Maps</h2>
+<p>We can also display a map using several identifiers, for example those associated with the genus “Caranx”, and should then provide an aggregation function such as “count”.</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">keys</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_search_exact.html">am_search_exact</a></span><span class="op">(</span>Genus <span class="op">=</span> <span class="st">"Caranx"</span><span class="op">)</span><span class="op">$</span><span class="va">SpeciesID</span>
+
 <span class="va">ras</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/am_raster.html">am_raster</a></span><span class="op">(</span><span class="va">keys</span>, fun <span class="op">=</span> <span class="st">"count"</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/am_map_leaflet.html">am_map_leaflet</a></span><span class="op">(</span><span class="va">ras</span>, title <span class="op">=</span> <span class="st">"Caranx"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">leaflet</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/leaflet/man/map-methods.html">fitBounds</a></span><span class="op">(</span>lng1 <span class="op">=</span> <span class="fl">100</span>, lat1 <span class="op">=</span> <span class="op">-</span><span class="fl">46</span>, lng2 <span class="op">=</span> <span class="fl">172</span>, lat2 <span class="op">=</span> <span class="op">-</span><span class="fl">2</span><span class="op">)</span>
 
 <span class="fu"><a href="../reference/am_citation.html">am_citation</a></span><span class="op">(</span><span class="st">"md"</span><span class="op">)</span></code></pre></div>
+<p>For biodiversity maps within a specific bounding box, see the function <code>am_csc_from_extent</code>, which provides biodiversity map data for all species, optionally filtered by a user-defined probability threshold (where 0.5 is the default used at aquamaps.org, see the help for functions <code>am_species_in_csc</code> and <code>am_species_per_csc</code>).</p>
 </div>
 <div id="other-usage-examples" class="section level2">
 <h2 class="hasAnchor">
@@ -309,7 +311,7 @@
 <div id="species-preferences-or-environmental-envelope" class="section level3">
 <h3 class="hasAnchor">
 <a href="#species-preferences-or-environmental-envelope" class="anchor"></a>Species preferences or environmental envelope</h3>
-<p>The am_hspen() function provides the parameters for species’ environmental envelopes; data on circumstances that the species are likely to tolerate. Information about this table is available in the help with fields explained in the <code>am_meta</code> dataset.</p>
+<p>The am_hspen() function provides the input data used to generate a species’environmental envelopes and the envelopes themselves. Information about this table is available in the help with fields explained in the <code>am_meta</code> dataset.</p>
 <p>HSPEN data can be queried for example based on taxonomy for a single species or higher taxa associated with that species, or any other relevant species identifiers.</p>
 <div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># use one or more keys for species</span>
@@ -381,8 +383,8 @@
 <div id="species-and-locations" class="section level3">
 <h3 class="hasAnchor">
 <a href="#species-and-locations" class="anchor"></a>Species and locations</h3>
-<p>In the beginning of the vignette, the taxonomy name search functions were illustrated with some examples. These allow for getting a list of available mapped species based on a certain criteria, so that native habitat can be mapped for a set of species based on taxonomic criteria.</p>
-<p>We can also use a function to list species occurring in an area; a location with cells identified by a single or multiple CsquareCode identifiers. Another function allows querying for species diversity or richness across a set of cells. Both these functions allows for specifying a minimum threshold for the probability that the cell is a suitable native species habitat.</p>
+<p>In the beginning of the vignette, the taxonomy name search functions were illustrated with some examples. These allow the user to get a list of available mapped species based on a certain criteria (e.g. taxonomic group), so that biodiversity (or species richness) for that group can be mapped.</p>
+<p>We can also use a function to list species occurring in an area; a location identified by a single or multiple CsquareCode identifiers. Another function allows querying for species diversity or richness across a set of cells. Both functions allows for specifying a probability threshold as deemed fit.</p>
 <p>A location can be determined based on a user defined bounding box or extent (given by four coordinates). Using am_hcaf() a set of cells can be determined based on other criteria, allowing retrieval of CsquareCode cell identifiers that belong to a specific LME, for example.</p>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get cell identifiers for a bounding box or extent</span>
@@ -393,7 +395,7 @@
 <pre><code>## # A tibble: 1 x 2
 ##   SpeciesID     n
 ##   &lt;chr&gt;     &lt;int&gt;
-## 1 Fis-29757   105</code></pre>
+## 1 Fis-29757    86</code></pre>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># in each cell location, the following number of distinct species are likely</span>
 <span class="co"># a measure of species diversity or "richness"</span>
@@ -417,6 +419,21 @@
 <div id="data-scope-and-content" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-scope-and-content" class="anchor"></a>Data scope and content</h2>
+<div id="scope" class="section level3">
+<h3 class="hasAnchor">
+<a href="#scope" class="anchor"></a>Scope</h3>
+<p>Please note that the database file differs from the complete version available online at <a href="https://aquamaps.org" class="uri">https://aquamaps.org</a> in the following respects:</p>
+<ol style="list-style-type: decimal">
+<li><p>The database is incomplete in terms of species mapped (26,399 /33,518). It is based on AquaMaps’ conservative rule of generating envelopes and predictions for species with &gt;=10 ‘good cells’ and excludes records of data-poor species (i.e. endemic and/or rare species). Please contact the AquaMaps team directly if you want access to the complete dataset.</p></li>
+<li><p>The map data provided (hcaf_species_native table) give computer-generated predictions. Please contact the AquaMaps team directly if you need to access the latest reviewed/improved species maps.</p></li>
+<li><p>Map data showing future species distributions for 2050 and 2100 (under different RCP scenarios) are excluded. Please contact the AquaMaps team directly if you are interested in these datasets.</p></li>
+</ol>
+<p>We strongly encourage partnering with the AquaMaps team for larger research projects or publications that would make intensive use of AquaMaps to ensure that you have access to the latest version and/or reviewed maps, that the limitations of the data set are clearly understood and addressed, and that critical maps and/or unlikely results are recognized as such and double-checked for correctness prior to drawing conclusions and/or subsequent publication.</p>
+<p>The AquaMaps team can be contacted through Rainer Froese (<a href="mailto:rfroese@geomar.de" class="email">rfroese@geomar.de</a>) or Kristin Kaschner (<a href="mailto:Kristin.Kaschner@biologie.uni-freiburg.de" class="email">Kristin.Kaschner@biologie.uni-freiburg.de</a>).</p>
+</div>
+<div id="content" class="section level3">
+<h3 class="hasAnchor">
+<a href="#content" class="anchor"></a>Content</h3>
 <p>The <code>dplyr</code> package can be used to query the various tables available in the database.</p>
 <p>Here is a description of tables and fields which are included.</p>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
@@ -1581,6 +1598,7 @@
 </tbody>
 </table>
 </div>
+</div>
 <div id="data-management" class="section level2">
 <h2 class="hasAnchor">
 <a href="#data-management" class="anchor"></a>Data management</h2>
@@ -1617,7 +1635,7 @@
 <p>A set of functions then allows for syncing the data into an SQLite3 database with full text search support, which gets indexed.</p>
 <p>Relevant steps are:</p>
 <ul>
-<li>Chunkwise sync using <code><a href="../reference/db_sync.html">db_sync()</a></code> from source connection to target db.</li>
+<li>Make a chunkwise sync using <code><a href="../reference/db_sync.html">db_sync()</a></code> from source connection to target db.</li>
 <li>Add full text search functionality using <code>am_create_fts()</code>
 </li>
 <li>Add indexes through <code>am_create_indexes()</code>
