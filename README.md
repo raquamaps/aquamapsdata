@@ -8,6 +8,7 @@ state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![Codecov test
 coverage](https://codecov.io/gh/raquamaps/aquamapsdata/branch/master/graph/badge.svg)](https://codecov.io/gh/raquamaps/aquamapsdata?branch=master)
+[![peer-review](https://badges.ropensci.org/421_status.svg)](https://github.com/ropensci/software-review/issues/421)
 <!-- badges: end -->
 
 <!-- For later: [![](https://badges.ropensci.org/<issue_id>_status.svg)](https://github.com/ropensci/software-review/issues/<issue_id>) -->
