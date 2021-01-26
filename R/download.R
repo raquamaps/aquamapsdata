@@ -32,7 +32,7 @@ download_db <- function(force = FALSE, passphrase = NULL) {
   if (!file.exists(tgt)) {
     if (!dir.exists(dirname(tgt))) dir.create(dirname(tgt), recursive = TRUE)
     message("... unpacking ", temp, " to ", tgt)
-    if (has_pass) {
+    if (!has_pass) {
       R.utils::bunzip2(filename = temp, destname = tgt)
     } else {
       rcrypt::decrypt(temp, passphrase = passphrase, output = tgt)
