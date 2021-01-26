@@ -71,9 +71,11 @@ To see some quick usage examples to get you started, open the Vignette.
 
 The package uses SQLite3 - a portable and fast database which is included in the RSQLite package.
 
-## Similar packages
+## Other useful packages
 
-A similar package which also provides the aquamaps algorithm is available at https://github.com/raquamaps/raquamaps.
+- To further work with the data, packages such as `sp`, `raster` and other geospatial R packages can be useful.
+
+- For looking up other data related to the included species, packages such as `taxizedb`, `rgbif`, `rfishbase` can be useful.
 
 ## Data source, Citation and References
 
