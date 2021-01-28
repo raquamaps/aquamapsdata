@@ -27,12 +27,13 @@ Introduction
 ------------
 
 `aquamapsdata` is an R package that can download and create a local
-SQLite database with datasets from AquaMaps.org.
+SQLite database with datasets from [AquaMaps](https://www.aquamaps.org).
 
 These datasets are available to web browsers through
-<a href="https://aquamaps.org" class="uri">https://aquamaps.org</a>, but
-the `aquamapsdata` package offers an a couple of convenient functions
-for accessing this data programmatically in an IDE like `RStudio`.
+<a href="https://www.aquamaps.org" class="uri">https://www.aquamaps.org</a>,
+but the `aquamapsdata` package offers an a couple of convenient
+functions for accessing this data programmatically in an IDE like
+`RStudio`.
 
 Installing from github
 ----------------------
@@ -77,7 +78,7 @@ Data source, Citation and References
 ------------------------------------
 
 `aquamapsdata` provides data output from
-<a href="https://aquamaps.org" class="uri">https://aquamaps.org</a>;
+<a href="https://www.aquamaps.org" class="uri">https://www.aquamaps.org</a>;
 when using data provided by the package in a publication, please cite
 this source:
 
@@ -90,7 +91,7 @@ this source:
 
 Content from AquaMaps as provided by functions in this R package is
 licensed under a [Creative Commons Attribution-NonCommercial 3.0
-Unported License](http://creativecommons.org/licenses/by-nc/3.0/):
+Unported License](https://creativecommons.org/licenses/by-nc/3.0/):
 <img src="https://i.creativecommons.org/l/by-nc/3.0/80x15.png" style="border-width:0" />
 
 You are welcome to include text, numbers and maps from AquaMaps in your

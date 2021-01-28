@@ -5,7 +5,7 @@
 \alias{aquamapsdata}
 \title{aquamapsdata}
 \description{
-This package provides data access to curated data from aquamaps.org.
+This package provides data access to curated data from \href{https://www.aquamaps.org}{AquaMaps}.
 }
 \details{
 A local SQLite db is downloaded from

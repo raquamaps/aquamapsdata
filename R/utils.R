@@ -6,11 +6,11 @@
 #'@importFrom R.utils withTimeout
 #'@export
 #'@examples \dontrun{
-#'  http_ping("http://aquamaps.org")
+#'  http_ping("https://www.aquamaps.org")
 #'}
 #'
 #' @family admin
-http_ping <- function(url = "http://aquamaps.org", timeout = 10) {
+http_ping <- function(url = "https://www.aquamaps.org", timeout = 10) {
   req <- withTimeout({
     httr::GET(url)
   }, timeout = timeout, onTimeout = "warning")

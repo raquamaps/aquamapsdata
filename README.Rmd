@@ -39,9 +39,9 @@ Welcome to ...
 
 ## Introduction
 
-`aquamapsdata` is an R package that can download and create a local SQLite database with datasets from AquaMaps.org. 
+`aquamapsdata` is an R package that can download and create a local SQLite database with datasets from [AquaMaps](https://www.aquamaps.org). 
 
-These datasets are available to web browsers through https://aquamaps.org, but the `aquamapsdata` package offers an a couple of convenient functions for accessing this data programmatically in an IDE like `RStudio`.
+These datasets are available to web browsers through https://www.aquamaps.org, but the `aquamapsdata` package offers an a couple of convenient functions for accessing this data programmatically in an IDE like `RStudio`.
 
 ## Installing from github
 
@@ -79,14 +79,14 @@ The package uses SQLite3 - a portable and fast database which is included in the
 
 ## Data source, Citation and References
 
-`aquamapsdata` provides data output from https://aquamaps.org; when using data provided by the package in a publication, please cite this source:
+`aquamapsdata` provides data output from https://www.aquamaps.org; when using data provided by the package in a publication, please cite this source:
 
 - Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, J. Rius-Barile, T. Rees, and R. Froese. 2019. AquaMaps: Predicted range maps for aquatic species. World wide web electronic publication, www.aquamaps.org, Version 10/2019.
 
 ### Content - Copyright and Disclaimer
 
 Content from AquaMaps as provided by functions in this R package is licensed under a [Creative Commons Attribution-NonCommercial 3.0 Unported
-License](http://creativecommons.org/licenses/by-nc/3.0/): ![](https://i.creativecommons.org/l/by-nc/3.0/80x15.png){style='border-width:0'}
+License](https://creativecommons.org/licenses/by-nc/3.0/): ![](https://i.creativecommons.org/l/by-nc/3.0/80x15.png){style='border-width:0'}
 
 You are welcome to include text, numbers and maps from AquaMaps in your own work for non-commercial use, given that such inserts are clearly identified as coming from AquaMaps.org, with a backward link to the respective source. 
 

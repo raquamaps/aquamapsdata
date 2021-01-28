@@ -1,15 +1,15 @@
 Package: aquamapsdata
 Type: Package
-Title: Curated Data From AquaMaps.Org
+Title: Curated Data From AquaMaps
 Date: 2020-11-21
 Version: 0.1.6
 Authors@R: c(
   person("Markus", "Skyttner", email = "markus.skyttner@nrm.se", role = c("aut", "cre")),
   person("Christina", "Garilao", role = c("ctb")))
 Maintainer: Markus Skyttner <markus.skyttner@nrm.se>
-Description: This package provides access to curated data from aquamaps.org published in 2020.
+Description: This package provides access to curated data from AquaMaps.
     It does not embed the data statically into the package, instead it attempts to download an SQLite database from a remote location.
-    It has a function called download_db() which retrieves the data published by aquamaps.org as an SQLite database.
+    It has a function called download_db() which retrieves the data published by AquaMaps as an SQLite database.
     It also has functions for accessing the data. The data is expected to be updated on the remote location approximately once per year.
 License: file LICENSE
 URL: https://github.com/raquamaps/aquamapsdata
