@@ -1,0 +1,60 @@
+---
+title: "FAQ"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{FAQ}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include=FALSE}
+library(aquamapsdata)
+```
+
+## Categorization
+
+> Is this a "geospatial data" package?
+
+The package provides data retrieval for geospatial data provided by [AquaMaps](https://www.aquamaps.org) - enabling local access to curated map data which can be retrieved in raster format. However, the package does not provide new geospatial functionality. 
+
+It allows for data retrieval of geospatial in raster format with half degree cell resolution and facilitates further manipulation of the data, since it converts tabular data stored in a relational database into raster objects (see the `am_raster()` function). Data can then be further processed using other geospatial R packages.
+
+Based on [these categories](https://devguide.ropensci.org/policies.html#package-categories), this package can be said to provide support for:
+
+- data retrieval from a pre-packaged relational database extract in SQLite format made by staff at [AquaMaps](https://www.aquamaps.org), which gets published at archive.org and which the package can download and use
+- data extraction by, as stated earlier, providing access to this data using primarily the raster format
+- workflow automation might also be a valid category, since it for AquaMaps staff provides several functions that are aimed to make and upload a distribution with a relational database extract such as the one used in the package (including full text search indexes)
+
+## Audience
+
+> What audiences is this package for?
+
+- For researchers interested in using data from AquaMaps it helps with accessing the data locally. The `aquamapsdata` R package is a little bit like the [`taxizedb` R package](https://docs.ropensci.org/taxizedb/) in the sense that it takes almost all data in the AquaMaps database and makes it accessible from R, but it does not access the central AquaMaps MySQL database directly, instead it uses a compressed archive variant in SQLite format that gets downloaded locally from archive.org. 
+
+- There is also a set of functions in the package to support distribution ("data management") that can be used by AquaMaps staff themselves to generate this archive, ie for converting the whole MySQL database into a SQLite database (with indexes and full text search capabilities) and to push a compressed archive to https://archive.org. This provides support for distributing the data. 
+
+So there are functions in the package for different audiences - for data access (researchers, consumers of the data) and for distributing the data (used by AquaMaps staff in their workflows as producers of the data).
+
+## Data scope
+
+> Is the data extract much different from the real AquaMaps database?
+
+No, not really. But the database structure in the export / data distribution is "cleaned up" with regards to field names with some scope/filters set in order to be able to distribute the high quality relevant data using a workflow that can be automated more easily.
+
+## Dependencies
+
+> Is a system dependency for gpg required? Why?
+
+Not normally. The data is by default open to download. But it may be useful for data management purposes, in order to support distributing other data archives which would be encrypted with a passphrase. This can be useful during data preparation stages, before being able to providing open access.
+
+> Is the `rgdal` package dependency needed (and associated system dependencies)?
+
+When using `am_map_leaflet()`, a reprojection of raster data is made for better aligned display of raster in Leaflet web format. This makes use of reprojection functionality provided through `rgdal`.
+
