@@ -5,8 +5,18 @@ For more fine-grained list of changes or to report a bug, consult
 * [The issues log](https://github.com/raquamaps/aquamapsdata/issues)
 * [The commit log](https://github.com/raquamaps/aquamapsdata/commits/master)
 
-## v0.1.5
+## v0.1.6
 
+Changes are listed [here](https://github.com/raquamaps/aquamapsdata/issues?q=is%3Aissue+milestone%3A%22RC+1%22+is%3Aclosed) and include for example:
+
+* Refreshed data
+
+* Updated CI/CD GitHub Actions 
+
+* Various changes for better compliance with ROpenSci package development guidelines
+
+## v0.1.5
+ 
 * Added GitHub Actions for R-CMD-check and test-coverage.
 
 * Added pkgdown site.
@@ -39,7 +49,7 @@ For more fine-grained list of changes or to report a bug, consult
 
 # v0.1.1
 
-* Moved csv-to-sqlite conversion and put it in data-raw to avoid loading all those dependencies in the package
+* Moved CSV-to-SQLite conversion and put it in data-raw to avoid loading all those dependencies in the package
 
 * Introduced download_db() function which downloads a pre-processed SQLite3 db file from the Internet Archive
 

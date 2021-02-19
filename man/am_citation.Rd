@@ -15,7 +15,7 @@ citation text and copyright info
 \description{
 You are welcome to include text, numbers and maps from AquaMaps in your
 own work for non-commercial use, given that such inserts are clearly
-identified as coming from AquaMaps.org, with a backward link to the
+identified as coming from AquaMaps, with a backward link to the
 respective source.
 }
 \details{

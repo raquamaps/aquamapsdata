@@ -15,7 +15,7 @@ A data frame:
 }
 }
 \source{
-\href{https://aquamaps.org/}{AquaMaps}
+\href{https://www.aquamaps.org/}{AquaMaps}
 }
 \usage{
 am_meta
@@ -25,7 +25,7 @@ A dataset with field names and field descriptions for the included tables.
 }
 \details{
 The metadata is provided as a data frame with the table name, field name,
-field description and original data type in the AquaMaps.org source db.
+field description and original data type in the AquaMaps source db.
 
 There are five tables:
 \itemize{

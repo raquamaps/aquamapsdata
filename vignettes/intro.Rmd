@@ -7,7 +7,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-This document describes how to use the `aquamapsdata` R data package to access curated data through a static database assembled from data sourced from https://aquamaps.org
+This document describes how to use the `aquamapsdata` R data package to access curated data through a static database assembled from data sourced from https://www.aquamaps.org
 
 Immediately after installing the package, a run-once action is needed, in order to download and locally create the SQLite database containing all the AquaMaps data. A small minified limited (< 1MB) variant of the database is included in the package to simplify package development, and can be activated by using `default_db("extdata")`.
 
@@ -143,7 +143,7 @@ am_citation("md")
 
 ```
 
-For biodiversity maps within a specific bounding box, see the function `am_csc_from_extent`, which provides biodiversity map data for all species, optionally filtered by a user-defined probability threshold (where 0.5 is the default used at aquamaps.org, see the help for functions `am_species_in_csc` and `am_species_per_csc`).
+For biodiversity maps within a specific bounding box, see the function `am_csc_from_extent`, which provides biodiversity map data for all species, optionally filtered by a user-defined probability threshold (where 0.5 is the default used at https://www.aquamaps.org, see the help for functions `am_species_in_csc` and `am_species_per_csc`).
 
 ## Other usage examples
 
@@ -151,7 +151,7 @@ A few examples follow below and describe how the data in the database can be que
 
 ### Locations in cells and the half degree cell "authority file" table
 
-Likely occurrences for a species is provided for locations in a half degree cell grid. Individual cells have characteristics associated, in a *H*alf degree *C*ell *A*uthority *F*ile, with data available through the `am_hcaf()` function. 
+Likely occurrences for a species are provided for locations in a half degree cell grid. Individual cells have characteristics associated, in a *H*alf degree *C*ell *A*uthority *F*ile, with data available through the `am_hcaf()` function. 
 
 Information about this table is available in the help with fields explained in the `am_meta` dataset.
 
@@ -226,9 +226,9 @@ am_species_per_csc(csc, min_prob = 0.8)
 
 ### Scope
 
-Please note that the database file differs from the complete version available online at https://aquamaps.org in the following respects:
+Please note that the database file differs from the complete version available online at https://www.aquamaps.org in the following respects:
 
-1. The database is incomplete in terms of species mapped (26,399 /33,518). It is based on AquaMaps’ conservative rule of generating envelopes and predictions for species with >=10 ‘good cells’ and excludes records of data-poor species (i.e. endemic and/or rare species). Please contact the AquaMaps team directly if you want access to the complete dataset. 
+1. The database is incomplete in terms of species mapped (26,399 /33,518). It is based on the AquaMaps conservative rule for generating envelopes and predictions which includes species with >=10 ‘good cells’ and therefore excludes records of data-poor species (i.e. endemic and/or rare species). Please contact the AquaMaps team directly if you want access to the complete dataset. 
 
 1. The map data provided (hcaf_species_native table) give computer-generated  predictions. Please contact the AquaMaps team directly if you need to access the latest reviewed/improved species maps.  
 

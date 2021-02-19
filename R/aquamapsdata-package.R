@@ -1,6 +1,6 @@
 #' aquamapsdata
 #'
-#' This package provides data access to curated data from aquamaps.org.
+#' This package provides data access to curated data from [AquaMaps](https://www.aquamaps.org).
 #'
 #' A local SQLite db is downloaded from
 #' https://archive.org/download/aquamapsdb
@@ -19,7 +19,7 @@ NULL
 #' A dataset with field names and field descriptions for the included tables.
 #'
 #' The metadata is provided as a data frame with the table name, field name,
-#' field description and original data type in the AquaMaps.org source db.
+#' field description and original data type in the AquaMaps source db.
 #'
 #' There are five tables:
 #' - **speciesoccursum_r**: This table provides general information about taxa,
@@ -58,7 +58,7 @@ NULL
 #'   \item{type_mysql}{original field type in the source database}
 #'   \item{type}{field type when used from R}
 #' }
-#' @source [AquaMaps](https://aquamaps.org/)
+#' @source [AquaMaps](https://www.aquamaps.org/)
 #' @family meta
 "am_meta"
 
@@ -66,7 +66,7 @@ NULL
 #'
 #' You are welcome to include text, numbers and maps from AquaMaps in your
 #' own work for non-commercial use, given that such inserts are clearly
-#' identified as coming from AquaMaps.org, with a backward link to the
+#' identified as coming from AquaMaps, with a backward link to the
 #' respective source.
 #'
 #' A researcher planning publication based on these datasets is invited
@@ -90,20 +90,20 @@ am_citation <- function(format = c("text", "md")) {
     paste0("Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider, ",
          "J. Rius-Barile, T. Rees, and R. Froese. 2019. ",
          "AquaMaps: Predicted range maps for aquatic species. ",
-         "World wide web electronic publication, www.aquamaps.org, ",
+         "World wide web electronic publication, https://www.aquamaps.org, ",
          "Version 10/2019.")
 
   copyright_md <-
     paste0("Content from AquaMaps as provided in this R package is ",
     "licensed under a [Creative Commons Attribution-NonCommercial 3.0 Unported",
-    "License](http://creativecommons.org/licenses/by-nc/3.0/): ",
+    "License](https://creativecommons.org/licenses/by-nc/3.0/): ",
     "![](https://i.creativecommons.org/l/by-nc/3.0/80x15.png)",
     "{style='border-width:0'}")
 
   copyright_text <-
     paste0("Content from AquaMaps as provided in this R package is ",
     "licensed under a Creative Commons Attribution-NonCommercial 3.0 Unported",
-    "License, please see http://creativecommons.org/licenses/by-nc/3.0/")
+    "License, please see https://creativecommons.org/licenses/by-nc/3.0/")
 
   switch(match.arg(format),
    "text" = paste0(collapse = "\n", c(citation, copyright_text)),

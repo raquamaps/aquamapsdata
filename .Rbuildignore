@@ -20,5 +20,5 @@
 ^codecov\.yml$
 ^logo\.png$
 ^inst/extdata/am\.db\.backup$
-
+^inst/docker
 ^Meta$

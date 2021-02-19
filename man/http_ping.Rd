@@ -4,7 +4,7 @@
 \alias{http_ping}
 \title{Ping a web site}
 \usage{
-http_ping(url = "http://aquamaps.org", timeout = 10)
+http_ping(url = "https://www.aquamaps.org", timeout = 10)
 }
 \arguments{
 \item{url}{a web site to "web ping" to see that it is available}
@@ -19,7 +19,7 @@ Ping a web site
 }
 \examples{
 \dontrun{
- http_ping("http://aquamaps.org")
+ http_ping("https://www.aquamaps.org")
 }
 
 }
