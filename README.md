@@ -1,7 +1,5 @@
 <!-- badges: start -->
 
-[![Build
-Status](https://travis-ci.org/raquamaps/aquamapsdata.svg?branch=master)](https://travis-ci.org/raquamaps/aquamapsdata)
 ![R-CMD-check](https://github.com/raquamaps/aquamapsdata/workflows/R-CMD-check/badge.svg)
 [![Project Status: Active – The project has reached a stable, usable
 state and is being actively

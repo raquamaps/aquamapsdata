@@ -1,7 +1,5 @@
 library(aquamapsdata)
 
-context("Name Search")
-
 default_db("extdata")
 
 test_that("fuzzy name search works with OR", {
@@ -36,11 +34,6 @@ test_that("exact name search works", {
     0
   )
 
-#  expect_equal(
-#    nrow(am_search_exact(SpeciesID = "Biv-32126")),
-#    1
-#  )
-
   expect_equal(
     nrow(am_search_exact(Kingdom = NULL)),
     1
@@ -58,17 +51,3 @@ test_that("exact name search works", {
 
 
 })
-
-# test_that("exact name search works for binomial names", {
-#
-#   expect_equal(
-#     am_name_search_exact(binomial = "Salmo trutta")$key,
-#     "Fis-21630"
-#   )
-#
-#   expect_equal(
-#     am_name_search_exact(binomial = "Gadus morhua")$key,
-#     "Fis-29394"
-#   )
-#
-# })
