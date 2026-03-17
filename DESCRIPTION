@@ -19,7 +19,6 @@ LazyData: true
 RoxygenNote: 7.3.3
 Imports:
     dplyr,
-    dbplyr,
     RSQLite,
     R.utils,
     stringi,
