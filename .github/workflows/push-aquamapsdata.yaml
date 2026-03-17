@@ -29,7 +29,9 @@ jobs:
         echo "IMAGE=ghcr.io/${OWNER}/${IMG}" >> $GITHUB_ENV
         echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
         echo "GIT_SHA=$(echo ${{ github.sha }} | cut -c1-7)" >> $GITHUB_ENV
-        echo "GIT_REF=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)" >> $GITHUB_ENV
+        _REF=$(git symbolic-ref -q --short HEAD || git describe --tags --exact-match)
+        echo "GIT_REF=${_REF}" >> $GITHUB_ENV
+        echo "GIT_REF_SAFE=${_REF//\//-}" >> $GITHUB_ENV
 
     -
       name: Set up QEMU
@@ -80,7 +82,7 @@ jobs:
           org.opencontainers.image.version=${{ env.BUILD_VER }}
         tags: |
           ${{ env.IMAGE }}:latest
-          ${{ env.IMAGE }}:${{ env.GIT_REF }}
+          ${{ env.IMAGE }}:${{ env.GIT_REF_SAFE }}
           ${{ env.IMAGE }}:${{ env.GIT_SHA }}
           ${{ env.IMAGE }}:${{ env.BUILD_VER }}
         push: true
