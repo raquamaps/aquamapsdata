@@ -4,10 +4,12 @@
 \alias{download_db}
 \title{Perform downloading of compressed SQLite db, storing it locally}
 \usage{
-download_db(force = FALSE)
+download_db(force = FALSE, passphrase = NULL)
 }
 \arguments{
 \item{force}{boolean to indicate whether to overwrite an existing db}
+
+\item{passphrase}{passphrase if using encrypted db, default: NULL}
 }
 \description{
 Perform downloading of compressed SQLite db, storing it locally

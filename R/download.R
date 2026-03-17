@@ -1,5 +1,6 @@
 #' Perform downloading of compressed SQLite db, storing it locally
 #' @param force boolean to indicate whether to overwrite an existing db
+#' @param passphrase passphrase if using encrypted db, default: NULL
 #' @examples \dontrun{
 #' download_db()
 #' }
@@ -7,10 +8,12 @@
 #' @importFrom curl curl_download
 #' @export
 #' @family general
-download_db <- function(force = FALSE) {
+download_db <- function(force = FALSE, passphrase = NULL) {
 
-  src <- "https://archive.org/download/aquamapsdb/am.db.bz2"
-  temp <- file.path(dirname(tempdir()), "am.db.bz2")
+  has_pass <- !is.null(passphrase)
+  ext <- ifelse(has_pass, ".gpg", ".bz2")
+  src <- paste0("https://archive.org/download/aquamapsdb/am.db", ext)
+  temp <- file.path(dirname(tempdir()), paste0("am.db", ext))
   tgt <- am_db_sqlite()
 
   if (file.exists(tgt) && !force)
@@ -28,7 +31,14 @@ download_db <- function(force = FALSE) {
   if (!file.exists(tgt)) {
     if (!dir.exists(dirname(tgt))) dir.create(dirname(tgt), recursive = TRUE)
     message("... unpacking ", temp, " to ", tgt)
-    R.utils::bunzip2(filename = temp, destname = tgt)
+    if (!has_pass) {
+      R.utils::bunzip2(filename = temp, destname = tgt)
+    } else {
+      if (!requireNamespace("rcrypt", quietly = TRUE))
+        stop("Package 'rcrypt' is needed for passphrase-protected downloads. ",
+          "Install it with: install.packages('rcrypt')")
+      rcrypt::decrypt(temp, passphrase = passphrase, output = tgt)
+    }
     message("done")
   } else {
     message("data appears to have been extracted already?")

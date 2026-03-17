@@ -45,7 +45,10 @@ Suggests:
     tidyr,
     testthat,
     covr,
-    RMySQL
+    RMySQL,
+    rcrypt
+Remotes:
+    url::https://cran.r-project.org/src/contrib/Archive/rcrypt/rcrypt_0.1.1.tar.gz
 Depends:
     R (>= 4.1)
 VignetteBuilder: knitr
