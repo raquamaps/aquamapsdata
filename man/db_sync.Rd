@@ -24,8 +24,8 @@ to not explicitly exclude any tables}
 
 \item{con_dest}{db connection to destination db}
 
-\item{overwrite_existing}{logical to indicate if existing tables at
-destination db should be overwritten, Default: FALSE}
+\item{overwrite_existing}{logical to indicate if existing destination tables
+should be overwritten, Default: FALSE}
 }
 \value{
 invisible result with vector of boolean status flags for
@@ -45,8 +45,8 @@ Other admin:
 \code{\link{am_use_offline_db}()},
 \code{\link{con_am}()},
 \code{\link{db_disco}()},
-\code{\link{db_minify_path}()},
 \code{\link{db_minify}()},
+\code{\link{db_minify_path}()},
 \code{\link{default_db}()},
 \code{\link{http_ping}()}
 }

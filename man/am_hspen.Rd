@@ -14,12 +14,11 @@ This table provides data on species environmental parameters / preferences
 \examples{
 \dontrun{
 keys <- am_search_fuzzy("trevally")$key[1:2]
-am_hspen() \%>\% filter(SpeciesID \%in\% keys)
+am_hspen() |> filter(SpeciesID \%in\% keys)
 }
 }
 \seealso{
 Other general: 
-\code{\link{\%>\%}()},
 \code{\link{am_hcaf}()},
 \code{\link{am_search_exact}()},
 \code{\link{am_search_fuzzy}()},

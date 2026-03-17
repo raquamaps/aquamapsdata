@@ -3,7 +3,7 @@ library(aquamapsdata)
 default_db("extdata")
 
 test_that("am_keys returns a non-empty character vector", {
-  keys <- am_keys()
+  keys <- aquamapsdata:::am_keys()
   expect_type(keys, "character")
   expect_gt(length(keys), 0)
 })

@@ -16,7 +16,7 @@ URL: https://github.com/raquamaps/aquamapsdata
 BugReports: https://github.com/raquamaps/aquamapsdata/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.3
 Imports:
     dplyr,
     dbplyr,
@@ -36,7 +36,6 @@ Imports:
     readr,
     sp,
     curl
-
 Suggests:
     knitr,
     readxl,
