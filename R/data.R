@@ -57,7 +57,8 @@ am_search_fuzzy <- function(search_term) {
 #' @examples \dontrun{
 #' am_custom_query("select * from speciesoccursum_r", con = con_am("extdata"))
 #' }
-#' @importFrom dplyr sql tbl collect
+#' @importFrom dplyr tbl collect
+#' @importFrom dbplyr sql
 #' @importFrom DBI dbDisconnect
 #' @export
 #' @family admin

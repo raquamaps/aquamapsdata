@@ -45,7 +45,9 @@ Suggests:
     tidyr,
     testthat,
     covr,
-    RMySQL
+    RMySQL,
+    rcrypt
+Additional_repositories: https://raquamaps.github.io/drat/
 Depends:
     R (>= 4.1)
 VignetteBuilder: knitr
