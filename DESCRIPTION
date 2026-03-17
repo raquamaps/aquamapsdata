@@ -16,17 +16,17 @@ URL: https://github.com/raquamaps/aquamapsdata
 BugReports: https://github.com/raquamaps/aquamapsdata/issues
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+RoxygenNote: 7.3.3
 Imports:
     dplyr,
     dbplyr,
     RSQLite,
     R.utils,
-    magrittr,
     stringi,
     purrr,
     DBI,
-    RMySQL,
+    cli,
+    httr,
     duckdb,
     leaflet,
     rappdirs,
@@ -34,22 +34,22 @@ Imports:
     stringr,
     rlang,
     readr,
-    rcrypt,
     sp,
     curl
-Suggests: 
+Suggests:
     knitr,
-    httr,
     readxl,
     rmarkdown,
     xml2,
     DT,
     tidyr,
     testthat,
-    covr
+    covr,
+    RMySQL,
+    rcrypt
+Remotes:
+    rcrypt=url::https://cran.r-project.org/src/contrib/Archive/rcrypt/rcrypt_0.1.1.tar.gz
 Depends:
-    R (>= 3.0)
+    R (>= 4.1)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-SystemRequirements:
-    rgdal

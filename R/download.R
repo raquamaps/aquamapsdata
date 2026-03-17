@@ -6,7 +6,6 @@
 #' }
 #' @importFrom R.utils gunzip isGzipped bunzip2
 #' @importFrom curl curl_download
-#' @importFrom rcrypt encrypt decrypt
 #' @export
 #' @family general
 download_db <- function(force = FALSE, passphrase = NULL) {
@@ -35,6 +34,9 @@ download_db <- function(force = FALSE, passphrase = NULL) {
     if (!has_pass) {
       R.utils::bunzip2(filename = temp, destname = tgt)
     } else {
+      if (!requireNamespace("rcrypt", quietly = TRUE))
+        stop("Package 'rcrypt' is needed for passphrase-protected downloads. ",
+          "Install it with: install.packages('rcrypt')")
       rcrypt::decrypt(temp, passphrase = passphrase, output = tgt)
     }
     message("done")

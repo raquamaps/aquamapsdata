@@ -20,7 +20,6 @@ am_hcaf()
 }
 \seealso{
 Other general: 
-\code{\link{\%>\%}()},
 \code{\link{am_hspen}()},
 \code{\link{am_search_exact}()},
 \code{\link{am_search_fuzzy}()},

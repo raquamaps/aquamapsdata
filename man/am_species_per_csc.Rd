@@ -24,7 +24,7 @@ optionally filtered for taxonomy and a preferred probability threshold
 am_species_per_csc("7516:236:1", 0.99)
 
 # distinct species count per grid cells in LME 1
-csc <- am_hcaf() \%>\% filter(LME == 1) \%>\% collect() \%>\% pull(CsquareCode)
+csc <- am_hcaf() |> filter(LME == 1) |> collect() |> pull(CsquareCode)
 am_species_per_csc(csc, 0.9)
 
 # global richness map data based on taxonomy

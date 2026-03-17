@@ -74,12 +74,12 @@ am_map_leaflet <- function(ras, title = "",
 
   e <- raster::extent(ras)
 
-  leaflet() %>%
-    leaflet::addProviderTiles(provider = "Esri.OceanBasemap") %>%
+  leaflet() |> 
+    leaflet::addProviderTiles(provider = "Esri.OceanBasemap") |> 
     leaflet::addRasterImage(ras, project = FALSE,
-      colors = pal, opacity = 0.8) %>%
+      colors = pal, opacity = 0.8) |> 
     addLegend(values = raster::values(ras),
-      title = title, pal = pal) %>%
+      title = title, pal = pal) |> 
     leaflet::fitBounds(lng1 = e@xmin, lat1 = e@ymin, lng2 = e@xmax, lat2 = e@ymax)
 
 }
@@ -130,11 +130,11 @@ am_csc_from_extent <- function(x1, x2, y1, y2) {
 
   stopifnot(x2 >= x1 & y2 >= y1)
 
-  am_hcaf() %>%
+  am_hcaf() |> 
     filter(
       .data$CenterLong >= x1, .data$CenterLong <= x2,
-      .data$CenterLat >= y1, .data$CenterLat <= y2) %>%
-    select(.data$CsquareCode) %>%
+      .data$CenterLat >= y1, .data$CenterLat <= y2) |> 
+    select(.data$CsquareCode) |> 
     collect()
 }
 
@@ -159,13 +159,13 @@ am_csc_from_extent <- function(x1, x2, y1, y2) {
 #' @family spatial
 am_species_in_csc <- function(csc, min_prob = 0.5) {
 
-  db_cache$local_db %>%
-    dplyr::tbl("hcaf_species_native") %>%
-    dplyr::filter(.data$CsquareCode %in% csc) %>%
-    dplyr::filter(.data$Probability >= min_prob) %>%
-    dplyr::group_by(.data$SpeciesID) %>%
-    dplyr::count(.data$SpeciesID) %>%
-    dplyr::collect() %>%
+  db_cache$local_db |> 
+    dplyr::tbl("hcaf_species_native") |> 
+    dplyr::filter(.data$CsquareCode %in% csc) |> 
+    dplyr::filter(.data$Probability >= min_prob) |> 
+    dplyr::group_by(.data$SpeciesID) |> 
+    dplyr::count(.data$SpeciesID) |> 
+    dplyr::collect() |> 
     dplyr::arrange(desc(n))
 
 }
@@ -183,7 +183,7 @@ am_species_in_csc <- function(csc, min_prob = 0.5) {
 #' am_species_per_csc("7516:236:1", 0.99)
 #'
 #' # distinct species count per grid cells in LME 1
-#' csc <- am_hcaf() %>% filter(LME == 1) %>% collect() %>% pull(CsquareCode)
+#' csc <- am_hcaf() |> filter(LME == 1) |> collect() |> pull(CsquareCode)
 #' am_species_per_csc(csc, 0.9)
 #'
 #' # global richness map data based on taxonomy
@@ -196,20 +196,20 @@ am_species_in_csc <- function(csc, min_prob = 0.5) {
 am_species_per_csc <- function(csc, min_prob = 0.5, keys = NULL) {
 
   t1 <-
-    db_cache$local_db %>%
+    db_cache$local_db |> 
     dplyr::tbl("hcaf_species_native")
 
   if (!missing(csc) && !is.null(csc))
-    t2 <- t1 %>% dplyr::filter(.data$CsquareCode %in% csc)
+    t2 <- t1 |> dplyr::filter(.data$CsquareCode %in% csc)
 
   if (!missing(keys) && !is.null(keys))
-    t2 <- t1 %>% dplyr::filter(.data$SpeciesID %in% keys)
+    t2 <- t1 |> dplyr::filter(.data$SpeciesID %in% keys)
 
-  t2 %>%
-    dplyr::filter(.data$Probability >= min_prob) %>%
-    dplyr::group_by(.data$CsquareCode) %>%
-    dplyr::summarise(n_species = n_distinct(.data$SpeciesID)) %>%
-    dplyr::collect() %>%
+  t2 |> 
+    dplyr::filter(.data$Probability >= min_prob) |> 
+    dplyr::group_by(.data$CsquareCode) |> 
+    dplyr::summarise(n_species = n_distinct(.data$SpeciesID)) |> 
+    dplyr::collect() |> 
     dplyr::arrange(desc(.data$n_species))
 
 }

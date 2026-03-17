@@ -21,7 +21,6 @@ download_db()
 }
 \seealso{
 Other general: 
-\code{\link{\%>\%}()},
 \code{\link{am_hcaf}()},
 \code{\link{am_hspen}()},
 \code{\link{am_search_exact}()},

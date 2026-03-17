@@ -19,8 +19,8 @@ Other admin:
 \code{\link{am_db_sqlite}()},
 \code{\link{am_use_offline_db}()},
 \code{\link{con_am}()},
-\code{\link{db_minify_path}()},
 \code{\link{db_minify}()},
+\code{\link{db_minify_path}()},
 \code{\link{db_sync}()},
 \code{\link{default_db}()},
 \code{\link{http_ping}()}

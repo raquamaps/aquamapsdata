@@ -45,10 +45,13 @@ db_env <- function() {
 #' that variables are set for: AM_DBHOST, AM_DBNAME, AM_DBUSER, AM_DBPASS
 #'
 #' @importFrom DBI dbConnect
-#' @importFrom RMySQL dbConnect MySQL
 #' @noRd
 #' @family admin
 con_am_mysql <- function() {
+
+  if (!requireNamespace("RMySQL", quietly = TRUE))
+    stop("Package 'RMySQL' is required for MySQL connections. ",
+      "Install it with: install.packages('RMySQL')")
 
   cs <- db_env()
 
@@ -181,14 +184,14 @@ db_counts <- function(con, tables) {
 
   # fcn to count nr of rows in a db table
   df_rowcount <- function(x)
-    tbl(con, x) %>%
-    summarize(count = n()) %>%
-    collect() %>%
+    tbl(con, x) |> 
+    summarize(count = n()) |> 
+    collect() |> 
     mutate(table = x)
 
   # fcn to count nr of cols in a db table
   df_colcount <- function(x) tibble(
-    n_cols = tbl(con, x) %>% ncol(),
+    n_cols = tbl(con, x) |> ncol(),
     table = x
   )
 
@@ -197,13 +200,14 @@ db_counts <- function(con, tables) {
   n_cols <- purrr::map_df(tables, df_colcount)
 
   # compile summary results
-  n_rows %>%
-    left_join(n_cols, by = "table") %>%
-    select(table, everything()) %>%
+  n_rows |> 
+    left_join(n_cols, by = "table") |> 
+    select(table, everything()) |> 
     arrange(desc(n_rows))
 
 }
 
+#' @noRd
 #' @family admin
 db_tables <- function(con) {
 
@@ -232,7 +236,7 @@ db_tables <- function(con) {
   enum_tables_sqlite <- function() {
     mygrep <- function(x, pattern = "^sqlite_")
       grep(x = x, pattern = pattern, invert = TRUE, value = TRUE)
-    tables <- RSQLite::dbListTables(con) %>% mygrep()
+    tables <- RSQLite::dbListTables(con) |> mygrep()
     if (length(tables) > 0)
       res <- db_counts(con, tables) else res <- NULL
     return(res)
@@ -280,6 +284,7 @@ db_reconnect <- function(con) {
 
 #' @importFrom purrr as_vector
 #' @importFrom DBI dbRemoveTable dbFetch dbIsValid dbWriteTable dbClearResult
+#' @importFrom cli cli_progress_bar cli_progress_update cli_progress_done
 #' @noRd
 #' @family admin
 db_sync_table <- function(
@@ -311,8 +316,9 @@ db_sync_table <- function(
       "destination connection")
 
   rc_sql <- sprintf("SELECT COUNT(*) as n FROM %s;", table)
-  rc <- dbGetQuery(con_src, rc_sql) %>% purrr::as_vector()
-  p <- progress_estimated(n = ceiling(rc / chunk_size))
+  rc <- dbGetQuery(con_src, rc_sql) |> purrr::as_vector()
+  n_ticks <- ceiling(rc / chunk_size)
+  cli::cli_progress_bar("Syncing table", total = n_ticks)
 
   rs_sql <- sprintf("SELECT * FROM %s;", table)
   rs <- dbSendQuery(con_src, rs_sql)
@@ -321,14 +327,15 @@ db_sync_table <- function(
   if (overwrite) DBI::dbRemoveTable(con_dest, table)
   while (!dbHasCompleted(rs)) {
     iter <- iter + 1
-    chunk <- DBI::dbFetch(rs, chunk_size) %>% as_tibble()
+    chunk <- DBI::dbFetch(rs, chunk_size) |> as_tibble()
     # HACK it seems the connection can auto-disconnect
     if (!DBI::dbIsValid(con_src)) con_src <- db_reconnect(con_src)
     if (!DBI::dbIsValid(con_dest)) con_dest <- db_reconnect(con_dest)
     DBI::dbWriteTable(con_dest, table, chunk, append = TRUE)
-    p$pause(0.1)$tick()$print()
+    cli::cli_progress_update()
     if (iter %% 1e2 == 0) message("Rows fetched: ", iter * chunk_size)
   }
+  cli::cli_progress_done()
   DBI::dbClearResult(rs)
 
 }
@@ -345,12 +352,10 @@ db_sync_table <- function(
 #' @param tables_excluded a vector of table names in the source db to be
 #'   excluded, by default a number of tables are excluded, specify NULL
 #'   to not explicitly exclude any tables
-#' @param overwrite_existing a logical to indicate whether destination tables
-#'   should be overwritten if they already exist
+#' @param overwrite_existing logical to indicate if existing destination tables
+#'   should be overwritten, Default: FALSE
 #' @param con_src db connection to source db
 #' @param con_dest db connection to destination db
-#' @param overwrite_existing logical to indicate if existing tables at
-#' destination db should be overwritten, Default: FALSE
 #' @return invisible result with vector of boolean status flags for
 #' synced tables
 #' @importFrom purrr map set_names
@@ -376,7 +381,7 @@ db_sync <- function(tables_included,
   c1 <- con_src
 
   if (missing(tables_included)) {
-    t1 <- c1 %>% db_tables() %>% pull(table)
+    t1 <- c1 |> db_tables() |> pull(table)
   } else {
     t1 <- tables_included
   }
@@ -391,8 +396,8 @@ db_sync <- function(tables_included,
     }
   )
 
-  t2_df <- c2 %>% db_tables()
-  t2 <- if (is.null(t2_df)) NULL else t2_df %>% pull(table)
+  t2_df <- c2 |> db_tables()
+  t2 <- if (is.null(t2_df)) NULL else t2_df |> pull(table)
 
   # inclusions
   if (overwrite_existing)
@@ -443,6 +448,7 @@ db_minify_path <- function()
 #' @importFrom purrr iwalk
 #' @importFrom dplyr tbl filter distinct pull
 #' @importFrom utils capture.output tail
+#' @importFrom cli cli_progress_bar cli_progress_update cli_progress_done
 #' @family admin
 db_minify <- function(key, slice_file, chunk_size = 1e4) {
 
@@ -450,30 +456,30 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
   on.exit(DBI::dbDisconnect(con))
 
   csc <-
-    con %>%
-    tbl("hcaf_species_native") %>%
-    filter(.data$SpeciesID %in% key) %>%
-    distinct(.data$CsquareCode) %>%
+    con |> 
+    tbl("hcaf_species_native") |> 
+    filter(.data$SpeciesID %in% key) |> 
+    distinct(.data$CsquareCode) |> 
     pull(.data$CsquareCode)
 
   hcaf_r <-
-    con %>%
-    tbl("hcaf_r") %>%
+    con |> 
+    tbl("hcaf_r") |> 
     filter(.data$CsquareCode %in% csc)
 
   tbls <-
-    aquamapsdata::am_meta %>%
-    select(.data$table) %>%
-    pull(.data$table) %>%
+    aquamapsdata::am_meta |> 
+    select(.data$table) |> 
+    pull(.data$table) |> 
     unique()
 
   ft <- function(x)
-    con %>%
-    tbl(x) %>%
+    con |> 
+    tbl(x) |> 
     filter(.data$SpeciesID %in% key) #%>%
   #    collect()
 
-  other <- tbls[2:5] %>% map(ft)
+  other <- tbls[2:5] |> map(ft)
   names(other) <- tbls[2:5]
 
   am_slice <- c(hcaf_r = list(hcaf_r), other)
@@ -482,35 +488,36 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
   on.exit(RSQLite::dbDisconnect(con_dest))
 
   wt <- function(x, y)
-    con_dest %>% RSQLite::dbWriteTable(name = y, value = x)
+    con_dest |> RSQLite::dbWriteTable(name = y, value = x)
 
   capture_query <- function(df) {
-    out <- capture.output(df %>% dplyr::show_query())
+    out <- capture.output(df |> dplyr::show_query())
     paste(tail(out, -1), collapse = "")
   }
 
   wt2 <- function(x, y) {
     table <- y
-    rc <- x %>% summarize(count = n()) %>%
-      collect() %>% pull(count) #nrow() %>% collect() #purrr::as_vector()
+    rc <- x |> summarize(count = n()) |> 
+      collect() |> pull(count) #nrow() |> collect() #purrr::as_vector()
     ticks <- ceiling(rc / chunk_size)
-    p <- dplyr::progress_estimated(n = ticks, min_time = 1)
+    cli::cli_progress_bar(paste("Minifying", table), total = ticks)
     rs <- DBI::dbSendQuery(x$src$con, capture_query(x))
     iter <- 0
     is_done <- FALSE
     while (!is_done) {
       iter <- iter + 1
-      chunk <- DBI::dbFetch(rs, chunk_size) %>% as_tibble()
+      chunk <- DBI::dbFetch(rs, chunk_size) |> as_tibble()
       DBI::dbWriteTable(con_dest, table, chunk, append = TRUE)
       if (iter %% 1e2 == 0)
         message("Fetched from ", table, ": ", iter * chunk_size)
       is_done <- (iter * chunk_size) >= rc
-      p$pause(0.1)$tick()$print()
+      cli::cli_progress_update()
     }
+    cli::cli_progress_done()
     DBI::dbClearResult(rs)
   }
 
-  am_slice %>% purrr::iwalk(wt2)
+  am_slice |> purrr::iwalk(wt2)
 
 }
 
@@ -534,9 +541,9 @@ am_use_offline_db <- function() {
     system.file("extdata", "am.db",
                 package = "aquamapsdata", mustWork = TRUE)
 
-  if (!dir.exists(basename(am_db_sqlite()))) {
-    message("Creating local dir for sqlite3 db at ", dirname(offline_db))
-    dir.create(basename(am_db_sqlite()), recursive = TRUE, showWarnings = TRUE)
+  if (!dir.exists(dirname(am_db_sqlite()))) {
+    message("Creating local dir for sqlite3 db at ", dirname(am_db_sqlite()))
+    dir.create(dirname(am_db_sqlite()), recursive = TRUE, showWarnings = TRUE)
   }
 
   readr::write_file(readr::read_file_raw(offline_db), am_db_sqlite())

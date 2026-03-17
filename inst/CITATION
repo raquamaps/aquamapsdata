@@ -1,0 +1,23 @@
+bibentry(
+  bibtype  = "Misc",
+  title    = "AquaMaps: Predicted range maps for aquatic species",
+  author   = c(
+    person("K.", "Kaschner"),
+    person("K.", "Kesner-Reyes"),
+    person("C.", "Garilao"),
+    person("J.", "Segschneider"),
+    person("J.", "Rius-Barile"),
+    person("T.", "Rees"),
+    person("R.", "Froese")
+  ),
+  year     = "2019",
+  note     = "Version 10/2019",
+  url      = "https://www.aquamaps.org",
+  textVersion = paste(
+    "Kaschner, K., K. Kesner-Reyes, C. Garilao, J. Segschneider,",
+    "J. Rius-Barile, T. Rees, and R. Froese. 2019.",
+    "AquaMaps: Predicted range maps for aquatic species.",
+    "World wide web electronic publication, www.aquamaps.org,",
+    "Version 10/2019."
+  )
+)

@@ -1,7 +1,5 @@
 library(aquamapsdata)
 
-context("Csquare Conversions")
-
 test_that("csquare conversion from digital degrees work", {
 
   expect_equal(
