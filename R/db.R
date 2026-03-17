@@ -207,6 +207,7 @@ db_counts <- function(con, tables) {
 
 }
 
+#' @noRd
 #' @family admin
 db_tables <- function(con) {
 
@@ -542,9 +543,9 @@ am_use_offline_db <- function() {
     system.file("extdata", "am.db",
                 package = "aquamapsdata", mustWork = TRUE)
 
-  if (!dir.exists(basename(am_db_sqlite()))) {
-    message("Creating local dir for sqlite3 db at ", dirname(offline_db))
-    dir.create(basename(am_db_sqlite()), recursive = TRUE, showWarnings = TRUE)
+  if (!dir.exists(dirname(am_db_sqlite()))) {
+    message("Creating local dir for sqlite3 db at ", dirname(am_db_sqlite()))
+    dir.create(dirname(am_db_sqlite()), recursive = TRUE, showWarnings = TRUE)
   }
 
   readr::write_file(readr::read_file_raw(offline_db), am_db_sqlite())

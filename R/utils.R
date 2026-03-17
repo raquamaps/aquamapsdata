@@ -4,6 +4,7 @@
 #'@param timeout default time to wait in seconds before returning FALSE
 #'@return TRUE if web site is up, FALSE otherwise
 #'@importFrom R.utils withTimeout
+#'@importFrom httr GET
 #'@export
 #'@examples \dontrun{
 #'  http_ping("http://aquamaps.org")

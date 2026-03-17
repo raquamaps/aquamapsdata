@@ -19,7 +19,7 @@ Approximately 10G disk space is needed locally when remotely downloading the dat
 
 install.packages("devtools") 
 library("devtools")
-install_gitub("raquamaps/aquamapsdata", dependencies = TRUE)
+install_github("raquamaps/aquamapsdata", dependencies = TRUE)
 
 # initial run-once step required to install remote db locally
 
@@ -194,7 +194,7 @@ HSPEN data can be queried for example based on taxonomy for a single species or 
 ```{r, echo=TRUE, fig.width=7, message=FALSE}
 # use one or more keys for species
 key <- am_species_in_csc(deepwater, min_prob = 0.5)$SpeciesID
-am_hspen() %>% filter(SpeciesID == key) %>% head(1) %>% collapse%>% glimpse()
+am_hspen() %>% filter(SpeciesID == key) %>% head(1) %>% collect() %>% glimpse()
 
 # for higher taxa - find the keys associated with higher taxa 
 # am_search_exact(Family = am_search_exact(SpeciesID = key)$Family)
@@ -281,7 +281,7 @@ services:
 
 ```
 
-After this step, the data is available to access locally through `aquamapsdata::am_con()`.
+After this step, the data is available to access locally through `aquamapsdata::con_am()`.
 
 The "metadata" for table and field names and their descriptions is provided through `aquamapsdata::am_meta` which is prepared by means of (data-raw/am-meta.R). This metadata is used in package documentation and the `am_search_exact()` function allows for taxonomic searches using some of those fields.
 

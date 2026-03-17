@@ -27,6 +27,7 @@ Imports:
     purrr,
     DBI,
     cli,
+    httr,
     duckdb,
     leaflet,
     rappdirs,
@@ -38,7 +39,6 @@ Imports:
     curl
 Suggests:
     knitr,
-    httr,
     readxl,
     rmarkdown,
     xml2,
