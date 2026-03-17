@@ -31,6 +31,10 @@ jobs:
           r-version: ${{ matrix.config.r }}
           use-public-rspm: true
 
+      - name: Add drat repository for rcrypt
+        run: |
+          echo 'options(repos = c(raquamaps = "https://raquamaps.github.io/drat/", getOption("repos")))' >> ~/.Rprofile
+
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: any::rcmdcheck
