@@ -1,10 +1,2 @@
-#' pipe - convert nested functions into sequential statements
-#'
-#' This package uses the pipe function, \code{`\%>\%`} to turn
-#' function composition into a series of imperative statements.
-#'
-#' @importFrom magrittr %>%
-#' @name %>%
-#' @export
-#' @family general
-NULL
+# This package uses the base pipe |> introduced in R 4.1.
+# The magrittr pipe %>% was previously re-exported here.

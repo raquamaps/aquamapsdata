@@ -184,14 +184,14 @@ db_counts <- function(con, tables) {
 
   # fcn to count nr of rows in a db table
   df_rowcount <- function(x)
-    tbl(con, x) %>%
-    summarize(count = n()) %>%
-    collect() %>%
+    tbl(con, x) |> 
+    summarize(count = n()) |> 
+    collect() |> 
     mutate(table = x)
 
   # fcn to count nr of cols in a db table
   df_colcount <- function(x) tibble(
-    n_cols = tbl(con, x) %>% ncol(),
+    n_cols = tbl(con, x) |> ncol(),
     table = x
   )
 
@@ -200,9 +200,9 @@ db_counts <- function(con, tables) {
   n_cols <- purrr::map_df(tables, df_colcount)
 
   # compile summary results
-  n_rows %>%
-    left_join(n_cols, by = "table") %>%
-    select(table, everything()) %>%
+  n_rows |> 
+    left_join(n_cols, by = "table") |> 
+    select(table, everything()) |> 
     arrange(desc(n_rows))
 
 }
@@ -236,7 +236,7 @@ db_tables <- function(con) {
   enum_tables_sqlite <- function() {
     mygrep <- function(x, pattern = "^sqlite_")
       grep(x = x, pattern = pattern, invert = TRUE, value = TRUE)
-    tables <- RSQLite::dbListTables(con) %>% mygrep()
+    tables <- RSQLite::dbListTables(con) |> mygrep()
     if (length(tables) > 0)
       res <- db_counts(con, tables) else res <- NULL
     return(res)
@@ -316,7 +316,7 @@ db_sync_table <- function(
       "destination connection")
 
   rc_sql <- sprintf("SELECT COUNT(*) as n FROM %s;", table)
-  rc <- dbGetQuery(con_src, rc_sql) %>% purrr::as_vector()
+  rc <- dbGetQuery(con_src, rc_sql) |> purrr::as_vector()
   n_ticks <- ceiling(rc / chunk_size)
   cli::cli_progress_bar("Syncing table", total = n_ticks)
 
@@ -327,7 +327,7 @@ db_sync_table <- function(
   if (overwrite) DBI::dbRemoveTable(con_dest, table)
   while (!dbHasCompleted(rs)) {
     iter <- iter + 1
-    chunk <- DBI::dbFetch(rs, chunk_size) %>% as_tibble()
+    chunk <- DBI::dbFetch(rs, chunk_size) |> as_tibble()
     # HACK it seems the connection can auto-disconnect
     if (!DBI::dbIsValid(con_src)) con_src <- db_reconnect(con_src)
     if (!DBI::dbIsValid(con_dest)) con_dest <- db_reconnect(con_dest)
@@ -381,7 +381,7 @@ db_sync <- function(tables_included,
   c1 <- con_src
 
   if (missing(tables_included)) {
-    t1 <- c1 %>% db_tables() %>% pull(table)
+    t1 <- c1 |> db_tables() |> pull(table)
   } else {
     t1 <- tables_included
   }
@@ -396,8 +396,8 @@ db_sync <- function(tables_included,
     }
   )
 
-  t2_df <- c2 %>% db_tables()
-  t2 <- if (is.null(t2_df)) NULL else t2_df %>% pull(table)
+  t2_df <- c2 |> db_tables()
+  t2 <- if (is.null(t2_df)) NULL else t2_df |> pull(table)
 
   # inclusions
   if (overwrite_existing)
@@ -456,30 +456,30 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
   on.exit(DBI::dbDisconnect(con))
 
   csc <-
-    con %>%
-    tbl("hcaf_species_native") %>%
-    filter(.data$SpeciesID %in% key) %>%
-    distinct(.data$CsquareCode) %>%
+    con |> 
+    tbl("hcaf_species_native") |> 
+    filter(.data$SpeciesID %in% key) |> 
+    distinct(.data$CsquareCode) |> 
     pull(.data$CsquareCode)
 
   hcaf_r <-
-    con %>%
-    tbl("hcaf_r") %>%
+    con |> 
+    tbl("hcaf_r") |> 
     filter(.data$CsquareCode %in% csc)
 
   tbls <-
-    aquamapsdata::am_meta %>%
-    select(.data$table) %>%
-    pull(.data$table) %>%
+    aquamapsdata::am_meta |> 
+    select(.data$table) |> 
+    pull(.data$table) |> 
     unique()
 
   ft <- function(x)
-    con %>%
-    tbl(x) %>%
+    con |> 
+    tbl(x) |> 
     filter(.data$SpeciesID %in% key) #%>%
   #    collect()
 
-  other <- tbls[2:5] %>% map(ft)
+  other <- tbls[2:5] |> map(ft)
   names(other) <- tbls[2:5]
 
   am_slice <- c(hcaf_r = list(hcaf_r), other)
@@ -488,17 +488,17 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
   on.exit(RSQLite::dbDisconnect(con_dest))
 
   wt <- function(x, y)
-    con_dest %>% RSQLite::dbWriteTable(name = y, value = x)
+    con_dest |> RSQLite::dbWriteTable(name = y, value = x)
 
   capture_query <- function(df) {
-    out <- capture.output(df %>% dplyr::show_query())
+    out <- capture.output(df |> dplyr::show_query())
     paste(tail(out, -1), collapse = "")
   }
 
   wt2 <- function(x, y) {
     table <- y
-    rc <- x %>% summarize(count = n()) %>%
-      collect() %>% pull(count) #nrow() %>% collect() #purrr::as_vector()
+    rc <- x |> summarize(count = n()) |> 
+      collect() |> pull(count) #nrow() |> collect() #purrr::as_vector()
     ticks <- ceiling(rc / chunk_size)
     cli::cli_progress_bar(paste("Minifying", table), total = ticks)
     rs <- DBI::dbSendQuery(x$src$con, capture_query(x))
@@ -506,7 +506,7 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
     is_done <- FALSE
     while (!is_done) {
       iter <- iter + 1
-      chunk <- DBI::dbFetch(rs, chunk_size) %>% as_tibble()
+      chunk <- DBI::dbFetch(rs, chunk_size) |> as_tibble()
       DBI::dbWriteTable(con_dest, table, chunk, append = TRUE)
       if (iter %% 1e2 == 0)
         message("Fetched from ", table, ": ", iter * chunk_size)
@@ -517,7 +517,7 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
     DBI::dbClearResult(rs)
   }
 
-  am_slice %>% purrr::iwalk(wt2)
+  am_slice |> purrr::iwalk(wt2)
 
 }
 

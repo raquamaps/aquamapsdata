@@ -65,7 +65,7 @@ Those keys could be said to represent species lists that can be used to retrieve
 
 # fuzzy search allows full text search operators AND, OR, NOT and +
 # see https://www.sqlitetutorial.net/sqlite-full-text-search/
-am_search_fuzzy(search_term = "trevally") %>% pull(key)
+am_search_fuzzy(search_term = "trevally") |> pull(key)
 
 # exact search without parameters returns all results
 nrow(am_search_exact())
@@ -83,7 +83,7 @@ hits <-
 
 # display results
 display <- 
-  hits %>% mutate(binomen = paste(Genus, Species)) %>%
+  hits |> mutate(binomen = paste(Genus, Species)) |> 
   select(SpeciesID, binomen, SpecCode, FBname)
 
 knitr::kable(display)
@@ -108,7 +108,7 @@ key <- am_search_fuzzy("bluespotted")$key
 ras <- am_raster(key)
 
 # show the native habitat map
-am_map_leaflet(ras, title = "Bluespotted trevally") %>%
+am_map_leaflet(ras, title = "Bluespotted trevally") |> 
   leaflet::fitBounds(lng1 = 100, lat1 = -46, lng2 = 172, lat2 = -2)
 
 ```
@@ -136,7 +136,7 @@ keys <- am_search_exact(Genus = "Caranx")$SpeciesID
 
 ras <- am_raster(keys, fun = "count")
 
-am_map_leaflet(ras, title = "Caranx") %>%
+am_map_leaflet(ras, title = "Caranx") |> 
   leaflet::fitBounds(lng1 = 100, lat1 = -46, lng2 = 172, lat2 = -2)
 
 am_citation("md")
@@ -159,17 +159,17 @@ A subset of HCAF records can be retrieved based on a certain criteria or field i
 
 ```{r, echo=TRUE, fig.width=7, message=FALSE}
 
-am_hcaf() %>% head(1) %>% collect() %>% names()
+am_hcaf() |> head(1) |> collect() |> names()
 
 # compute depth across all cells
-am_hcaf() %>% 
-  summarize(depth = mean(DepthMean, na.rm = TRUE)) %>% 
-  collect() %>% 
+am_hcaf() |> 
+  summarize(depth = mean(DepthMean, na.rm = TRUE)) |> 
+  collect() |> 
   pull(depth)
 
 # cells with a depth value larger than 4000
 deepwater <- 
-  am_hcaf() %>% filter(DepthMean > 4000) %>% pull(CsquareCode)
+  am_hcaf() |> filter(DepthMean > 4000) |> pull(CsquareCode)
 
 # some of the on average deepest locations
 deepwater
@@ -194,7 +194,7 @@ HSPEN data can be queried for example based on taxonomy for a single species or 
 ```{r, echo=TRUE, fig.width=7, message=FALSE}
 # use one or more keys for species
 key <- am_species_in_csc(deepwater, min_prob = 0.5)$SpeciesID
-am_hspen() %>% filter(SpeciesID == key) %>% head(1) %>% collect() %>% glimpse()
+am_hspen() |> filter(SpeciesID == key) |> head(1) |> collect() |> glimpse()
 
 # for higher taxa - find the keys associated with higher taxa 
 # am_search_exact(Family = am_search_exact(SpeciesID = key)$Family)

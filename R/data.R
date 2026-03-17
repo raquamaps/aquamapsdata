@@ -67,8 +67,8 @@ am_custom_query <- function(sql_query, con, ...) {
     con <- db_cache$local_db
   }
 
-  con %>%
-    tbl(sql(sql_query, ...)) %>%
+  con |> 
+    tbl(sql(sql_query, ...)) |> 
     collect()
 
 }
@@ -93,7 +93,7 @@ am_drop_fts <- function(con) {
 
   fts_tabs <- c("fts", fts_shadow_tables("fts"))
 
-  fts_tabs %>% purrr::map(drop_table)
+  fts_tabs |> purrr::map(drop_table)
 
 }
 
@@ -200,8 +200,8 @@ am_create_indexes <- function(con) {
   }
 
   i <-
-    aquamapsdata::am_meta %>%
-    filter(.data$field %in% c("SpeciesID", "LOICZID", "CsquareCode")) %>%
+    aquamapsdata::am_meta |> 
+    filter(.data$field %in% c("SpeciesID", "LOICZID", "CsquareCode")) |> 
     select(.data$table, .data$field)
 
   idx <- paste0(i$field, seq_len(length(i$field)))
@@ -215,7 +215,7 @@ am_create_indexes <- function(con) {
     message("Index created: ", res, ", sql: ", x)
     res
   }
-  res <- sql %>% map(execute)
+  res <- sql |> map(execute)
 
   if (!all(res == 0)) message("Done")
 }
@@ -225,10 +225,10 @@ am_keys <- function() {
 
   con <- db_cache$local_db
 
-  con %>%
-    dplyr::tbl("speciesoccursum_r") %>%
-    dplyr::distinct(.data$SpeciesID) %>%
-    dplyr::collect() %>%
+  con |> 
+    dplyr::tbl("speciesoccursum_r") |> 
+    dplyr::distinct(.data$SpeciesID) |> 
+    dplyr::collect() |> 
     dplyr::pull(.data$SpeciesID)
 }
 
@@ -242,14 +242,14 @@ am_nativemaps <- function(key) {
 
   con <- db_cache$local_db
 
-  con %>%
-    dplyr::tbl("hcaf_species_native") %>%
-    dplyr::filter(.data$SpeciesID %in% key) %>%
-    dplyr::collect() %>%
+  con |> 
+    dplyr::tbl("hcaf_species_native") |> 
+    dplyr::filter(.data$SpeciesID %in% key) |> 
+    dplyr::collect() |> 
     dplyr::select(
       .data$SpeciesID, .data$CsquareCode,
       .data$CenterLat, .data$CenterLong,
-      .data$Probability) %>%
+      .data$Probability) |> 
     dplyr::rename(lat = "CenterLat", lon = "CenterLong")
 
 }
@@ -268,7 +268,7 @@ am_hcaf <- function() {
 
   con <- db_cache$local_db
 
-  con %>%
+  con |> 
     dplyr::tbl("hcaf_r")
 }
 
@@ -276,7 +276,7 @@ am_hcaf <- function() {
 #' This table provides data on species environmental parameters / preferences
 #' @examples \dontrun{
 #' keys <- am_search_fuzzy("trevally")$key[1:2]
-#' am_hspen() %>% filter(SpeciesID %in% keys)
+#' am_hspen() |> filter(SpeciesID %in% keys)
 #' }
 #' @export
 #' @importFrom dplyr tbl
@@ -285,6 +285,6 @@ am_hspen <- function() {
 
   con <- db_cache$local_db
 
-  con %>%
+  con |> 
     dplyr::tbl("hspen_r")
 }
