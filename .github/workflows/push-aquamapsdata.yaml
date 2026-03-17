@@ -7,6 +7,10 @@ on:
     - 'inst/docker/**'
     - '.github/workflows/push-aquamapsdata.yaml'
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   aquamapsdata-push:
     runs-on: ubuntu-latest
@@ -57,7 +61,7 @@ jobs:
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
-        password: ${{ secrets.CR_PAT }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
     -
       name: Docker build and push
