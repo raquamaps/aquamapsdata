@@ -45,10 +45,13 @@ db_env <- function() {
 #' that variables are set for: AM_DBHOST, AM_DBNAME, AM_DBUSER, AM_DBPASS
 #'
 #' @importFrom DBI dbConnect
-#' @importFrom RMySQL dbConnect MySQL
 #' @noRd
 #' @family admin
 con_am_mysql <- function() {
+
+  if (!requireNamespace("RMySQL", quietly = TRUE))
+    stop("Package 'RMySQL' is required for MySQL connections. ",
+      "Install it with: install.packages('RMySQL')")
 
   cs <- db_env()
 
@@ -280,6 +283,7 @@ db_reconnect <- function(con) {
 
 #' @importFrom purrr as_vector
 #' @importFrom DBI dbRemoveTable dbFetch dbIsValid dbWriteTable dbClearResult
+#' @importFrom cli cli_progress_bar cli_progress_update cli_progress_done
 #' @noRd
 #' @family admin
 db_sync_table <- function(
@@ -312,7 +316,8 @@ db_sync_table <- function(
 
   rc_sql <- sprintf("SELECT COUNT(*) as n FROM %s;", table)
   rc <- dbGetQuery(con_src, rc_sql) %>% purrr::as_vector()
-  p <- progress_estimated(n = ceiling(rc / chunk_size))
+  n_ticks <- ceiling(rc / chunk_size)
+  cli::cli_progress_bar("Syncing table", total = n_ticks)
 
   rs_sql <- sprintf("SELECT * FROM %s;", table)
   rs <- dbSendQuery(con_src, rs_sql)
@@ -326,9 +331,10 @@ db_sync_table <- function(
     if (!DBI::dbIsValid(con_src)) con_src <- db_reconnect(con_src)
     if (!DBI::dbIsValid(con_dest)) con_dest <- db_reconnect(con_dest)
     DBI::dbWriteTable(con_dest, table, chunk, append = TRUE)
-    p$pause(0.1)$tick()$print()
+    cli::cli_progress_update()
     if (iter %% 1e2 == 0) message("Rows fetched: ", iter * chunk_size)
   }
+  cli::cli_progress_done()
   DBI::dbClearResult(rs)
 
 }
@@ -443,6 +449,7 @@ db_minify_path <- function()
 #' @importFrom purrr iwalk
 #' @importFrom dplyr tbl filter distinct pull
 #' @importFrom utils capture.output tail
+#' @importFrom cli cli_progress_bar cli_progress_update cli_progress_done
 #' @family admin
 db_minify <- function(key, slice_file, chunk_size = 1e4) {
 
@@ -494,7 +501,7 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
     rc <- x %>% summarize(count = n()) %>%
       collect() %>% pull(count) #nrow() %>% collect() #purrr::as_vector()
     ticks <- ceiling(rc / chunk_size)
-    p <- dplyr::progress_estimated(n = ticks, min_time = 1)
+    cli::cli_progress_bar(paste("Minifying", table), total = ticks)
     rs <- DBI::dbSendQuery(x$src$con, capture_query(x))
     iter <- 0
     is_done <- FALSE
@@ -505,8 +512,9 @@ db_minify <- function(key, slice_file, chunk_size = 1e4) {
       if (iter %% 1e2 == 0)
         message("Fetched from ", table, ": ", iter * chunk_size)
       is_done <- (iter * chunk_size) >= rc
-      p$pause(0.1)$tick()$print()
+      cli::cli_progress_update()
     }
+    cli::cli_progress_done()
     DBI::dbClearResult(rs)
   }
 

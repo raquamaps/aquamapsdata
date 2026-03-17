@@ -26,7 +26,7 @@ Imports:
     stringi,
     purrr,
     DBI,
-    RMySQL,
+    cli,
     duckdb,
     leaflet,
     rappdirs,
@@ -34,10 +34,9 @@ Imports:
     stringr,
     rlang,
     readr,
-    rcrypt,
     sp,
     curl
-Suggests: 
+Suggests:
     knitr,
     httr,
     readxl,
@@ -46,10 +45,10 @@ Suggests:
     DT,
     tidyr,
     testthat,
-    covr
+    covr,
+    RMySQL,
+    rcrypt
 Depends:
     R (>= 3.0)
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-SystemRequirements:
-    rgdal
