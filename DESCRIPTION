@@ -45,8 +45,7 @@ Suggests:
     tidyr,
     testthat,
     covr,
-    RMySQL,
-    rcrypt
+    RMySQL
 Depends:
     R (>= 4.1)
 VignetteBuilder: knitr
